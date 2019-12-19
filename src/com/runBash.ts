@@ -66,7 +66,6 @@ export function runBash(context: any) {
 
 
 
-
         // if (bashs == '') {
         //     let selectionStartOffset =
         //     editor.document.offsetAt(sels[0].start); bashs =

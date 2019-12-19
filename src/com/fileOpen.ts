@@ -8,7 +8,7 @@ const Configs: any = Config.configJsonContent();
 
 export function fileOpen(context:vscode.ExtensionContext) {
 
-    console.log(Util.DIR());
+    
     context.subscriptions.push(vscode.commands.registerCommand('extension.demo.fileOpen', function(uri) {
 
         const projectPath = Util.getFilePath();

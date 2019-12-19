@@ -1,6 +1,7 @@
 import fs = require('fs');
 import * as vscode from 'vscode';
 import {Util} from './../Util';
+import {log} from 'util';
 
 
 const exec = require('child_process').exec;
@@ -18,21 +19,36 @@ export function openAuto(context: any) {
           return;
         }
 
-        // 打开剪贴板的文件
-        exec('pbpaste', function(error: string|null, stdout: any, stderr: any) {
-          if (error !== null) {
-            console.log('exec error: ' + error);
-          } else {
-            let destPath = stdout;
-            if (fs.existsSync(destPath)) {
-              // new vscode.Position(0, 0) 表示跳转到某个文件的第一行第一列
-              // new vscode.Location(vscode.Uri.file(destPath), new
-              // vscode.Position(0, 0));
-              let uri = vscode.Uri.file(destPath);
-              vscode.commands.executeCommand('vscode.openFolder', uri);
-            }
-          }
-        });
+        // 获取当前编辑器对象
+        const editor = vscode.window.activeTextEditor;
+        if (!editor) {
+          return false;
+        }
+
+        const data = Util.getJsonData();   
+        let files: string = Util.getSelecttextLine( editor );
+   
+        files = Util.getStringPath(files.trim(), projectPath, data);
+
+        if (files.length > 3) {
+          let uri = vscode.Uri.file(files);
+          vscode.commands.executeCommand('vscode.openFolder', uri);
+        } else {
+          // 打开剪贴板的文件
+          exec(
+              'pbpaste',
+              function(error: string|null, stdout: any, stderr: any) {
+                if (error !== null) {
+                  console.log('exec error: ' + error);
+                } else {
+                  let destPath = stdout;
+                  if (fs.existsSync(destPath)) {
+                    let uri = vscode.Uri.file(destPath);
+                    vscode.commands.executeCommand('vscode.openFolder', uri);
+                  }
+                }
+              });
+        }
       }));
 
   context.subscriptions.push(vscode.commands.registerCommand(
@@ -52,4 +68,4 @@ export function openAuto(context: any) {
               }
             });
       }));
-};
+}

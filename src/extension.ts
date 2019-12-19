@@ -9,12 +9,12 @@ import {helloword} from './helloword';
 import {hover} from './hover';
 import {Util} from './Util';
 import {webview} from './webview';
-import {welcome} from './welcome';
+// import {welcome} from './welcome';
 
 
 
 let plugin = [
-  fileOpen, helloword, completion, hover, webview, welcome, openAuto, runBash,
+  fileOpen, helloword, completion, hover, webview, openAuto, runBash,
   fileOpenProject
 
 ];

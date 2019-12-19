@@ -28,7 +28,7 @@ function getWebViewContent(context:any, templatePath:any) {
 function invokeCallback(panel:any, message:any, resp:any) {
     console.log('回调消息：', resp);
     // 错误码在400-600之间的，默认弹出错误提示
-    if (typeof resp == 'object' && resp.code && resp.code >= 400 && resp.code < 600) {
+    if (typeof resp === 'object' && resp.code && resp.code >= 400 && resp.code < 600) {
         Util.showError(resp.message || '发生未知错误！');
     }
     panel.webview.postMessage({cmd: 'vscodeCallback', cbid: message.cbid, data: resp});
@@ -76,4 +76,4 @@ export function welcome(context:any) {
     if (vscode.workspace.getConfiguration().get(key)) {
         vscode.commands.executeCommand('extension.demo.showWelcome');
     }
-};
+}
