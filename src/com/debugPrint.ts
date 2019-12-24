@@ -51,7 +51,7 @@ export function debugPrint(
         if (str_run.length < 1) {
           return;
         }
-
+  
         let range;
         let selec = [];
         for (let index = editor.selections.length - 1; index >= 0; index--) {
@@ -87,7 +87,11 @@ export function debugPrint(
           }
         }
 
-        let text = line_ar.join('');
+        let str_bas:string = editor.document.lineAt(parseInt(selec[selec.length - 1][0]+'')).text;
+        str_bas = str_bas.replace(str_bas.trimLeft(),'' );
+
+        let text = str_bas+line_ar.join(str_bas);
+        
         let line = parseInt(selec[selec.length - 1][0] + '');
         let position_ins: vscode.Position = new vscode.Position(line + 1, 0);
         edit.insert(position_ins, text);  //代替文本,插入文本

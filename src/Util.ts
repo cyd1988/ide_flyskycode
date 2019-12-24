@@ -148,7 +148,7 @@ export class Util {
       stat = fs.lstatSync(file_str);
       if (!stat.isFile()) {
       }
-    }else{
+    } else {
       file_str = '';
     }
     return file_str;
@@ -169,6 +169,11 @@ export class Util {
       fs.mkdirSync(files, {recursive: true});
     }
     return create_file;
+  }
+
+
+  static repeat(src: string, n: number) {
+    return (new Array(n + 1)).join(src);
   }
 
 
