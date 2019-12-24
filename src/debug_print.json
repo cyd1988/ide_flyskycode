@@ -1,0 +1,47 @@
+{
+    "python": {
+        "str_run": "print( %s )\n",
+        "str_end": "return exit()\n",
+        "str_end_show": ""
+    },
+    "py": {
+        "str_run": "print( %s )\n",
+        "str_end": "return exit()\n",
+        "str_end_show": ""
+    },
+    "lua": {
+        "str_run": "print( %s )\n",
+        "str_end": "return exit()\n",
+        "str_end_show": ""
+    },
+    "java": {
+        "str_run": "System.out.println( %s )\n",
+        "str_end": "",
+        "str_end_show": ""
+    },
+    "c": {
+        "str_run": "printf( %s );\n",
+        "str_end": "",
+        "str_end_show": ""
+    },
+    "perl": {
+        "str_run": "print %s ;\n",
+        "str_end": "",
+        "str_end_show": ""
+    },
+    "js": {
+        "str_run": "console.log(%s)",
+        "str_end": "return \n",
+        "str_end_show": ""
+    },
+    "ts": {
+        "str_run": "console.log( %s );\n",
+        "str_end": "return \n",
+        "str_end_show": ""
+    },
+    "php": {
+        "str_run": "var_dump( %s );\n",
+        "str_end": "exit();\n",
+        "str_end_show": ""
+    }
+}

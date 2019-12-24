@@ -1,12 +1,15 @@
 {
-
     "afNum": {
         "af1": {
             "file": "/Users/webS/www/mynotes/web/test/test.py",
             "url": "/Users/webS/www/net/web/test.html"
         },
-        "af2": { "file": "/Users/webS/www/mynotes/web/test/test.html" },
-        "af3": { "file": "/Users/webS/www/mynotes/web/test/test.js" },
+        "af2": {
+            "file": "/Users/webS/www/mynotes/web/test/test.html"
+        },
+        "af3": {
+            "file": "/Users/webS/www/mynotes/web/test/test.js"
+        },
         "af4": {
             "files": [
                 "/Users/webS/www/mynotes/web/test/test.py",
@@ -27,6 +30,37 @@
                 "/Users/webS/www/mynotes/web/test/sublime-snippet.save.py",
                 "/Users/webS/www/mynotes/web/test/my/sublime/dir/sport/java/base/test.java"
             ]
+        }
+    },
+    "afnum": {
+        "notes": "alt+数字 快速打开文件",
+        "files": {
+            "alt_num_open_1": "/Users/webS/www/mynotes/web/test/test.md",
+            "alt_num_open_2": "/Users/webS/www/mynotes/web/test/keyword/keyword2.md",
+            "alt_num_open_3": "/Users/webS/www/mynotes/web/test/keyword/keyword3.md",
+            "alt_num_open_4": "/Users/webS/www/mynotes/web/test/keyword/keyword4.php",
+            "alt_num_open_5": "/www/my/core/mmd6666.com_core/application/cmd/model/runTest.php",
+            "alt_num_open_6": "/Users/webS/www/mynotes/web/test/keyword/keyword6.php",
+            "alt_num_open_7": "/Users/webS/www/mynotes/web/test/keyword/keyword7.php",
+            "alt_num_open_8": "/Users/webS/www/mynotes/web/test/keyword/keyword8.php",
+            "alt_num_open_9": "/Users/webS/www/mynotes/web/test/keyword/keyword9.php"
+        }
+    },
+    "super_num": {
+        "notes": "super+数字 快速打开文件",
+        "file": {
+            "0": "/Users/chenyudong/Library/Application Support/Sublime Text 3/Packages/SubPhp/file/alt0.sh",
+            "1": "/Users/chenyudong/Library/Application Support/Sublime Text 3/Packages/SubPhp/file/1.txt",
+            "2": "/Users/chenyudong/Library/Application Support/Sublime Text 3/Packages/SubPhp/file/2.txt",
+            "3": "/Users/chenyudong/Library/Application Support/Sublime Text 3/Packages/SubPhp/file/3.txt",
+            "4": "/Users/chenyudong/Library/Application Support/Sublime Text 3/Packages/SubPhp/file/4.txt",
+            "5": "/Users/chenyudong/Library/Application Support/Sublime Text 3/Packages/SubPhp/file/5.txt",
+            "6": "/Users/chenyudong/Library/Application Support/Sublime Text 3/Packages/SubPhp/file/6.txt",
+            "7": "/Users/chenyudong/Library/Application Support/Sublime Text 3/Packages/SubPhp/file/7.txt",
+            "8": "/Users/chenyudong/Library/Application Support/Sublime Text 3/Packages/SubPhp/file/8.txt",
+            "9": "/Users/chenyudong/Library/Application Support/Sublime Text 3/Packages/SubPhp/file/9.txt",
+            "-": "/Users/chenyudong/Library/Application Support/Sublime Text 3/Packages/SubPhp/file/s-.sh",
+            "=": "/Users/chenyudong/Library/Application Support/Sublime Text 3/Packages/SubPhp/file/=.sh"
         }
     }
 }

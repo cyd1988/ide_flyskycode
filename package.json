@@ -30,7 +30,8 @@
                 }
             }
         },
-        "commands": [{
+        "commands": [
+            {
                 "command": "extension.sayHello",
                 "title": "Hello，小茗同学"
             },
@@ -63,7 +64,8 @@
                 "title": "new project"
             }
         ],
-        "keybindings": [{
+        "keybindings": [
+            {
                 "command": "extension.demo.openWebview",
                 "key": "ctrl+f9",
                 "mac": "cmd+f9",
@@ -120,10 +122,109 @@
                 "mac": "alt+f4",
                 "args": "af4",
                 "when": "editorTextFocus"
+            },
+            {
+                "command": "extension.demo.fileOpen",
+                "key": "cmd+0",
+                "mac": "cmd+0",
+                "args": "cmd0",
+                "when": "editorTextFocus"
+            },
+            {
+                "command": "extension.demo.fileOpen",
+                "key": "cmd+1",
+                "mac": "cmd+1",
+                "args": "cmd1",
+                "when": "editorTextFocus"
+            },
+            {
+                "command": "extension.demo.fileOpen",
+                "key": "cmd+2",
+                "mac": "cmd+2",
+                "args": "cmd2",
+                "when": "editorTextFocus"
+            },
+            {
+                "command": "extension.demo.fileOpen",
+                "key": "cmd+3",
+                "mac": "cmd+3",
+                "args": "cmd3",
+                "when": "editorTextFocus"
+            },
+            {
+                "command": "extension.demo.fileOpen",
+                "key": "cmd+4",
+                "mac": "cmd+4",
+                "args": "cmd4",
+                "when": "editorTextFocus"
+            },
+            {
+                "command": "extension.demo.fileOpen",
+                "key": "cmd+5",
+                "mac": "cmd+5",
+                "args": "cmd5",
+                "when": "editorTextFocus"
+            },
+            {
+                "command": "extension.demo.fileOpen",
+                "key": "cmd+6",
+                "mac": "cmd+6",
+                "args": "cmd6",
+                "when": "editorTextFocus"
+            },
+            {
+                "command": "extension.demo.fileOpen",
+                "key": "cmd+7",
+                "mac": "cmd+7",
+                "args": "cmd7",
+                "when": "editorTextFocus"
+            },
+            {
+                "command": "extension.demo.fileOpen",
+                "key": "cmd+8",
+                "mac": "cmd+8",
+                "args": "cmd8",
+                "when": "editorTextFocus"
+            },
+            {
+                "command": "extension.demo.fileOpen",
+                "key": "cmd+9",
+                "mac": "cmd+9",
+                "args": "cmd9",
+                "when": "editorTextFocus"
+            },
+            {
+                "command": "extension.demo.fileOpen",
+                "key": "cmd+-",
+                "mac": "cmd+-",
+                "args": "cmd-",
+                "when": "editorTextFocus"
+            },
+            {
+                "command": "extension.demo.fileOpen",
+                "key": "cmd+=",
+                "mac": "cmd+=",
+                "args": "cmd=",
+                "when": "editorTextFocus"
+            },
+            {
+                "command": "extension.demo.debugPrint",
+                "key": "cmd+shift+g",
+                "mac": "cmd+shift+g",
+                "args": {"end":0},
+                "when": "editorTextFocus"
+            },
+            {
+                "command": "extension.demo.debugPrint",
+                "key": "cmd+shift+h",
+                "mac": "cmd+shift+h",
+                "args": {"end":1},
+                "when": "editorTextFocus"
             }
         ],
         "menus": {
-            "editor/context": [{
+            "editor/context": [
+                {
                     "when": "editorFocus && resourceLangId == javascript",
                     "command": "extension.demo.testMenuShow",
                     "group": "z_commands"
@@ -133,22 +234,29 @@
                     "group": "navigation"
                 }
             ],
-            "editor/title": [{
-                "when": "editorFocus && resourceLangId == javascript",
-                "command": "extension.demo.testMenuShow",
-                "group": "navigation"
-            }],
-            "editor/title/context": [{
-                "when": "resourceLangId == javascript",
-                "command": "extension.demo.testMenuShow",
-                "group": "navigation"
-            }],
-            "explorer/context": [{
-                "command": "extension.demo.openProject",
-                "group": "navigation"
-            }]
+            "editor/title": [
+                {
+                    "when": "editorFocus && resourceLangId == javascript",
+                    "command": "extension.demo.testMenuShow",
+                    "group": "navigation"
+                }
+            ],
+            "editor/title/context": [
+                {
+                    "when": "resourceLangId == javascript",
+                    "command": "extension.demo.testMenuShow",
+                    "group": "navigation"
+                }
+            ],
+            "explorer/context": [
+                {
+                    "command": "extension.demo.openProject",
+                    "group": "navigation"
+                }
+            ]
         },
-        "snippets": [{
+        "snippets": [
+            {
                 "language": "javascript",
                 "path": "./snippets/javascript.json"
             },
@@ -158,18 +266,21 @@
             }
         ],
         "viewsContainers": {
-            "activitybar": [{
-                "id": "beautifulGirl",
-                "title": "美女",
-                "icon": "images/beautifulGirl.svg"
-            }]
+            "activitybar": [
+                {
+                    "id": "beautifulGirl",
+                    "title": "美女",
+                    "icon": "images/beautifulGirl.svg"
+                }
+            ]
         },
-        "iconThemes": [{
-            "id": "testIconTheme",
-            "label": "测试图标主题",
-            "path": "./theme/icon-theme.json"
-        }]
-
+        "iconThemes": [
+            {
+                "id": "testIconTheme",
+                "label": "测试图标主题",
+                "path": "./theme/icon-theme.json"
+            }
+        ]
     },
     "scripts": {
         "vscode:prepublish": "npm run compile",
@@ -188,5 +299,11 @@
         "typescript": "^3.6.4",
         "tslint": "^5.20.0",
         "vscode-test": "^1.2.2"
+    },
+    "dependencies": {
+        "@types/mysql": "^2.15.8",
+        "@types/redis": "^2.8.14",
+        "mysql": "^2.17.1",
+        "redis": "^2.8.0"
     }
 }

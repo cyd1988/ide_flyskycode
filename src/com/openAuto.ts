@@ -25,10 +25,12 @@ export function openAuto(context: any) {
           return false;
         }
 
-        const data = Util.getJsonData();   
-        let files: string = Util.getSelecttextLine( editor );
-   
-        files = Util.getStringPath(files.trim(), projectPath, data);
+        const data = Util.getJsonData();
+        let files: string = Util.getSelecttextLine(editor);
+        files = files.trim();
+        let files_strs: string = files;
+
+        files = Util.getStringPath(files, projectPath, data);
 
         if (files.length > 3) {
           let uri = vscode.Uri.file(files);
@@ -45,6 +47,15 @@ export function openAuto(context: any) {
                   if (fs.existsSync(destPath)) {
                     let uri = vscode.Uri.file(destPath);
                     vscode.commands.executeCommand('vscode.openFolder', uri);
+                  } else {
+                    if (files_strs.substr(0, 1) === '/') {
+                      destPath = files_strs;
+                    }
+
+                    if (Util.createFileDir(destPath)) {
+                      let uri = vscode.Uri.file(destPath);
+                      vscode.commands.executeCommand('vscode.openFolder', uri);
+                    }
                   }
                 }
               });

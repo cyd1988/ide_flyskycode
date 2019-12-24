@@ -104,11 +104,11 @@ export class Util {
 
   /**
    * 获取当前第一个选中内容，或当前第一个选区的整行内容
-   * @param editor 
+   * @param editor
    */
   static getSelecttextLine(editor: vscode.TextEditor) {
     let files: string;
-    
+
     if (editor.selections[0].start.character ===
             editor.selections[0].end.character &&
         editor.selections[0].start.line === editor.selections[0].end.line) {
@@ -138,15 +138,37 @@ export class Util {
 
     if (file_str.substr(0, 1) !== '/') {
       if (file_str.substr(0, 2) === './') {
-        file_str = file_str.substr(2);
+        file_str = word_dir + file_str.substr(2);
+      } else if (file_str.substr(0, 2) === '../') {
+        file_str = word_dir + file_str;
       }
-      file_str = word_dir + file_str;
     }
 
-    if (!fs.existsSync(file_str)) {
+    if (fs.existsSync(file_str)) {
+      stat = fs.lstatSync(file_str);
+      if (!stat.isFile()) {
+      }
+    }else{
       file_str = '';
     }
     return file_str;
+  }
+
+
+
+  static createFileDir(files: string) {
+    let create_file = false;
+    if (files.substr(-1) !== '/') {
+      let dirs = this.getDirname(files);
+      if (dirs) {
+        fs.mkdirSync(dirs, {recursive: true});
+        fs.open(files, 'w', a => {});
+        create_file = true;
+      }
+    } else {
+      fs.mkdirSync(files, {recursive: true});
+    }
+    return create_file;
   }
 
 

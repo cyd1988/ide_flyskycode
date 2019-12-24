@@ -5,13 +5,8 @@
 
 // Object.defineProperty(exports, "__esModule", { value: true });
 import fs = require('fs');
-import path = require("path");
-// import Constants = require("constants");
-
-
 import {Util}  from '../Util';
 
-import * as vscode from 'vscode';
 
 
 /*
@@ -26,9 +21,12 @@ export class Config {
         this.version = 2;
         Config.configJsonContent();
     }
-    static configJsonContent() {
+    static configJsonContent(file:string="") {
+        if( file === "" ){
+            file = Util.DIR()+'/src/config.json';
+        }
         if (this._configJsonContent === undefined) {
-            this._configJsonContent = this.loadConfig();
+            this._configJsonContent = this.loadConfig(file);
         }
         return this._configJsonContent;
     }
@@ -49,8 +47,7 @@ export class Config {
         }
         return configValue;
     }
-    static loadConfig() {
-        let files = Util.DIR()+'/src/config.json';
+    static loadConfig(files:string) {
         let configContent = fs.readFileSync(files+'', "utf-8");
         return JSON.parse(configContent);
     }
