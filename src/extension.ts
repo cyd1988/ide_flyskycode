@@ -10,6 +10,7 @@ import {hover} from './hover';
 import {Util} from './Util';
 import {webview} from './webview';
 import {debugPrint} from './com/debugPrint';
+import {systemEdit} from './com/systemEdit';
 // import {welcome} from './welcome';
 
 
@@ -20,7 +21,7 @@ let plugin = [
 ];
 
 let plugin2 = [
-  fileOpen,debugPrint
+  fileOpen,debugPrint,systemEdit
 ];
 
 export function activate(this: any, context: vscode.ExtensionContext) {

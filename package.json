@@ -220,6 +220,13 @@
                 "mac": "cmd+shift+h",
                 "args": {"end":1},
                 "when": "editorTextFocus"
+            },
+            {
+                "command": "extension.demo.systemEdit",
+                "key": "backspace",
+                "mac": "backspace",
+                "args": {"ty":"backspace"},
+                "when": "editorTextFocus"
             }
         ],
         "menus": {
