@@ -51,7 +51,12 @@ function backspace(textEditor: vscode.TextEditor, edit: vscode.TextEditorEdit) {
 
       } else if (range.start.line > 0) {
         posins = doc.lineAt(range.start.line - 1).range.end;
-        posins = new vscode.Position(posins.line, posins.character - 1);
+
+        del_leng = posins.character - 1;
+        if( del_leng<0 ){
+          del_leng=0;
+        }
+        posins = new vscode.Position(posins.line, del_leng);
         range = new vscode.Range(posins, range.end);
       }
     }
