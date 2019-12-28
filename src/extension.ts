@@ -49,3 +49,4 @@ export function activate(this: any, context: vscode.ExtensionContext) {
 export function deactivate() {
   console.log('您的扩展“vscode-plugin-demo”已被释放！');
 }
+

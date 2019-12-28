@@ -11,25 +11,7 @@
             "file": "/Users/webS/www/mynotes/web/test/test.js"
         },
         "af4": {
-            "files": [
-                "/Users/webS/www/mynotes/web/test/test.py",
-                "/Users/chenyudong/tmps/run.md",
-                "/Users/webS/www/mynotes/web/test/json_ftps.txt",
-                "/Users/webS/www/mynotes/web/test/my/sublime/dir/常用测试.txt",
-                "/Users/webS/www/mynotes/web/test/test.py",
-                "/Users/webS/www/mynotes/web/test/test.sh",
-                "/Users/webS/www/mynotes/web/test/test.php",
-                "/Users/webS/www/mynotes/web/test/test.json",
-                "/Users/webS/www/mynotes/web/test/test.c",
-                "/Users/webS/www/mynotes/web/test/test.js",
-                "/Users/webS/www/mynotes/web/test/test.sql",
-                "/Users/webS/www/mynotes/web/test/test.md",
-                "/Users/webS/www/mynotes/web/test/test.csv",
-                "/Users/webS/www/mynotes/web/test/my/sublime/dir/sport/go/test/test.go",
-                "/Users/webS/www/mynotes/web/test/my/sublime/dir/sport/php/base/php服务器.php",
-                "/Users/webS/www/mynotes/web/test/sublime-snippet.save.py",
-                "/Users/webS/www/mynotes/web/test/my/sublime/dir/sport/java/base/test.java"
-            ]
+            "list_file": "/Users/webS/www/mynotes/web/test/my/sublime/dir/常用测试.txt"
         }
     },
     "afnum": {

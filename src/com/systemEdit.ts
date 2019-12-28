@@ -1,12 +1,5 @@
 import * as vscode from 'vscode';
-
-import {Config} from '../configurations/config';
 import {Util} from '../Util';
-
-var util = require('util');
-
-let file = Util.DIR() + '/src/debug_print.json';
-const debug_print: any = Config.loadConfig(file);
 
 function backspace(textEditor: vscode.TextEditor, edit: vscode.TextEditorEdit) {
   let del_leng;
@@ -15,11 +8,16 @@ function backspace(textEditor: vscode.TextEditor, edit: vscode.TextEditorEdit) {
   let posins: vscode.Position;
   let range_ins: vscode.Range;
   let doc: vscode.TextDocument = textEditor.document;
+
+
+
   for (let index = textEditor.selections.length - 1; index >= 0; index--) {
     range = textEditor.selections[index];
 
     if (range.start.character === range.end.character &&
         range.start.line === range.end.line) {
+        console.log( range );
+
       if (range.start.character > 0) {
         posins = new vscode.Position(range.start.line, 0);
         range_ins = new vscode.Range(posins, range.start);
@@ -36,8 +34,6 @@ function backspace(textEditor: vscode.TextEditor, edit: vscode.TextEditorEdit) {
 
         if (range.start.line > 0 && new_str === text) {
           posins = doc.lineAt(range.start.line - 1).range.end;
-          posins = new vscode.Position(posins.line, posins.character);
-
         } else {
           del_leng = new_str.length;
           if (del_leng === 0) {
@@ -51,15 +47,10 @@ function backspace(textEditor: vscode.TextEditor, edit: vscode.TextEditorEdit) {
 
       } else if (range.start.line > 0) {
         posins = doc.lineAt(range.start.line - 1).range.end;
-
-        del_leng = posins.character - 1;
-        if( del_leng<0 ){
-          del_leng=0;
-        }
-        posins = new vscode.Position(posins.line, del_leng);
         range = new vscode.Range(posins, range.end);
       }
     }
+    console.log( range );
     edit.delete(range);
   }
 }
@@ -68,7 +59,6 @@ function backspace(textEditor: vscode.TextEditor, edit: vscode.TextEditorEdit) {
 
 export function systemEdit(
     context: vscode.ExtensionContext, outputChannel: vscode.OutputChannel) {
-  // context.subscriptions.push(vscode.commands.registerCommand(
   context.subscriptions.push(vscode.commands.registerTextEditorCommand(
       'extension.demo.systemEdit',
       function(

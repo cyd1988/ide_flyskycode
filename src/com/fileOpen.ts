@@ -19,12 +19,22 @@ function getConfigFile(uri: string, Configs: any) {
   return destPath;
 }
 
-function fun_af4(uri: string, Configs: any) {
-  let destPaths = Configs['afNum'][uri].files;
+async function fun_af4(uri: string, files:string) {
+  let lists = Array();
+  let destPaths = await Util.sublime_file_list(files);
+
+  for (let index = 0; index < destPaths.length; index++) {
+    const element = destPaths[index][1];
+    for (let index = 0; index < element.length; index++) {
+      const element2 = element[index];
+      lists.push(element2);
+    }
+  }
+
   vscode.window
       .showQuickPick(
-          destPaths.map((w: string) => {
-            return {'label': Util.getProjectName(w), 'path': w};
+          lists.map((w: string) => {
+            return {'label': w[0], 'path': w[1]};
           }),
           {
             // canPickMany: true, //
@@ -64,7 +74,8 @@ export function fileOpen(
           outputChannel.appendLine(projectPath);
 
         } else if (uri === 'af4') {
-          fun_af4(uri, Configs);
+          let files = Configs['afNum'][uri].list_file;
+          fun_af4(uri,files);
         } else {
           let destPath = getConfigFile(uri, Configs);
           if (fs.existsSync(destPath)) {

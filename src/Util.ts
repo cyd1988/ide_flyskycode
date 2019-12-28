@@ -1,6 +1,8 @@
 import fs = require('fs');
 import os = require('os');
 import path = require('path');
+import readline = require('readline');
+const {once} = require('events');
 // const vscode = require('vscode');
 const exec = require('child_process').exec;
 
@@ -170,8 +172,6 @@ export class Util {
     }
     return create_file;
   }
-
-
   static repeat(src: string, n: number) {
     return (new Array(n + 1)).join(src);
   }
@@ -221,6 +221,107 @@ export class Util {
       }
     });
   }
+
+
+
+  static async sublime_file_list(files: string) {
+    let lm_strat: string = 'sublime_list_start:';
+    let lm_end: string = 'sublime_list_end:';
+    let data = Array();
+
+    try {
+      const rl = readline.createInterface(
+          {input: fs.createReadStream(files), crlfDelay: Infinity});
+
+      //   let status = 'start';
+      let tmp = {
+        'name': '',
+        'list': Array(),
+        'status': '',
+        'num': 0,
+        'val': ['', '']
+      };
+      rl.on('line', (line) => {
+        let strs = line.trim();
+        if (tmp['status'] === '') {
+          if (strs.startsWith(lm_strat)) {
+            tmp['name'] = strs.substr(lm_strat.length);
+            tmp['status'] = 'start';
+            tmp['num'] = 0;
+          }
+        } else if (tmp['status'] === 'start') {
+          if (strs.startsWith(lm_end)) {
+            data.push([tmp['name'], tmp['list']]);
+            tmp['status'] = '';
+            tmp['list'] = Array();
+            tmp['num'] = 0;
+
+          } else {
+            if (tmp['num'] % 2 === 0) {
+              tmp['val'][0] = strs;
+            } else {
+              tmp['val'][1] = strs;
+              if (tmp['val'][0].length < 1) {
+                tmp['val'][0] = path.basename(strs);
+              }
+
+              tmp['list'].push([tmp['val'][0], tmp['val'][1]]);
+            }
+            ++tmp['num'];
+          }
+        }
+      });
+
+      await once(rl, 'close');
+    } catch (err) {
+      console.error(err);
+    }
+    return data;
+  }
+
+
+
+  /**
+   *
+   * @param src
+   * @param n
+   *
+   *
+   *
+   *
+   *
+   *
+   *
+   *
+   *
+   *
+   *
+   *
+   *
+   *
+   *
+   *
+   *
+   *
+   *
+   *
+   *
+   *
+   *
+   *
+   *
+   *
+   *
+   *
+   *
+   *
+   *
+   *
+   *
+   *
+   *
+   *
+   */
 
 
   /**

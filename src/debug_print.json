@@ -1,11 +1,11 @@
 {
     "python": {
-        "str_run": "print( %s )\n",
+        "str_run": "print(%s)\n",
         "str_end": "return exit()\n",
         "str_end_show": ""
     },
     "py": {
-        "str_run": "print( %s )\n",
+        "str_run": "print(%s)\n",
         "str_end": "return exit()\n",
         "str_end_show": ""
     },
