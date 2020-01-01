@@ -2,13 +2,9 @@ import fs = require('fs');
 import os = require('os');
 import path = require('path');
 import readline = require('readline');
-const {once} = require('events');
-// const vscode = require('vscode');
-const exec = require('child_process').exec;
-
-
+import {once} from 'events';
+import { exec } from 'child_process';
 import * as vscode from 'vscode';
-
 
 export class Util {
   static ROOT_DIR: string|null;
@@ -160,16 +156,25 @@ export class Util {
 
   static createFileDir(files: string) {
     let create_file = false;
+
+    let first:string = '/'+files.split('/')[0];
+    if( !fs.existsSync( first ) || first === '/' ){
+      return false;
+    }
+
     if (files.substr(-1) !== '/') {
+
       let dirs = this.getDirname(files);
       if (dirs) {
         fs.mkdirSync(dirs, {recursive: true});
         fs.open(files, 'w', a => {});
         create_file = true;
       }
+
     } else {
       fs.mkdirSync(files, {recursive: true});
     }
+
     return create_file;
   }
   static repeat(src: string, n: number) {
@@ -201,7 +206,7 @@ export class Util {
 
     let data = {'cwd': '/tmp', 'env': new_env};
 
-    exec(bash, data, function(error: string|null, stdout: any, stderr: any) {
+    exec(bash, data, function(error: any, stdout: string, stderr: string) {
       if (error !== null) {
         console.log('exec error: ' + error);
       } else {
@@ -278,6 +283,21 @@ export class Util {
     }
     return data;
   }
+
+
+  /**
+   *  查看温度
+   *
+   */
+  static exec(bash:string, data:any, func: any) {
+    let new_env = process.env;
+    new_env['MEGAVARIABLE'] = 'MEGAVALUE';
+    new_env['LC_CTYPE'] = 'UTF-8';
+    new_env['LANG'] = 'en_US.UTF-8';
+    data['env'] = new_env;
+    exec(bash, data, func);
+  }
+
 
 
 

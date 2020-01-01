@@ -1,8 +1,6 @@
 import fs = require('fs');
 import * as vscode from 'vscode';
 import {Util} from './../Util';
-import {log} from 'util';
-
 
 const exec = require('child_process').exec;
 
@@ -40,21 +38,25 @@ export function openAuto(context: any) {
           exec(
               'pbpaste',
               function(error: string|null, stdout: any, stderr: any) {
+
+                function openFile(file_str:string){
+                  if (fs.existsSync(file_str)) {
+                    let stat = fs.lstatSync(file_str);
+                    if (stat.isFile()) {
+                      let uri = vscode.Uri.file(file_str);
+                      vscode.commands.executeCommand('vscode.openFolder', uri);
+                    }
+                  } 
+                }
+      
                 if (error !== null) {
                   console.log('exec error: ' + error);
                 } else {
-                  let destPath = stdout;
-                  if (fs.existsSync(destPath)) {
-                    let uri = vscode.Uri.file(destPath);
-                    vscode.commands.executeCommand('vscode.openFolder', uri);
-                  } else {
-                    if (files_strs.substr(0, 1) === '/') {
-                      destPath = files_strs;
-                    }
-
-                    if (Util.createFileDir(destPath)) {
-                      let uri = vscode.Uri.file(destPath);
-                      vscode.commands.executeCommand('vscode.openFolder', uri);
+                  if (fs.existsSync(stdout)) {
+                    openFile(stdout);
+                  } else if (files_strs.substr(0, 1) === '/') {
+                    if (Util.createFileDir(files_strs)) {
+                      openFile(files_strs);
                     }
                   }
                 }

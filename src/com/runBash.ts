@@ -50,6 +50,29 @@ export function runBash(context: any) {
               vscode.commands.executeCommand(
                   'workbench.action.terminal.sendSequence', {'text': text});
             });
+
+
+        // // 文件追加
+        // let pre_str = 'source /Users/chenyudong/.zshrc\n';
+        // pre_str = 'source /Users/chenyudong/.bash_profile\n';
+        // pre_str += 'shopt -s  expand_aliases\n';
+        // pre_str += 'dfdsfsdfdsfd\n';
+
+        // let file_name = '/Users/webS/www/mynotes/web/test/tmp.sh';
+
+        // console.log( 'destPath' );
+        
+        // var w_data = new Buffer(pre_str);
+        // fs.writeFile(file_name, w_data, {flag: 'w'}, function(err) {
+        //   if (err) {
+        //     console.error(err);
+        //   } else {
+        //     console.log('写入成功');
+        //   }
+        // });
+        // return;
+
+
       }));
 
 

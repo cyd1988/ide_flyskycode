@@ -1,10 +1,8 @@
 import * as vscode from 'vscode';
-
 import {Util} from '../Util';
 import fs = require('fs');
 import {Config} from '../configurations/config';
 const Configs: any = Config.configJsonContent();
-
 
 
 function getConfigFile(uri: string, Configs: any) {
@@ -15,11 +13,28 @@ function getConfigFile(uri: string, Configs: any) {
     destPath = Configs.super_num.file[uri.substr(3)];
   } else if (keys === 'af') {
     destPath = Configs.afNum[uri].file;
+  } else if (keys === 'alt') {
+    destPath = Configs.altnum[uri].file;
   }
   return destPath;
 }
 
-async function fun_af4(uri: string, files:string) {
+function runShFile(file:string, outputChannel:any){
+  let bash:string = "sh \""+file+"\"";
+  let data = {"pwd":Util.getDirname(file)};
+  Util.exec(bash, data, (error: any, stdout: string, stderr: string)=>{
+    let text = stdout;
+    if (error !== null) {
+      text = 'exec error: ' + error;
+    } 
+    outputChannel.show();
+    outputChannel.clear();
+    outputChannel.appendLine(text);
+  });
+  
+}
+
+async function fun_af4(uri: string, files: string) {
   let lists = Array();
   let destPaths = await Util.sublime_file_list(files);
 
@@ -61,8 +76,8 @@ async function fun_af4(uri: string, files:string) {
 
 export function fileOpen(
     context: vscode.ExtensionContext, outputChannel: vscode.OutputChannel) {
-  context.subscriptions.push(
-      vscode.commands.registerCommand('extension.demo.fileOpen', function(uri) {
+  context.subscriptions.push(vscode.commands.registerCommand(
+      'extension.demo.fileOpen', function(uri: string) {
         const projectPath = Util.getFilePath();
         if (!projectPath) {
           return;
@@ -74,13 +89,23 @@ export function fileOpen(
           outputChannel.appendLine(projectPath);
 
         } else if (uri === 'af4') {
+
           let files = Configs['afNum'][uri].list_file;
-          fun_af4(uri,files);
+          fun_af4(uri, files);
         } else {
-          let destPath = getConfigFile(uri, Configs);
+
+          let destPath: string = getConfigFile(uri, Configs);
           if (fs.existsSync(destPath)) {
-            let uri = vscode.Uri.file(destPath);
-            vscode.commands.executeCommand('vscode.openFolder', uri);
+
+            let keys = uri.substr(0, uri.length - 1);
+            if (keys === 'alt' && destPath.endsWith('.sh')) {
+              runShFile(destPath, outputChannel);
+              
+            } else {
+              let uris = vscode.Uri.file(destPath);
+              vscode.commands.executeCommand('vscode.openFolder', uris);
+            }
+
           }
         }
       }));
