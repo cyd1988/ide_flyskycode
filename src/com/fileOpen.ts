@@ -24,9 +24,11 @@ function runShFile(file:string, outputChannel:any){
   let data = {"pwd":Util.getDirname(file)};
   Util.exec(bash, data, (error: any, stdout: string, stderr: string)=>{
     let text = stdout;
+    text += stderr;
     if (error !== null) {
-      text = 'exec error: ' + error;
+      text += 'exec error: ' + error;
     } 
+    
     outputChannel.show();
     outputChannel.clear();
     outputChannel.appendLine(text);
@@ -95,11 +97,39 @@ export function fileOpen(
         } else {
 
           let destPath: string = getConfigFile(uri, Configs);
+ 
           if (fs.existsSync(destPath)) {
 
             let keys = uri.substr(0, uri.length - 1);
             if (keys === 'alt' && destPath.endsWith('.sh')) {
-              runShFile(destPath, outputChannel);
+              if( uri === 'alt=' ){
+                Util.exec( 'pbpaste',{},
+                  (error: string|null, stdout: string, stderr: string)=>{
+                    if (error !== null) {
+                      console.log('exec error: ' + error);
+                    } else {
+                      stdout = stdout.trim();
+                      if( stdout.startsWith( 'curl' ) ){
+                        if( stdout.indexOf(' -s ') === -1 ){
+                          stdout = 'curl -s '+stdout.substring(4);
+                        }
+
+                        var w_data = new Buffer(stdout);
+                        fs.writeFile(destPath, w_data, {flag: 'w'}, function(err) {
+                          if (err) {
+                            console.error(err);
+                          } else {
+                            runShFile(destPath, outputChannel);
+                          }
+                        });
+                      }else{
+                        runShFile(destPath, outputChannel);
+                      }
+                    }
+                  });
+              }else{
+                runShFile(destPath, outputChannel);
+              }
               
             } else {
               let uris = vscode.Uri.file(destPath);

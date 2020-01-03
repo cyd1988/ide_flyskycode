@@ -39,6 +39,11 @@
         "str_end": "return \n",
         "str_end_show": ""
     },
+    "vue": {
+        "str_run": "console.log( %s );\n",
+        "str_end": "return \n",
+        "str_end_show": ""
+    },
     "php": {
         "str_run": "var_dump( %s );\n",
         "str_end": "exit();\n",
