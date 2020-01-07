@@ -20,7 +20,7 @@ function getConfigFile(uri: string, Configs: any) {
 }
 
 function runShFile(file:string, outputChannel:any){
-  let bash:string = "sh \""+file+"\"";
+  let bash:string = "bash \""+file+"\"";
   let data = {"pwd":Util.getDirname(file)};
   Util.exec(bash, data, (error: any, stdout: string, stderr: string)=>{
     let text = stdout;
