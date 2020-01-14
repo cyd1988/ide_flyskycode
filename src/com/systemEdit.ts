@@ -1,5 +1,7 @@
 import * as vscode from 'vscode';
 import {Util} from '../Util';
+import {service as http} from '../lib/httpIndex';
+
 
 function backspace(textEditor: vscode.TextEditor, edit: vscode.TextEditorEdit) {
   let del_leng;
@@ -8,7 +10,6 @@ function backspace(textEditor: vscode.TextEditor, edit: vscode.TextEditorEdit) {
   let posins: vscode.Position;
   let range_ins: vscode.Range;
   let doc: vscode.TextDocument = textEditor.document;
-
 
 
   for (let index = textEditor.selections.length - 1; index >= 0; index--) {
@@ -55,6 +56,11 @@ function backspace(textEditor: vscode.TextEditor, edit: vscode.TextEditorEdit) {
   }
 }
 
+async function ctrls(textEditor: vscode.TextEditor, edit: vscode.TextEditorEdit, file:string) {
+  await textEditor.document.save();
+  let param = {"type":"websock", "run":"refresh_page", "file":file};
+  http.post('/refresh_page', Object.assign(param));
+}
 
 
 export function systemEdit(
@@ -63,6 +69,7 @@ export function systemEdit(
       'extension.demo.systemEdit',
       function(
           textEditor: vscode.TextEditor, edit: vscode.TextEditorEdit, args) {
+
         const projectPath: string = Util.getFilePath();
         if (!projectPath) {
           return;
@@ -70,6 +77,8 @@ export function systemEdit(
         const data = Util.getJsonData();
         if (args['ty'] === 'backspace') {
           backspace(textEditor, edit);
+        }else if( args['ty'] === 'ctrls' ){
+          ctrls(textEditor, edit, projectPath);
         }
       }));
 }
