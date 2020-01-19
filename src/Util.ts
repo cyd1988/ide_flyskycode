@@ -2,12 +2,12 @@ import fs = require('fs');
 import os = require('os');
 import path = require('path');
 import readline = require('readline');
-import {once} from 'events';
+import { once } from 'events';
 import { exec } from 'child_process';
 import * as vscode from 'vscode';
 
 export class Util {
-  static ROOT_DIR: string|null;
+  static ROOT_DIR: string | null;
   static DIR() {
     if (!this.ROOT_DIR) {
       this.ROOT_DIR = path.dirname(__dirname);
@@ -24,11 +24,11 @@ export class Util {
    * 拿document对象，如果没有拿到则报错
    * @param {*} document
    */
-  static getProjectPath(document: vscode.TextDocument|any = null) {
+  static getProjectPath(document: vscode.TextDocument | any = null) {
     if (!document) {
       document = vscode.window.activeTextEditor ?
-          vscode.window.activeTextEditor.document :
-          null;
+        vscode.window.activeTextEditor.document :
+        null;
     }
     if (!document) {
       this.showError('当前激活的编辑器不是文件或者没有文件被打开！');
@@ -66,11 +66,11 @@ export class Util {
     // return projectPath;
   }
 
-  static getFilePath(document: vscode.TextDocument|any = null) {
+  static getFilePath(document: vscode.TextDocument | any = null) {
     if (!document) {
       document = vscode.window.activeTextEditor ?
-          vscode.window.activeTextEditor.document :
-          null;
+        vscode.window.activeTextEditor.document :
+        null;
     }
     const projectPath = document.uri.fsPath;
     if (!projectPath) {
@@ -81,11 +81,11 @@ export class Util {
   }
 
   static getJsonData(
-      document: vscode.TextDocument|any = null, content: string|null = null) {
+    document: vscode.TextDocument | any = null, content: string | null = null) {
     if (!document) {
       document = vscode.window.activeTextEditor ?
-          vscode.window.activeTextEditor.document :
-          null;
+        vscode.window.activeTextEditor.document :
+        null;
     }
     if (!content) {
       content = document.getText();
@@ -108,8 +108,8 @@ export class Util {
     let files: string;
 
     if (editor.selections[0].start.character ===
-            editor.selections[0].end.character &&
-        editor.selections[0].start.line === editor.selections[0].end.line) {
+      editor.selections[0].end.character &&
+      editor.selections[0].start.line === editor.selections[0].end.line) {
       files = editor.document.lineAt(editor.selections[0].start.line).text;
     } else {
       files = editor.document.getText(editor.selections[0]);
@@ -157,8 +157,8 @@ export class Util {
   static createFileDir(files: string) {
     let create_file = false;
 
-    let first:string = '/'+files.split('/')[0];
-    if( !fs.existsSync( first ) || first === '/' ){
+    let first: string = '/' + files.split('/')[0];
+    if (!fs.existsSync(first) || first === '/') {
       return false;
     }
 
@@ -166,13 +166,13 @@ export class Util {
 
       let dirs = this.getDirname(files);
       if (dirs) {
-        fs.mkdirSync(dirs, {recursive: true});
-        fs.open(files, 'w', a => {});
+        fs.mkdirSync(dirs, { recursive: true });
+        fs.open(files, 'w', a => { });
         create_file = true;
       }
 
     } else {
-      fs.mkdirSync(files, {recursive: true});
+      fs.mkdirSync(files, { recursive: true });
     }
 
     return create_file;
@@ -191,7 +191,7 @@ export class Util {
     return path.dirname(projectPath);
   }
 
-  static getPluginPath() {}
+  static getPluginPath() { }
 
   /**
    *  查看温度
@@ -204,16 +204,16 @@ export class Util {
     new_env['LC_CTYPE'] = 'UTF-8';
     new_env['LANG'] = 'en_US.UTF-8';
 
-    let data = {'cwd': '/tmp', 'env': new_env};
+    let data = { 'cwd': '/tmp', 'env': new_env };
 
-    exec(bash, data, function(error: any, stdout: string, stderr: string) {
+    exec(bash, data, function (error: any, stdout: string, stderr: string) {
       if (error !== null) {
         console.log('exec error: ' + error);
       } else {
         let show_text = stdout;
         show_text = show_text.replace(/\n/g, ' ');
         show_text =
-            show_text.replace('Num fans: 2 Fan 0 - Left side   at ', ', ');
+          show_text.replace('Num fans: 2 Fan 0 - Left side   at ', ', ');
         show_text = show_text.replace('Fan 1 - Right side  at ', ', ');
         func(show_text);
 
@@ -236,7 +236,7 @@ export class Util {
 
     try {
       const rl = readline.createInterface(
-          {input: fs.createReadStream(files), crlfDelay: Infinity});
+        { input: fs.createReadStream(files), crlfDelay: Infinity });
 
       //   let status = 'start';
       let tmp = {
@@ -289,13 +289,38 @@ export class Util {
    *  查看温度
    *
    */
-  static exec(bash:string, data:any, func: any) {
+  static exec(bash: string, data: any, func: any) {
     let new_env = process.env;
     new_env['MEGAVARIABLE'] = 'MEGAVALUE';
     new_env['LC_CTYPE'] = 'UTF-8';
     new_env['LANG'] = 'en_US.UTF-8';
     data['env'] = new_env;
     exec(bash, data, func);
+  }
+
+
+  /**
+   *  查看温度
+   *
+   */
+  static run_terminal(bashs: string, pwd:string='') {
+
+    let text = ''
+    if( pwd ){
+      text += 'cd "' + pwd + '"' + '\n';
+    }
+    text += '\n\n\n';
+    text += 'clear' + '\n';
+    text += bashs + '\n';
+
+    vscode.commands
+      .executeCommand('workbench.action.terminal.toggleTerminal')
+      .then(sucess => {
+        vscode.commands.executeCommand(
+          'workbench.action.terminal.clear');  // 清除控制台
+        vscode.commands.executeCommand(
+          'workbench.action.terminal.sendSequence', { 'text': text });
+      });
   }
 
 
@@ -388,29 +413,29 @@ export class Util {
     vscode.window.showInformationMessage(info);
   }
 
-  static findStrInFolder(folderPath: any, str: any) {}
+  static findStrInFolder(folderPath: any, str: any) { }
 
   /**
    * 从某个文件里面查找某个字符串，返回第一个匹配处的行与列，未找到返回第一行第一列
    * @param filePath 要查找的文件
    * @param reg 正则对象，最好不要带g，也可以是字符串
    */
-  static findStrInFile(filePath: any, reg: string|RegExp) {
+  static findStrInFile(filePath: any, reg: string | RegExp) {
     const content = fs.readFileSync(filePath, 'utf-8');
     reg = typeof reg === 'string' ? new RegExp(reg, 'm') : reg;
     // 没找到直接返回
     if (content.search(reg) < 0) {
-      return {row: 0, col: 0};
+      return { row: 0, col: 0 };
     }
     const rows = content.split(os.EOL);
     // 分行查找只为了拿到行
     for (let i = 0; i < rows.length; i++) {
       let col = rows[i].search(reg);
       if (col >= 0) {
-        return {row: i, col};
+        return { row: i, col };
       }
     }
-    return {row: 0, col: 0};
+    return { row: 0, col: 0 };
   }
 
   /**
@@ -419,8 +444,8 @@ export class Util {
   static getStrRangeInFile(filePath: any, str: string) {
     var pos = this.findStrInFile(filePath, str);
     return new vscode.Range(
-        new vscode.Position(pos.row, pos.col),
-        new vscode.Position(pos.row, pos.col + str.length));
+      new vscode.Position(pos.row, pos.col),
+      new vscode.Position(pos.row, pos.col + str.length));
   }
 
   /**
@@ -438,7 +463,7 @@ export class Util {
    * @param relativePath 扩展中某个文件相对于根目录的路径，如 images/test.jpg
    */
   static getExtensionFileAbsolutePath(
-      context: {extensionPath: any;}, relativePath: any) {
+    context: { extensionPath: any; }, relativePath: any) {
     return path.join(context.extensionPath, relativePath);
   }
 
@@ -449,10 +474,10 @@ export class Util {
    * @param relativePath 扩展中某个文件相对于根目录的路径，如 images/test.jpg
    */
   static getExtensionFileVscodeResource(
-      context: {extensionPath: any;}, relativePath: any) {
+    context: { extensionPath: any; }, relativePath: any) {
     const diskPath =
-        vscode.Uri.file(path.join(context.extensionPath, relativePath));
-    return diskPath.with({scheme: 'vscode-resource'}).toString();
+      vscode.Uri.file(path.join(context.extensionPath, relativePath));
+    return diskPath.with({ scheme: 'vscode-resource' }).toString();
   }
 
   /**
@@ -483,7 +508,7 @@ export class Util {
     let options = undefined;
     if (text) {
       const selection = this.getStrRangeInFile(path, text);
-      options = {selection};
+      options = { selection };
     }
     vscode.window.showTextDocument(vscode.Uri.file(path), options);
   }
@@ -494,14 +519,14 @@ export class Util {
   static openJarByJdGui(jarPath: string) {
     // 如何选中文件有待完善
     const jdGuiPath =
-        vscode.workspace.getConfiguration().get('eggHelper.jdGuiPath');
+      vscode.workspace.getConfiguration().get('eggHelper.jdGuiPath');
     if (!jdGuiPath) {
       this.showError('JD-GUI路径不能为空！');
       return;
     }
     if (!fs.existsSync(jdGuiPath + '')) {
       this.showError(
-          '您还没有安装JD-GUI，请安装完后到vscode设置里面找到HSF助手并进行路径配置。');
+        '您还没有安装JD-GUI，请安装完后到vscode设置里面找到HSF助手并进行路径配置。');
       return;
     }
     if (!fs.existsSync(jarPath)) {

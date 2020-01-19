@@ -20,19 +20,22 @@ function getConfigFile(uri: string, Configs: any) {
 }
 
 function runShFile(file:string, outputChannel:any){
-  let bash:string = "bash \""+file+"\"";
+  let bash:string = "bash \""+file+"\" && printf '\n'";
   let data = {"pwd":Util.getDirname(file)};
-  Util.exec(bash, data, (error: any, stdout: string, stderr: string)=>{
-    let text = stdout;
-    text += stderr;
-    if (error !== null) {
-      text += 'exec error: ' + error;
-    } 
+
+  Util.run_terminal(bash, Util.getDirname(file));
+
+  // Util.exec(bash, data, (error: any, stdout: string, stderr: string)=>{
+  //   let text = stdout;
+  //   text += stderr;
+  //   if (error !== null) {
+  //     text += 'exec error: ' + error;
+  //   } 
     
-    outputChannel.show();
-    outputChannel.clear();
-    outputChannel.appendLine(text);
-  });
+  //   outputChannel.show();
+  //   outputChannel.clear();
+  //   outputChannel.appendLine(text);
+  // });
   
 }
 
