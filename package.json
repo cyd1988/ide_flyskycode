@@ -65,7 +65,7 @@
             },
             {
                 "command": "extension.demo.openProject2",
-                "title": "new project 原窗口",
+                "title": "new project 原窗口"
             }
         ],
         "keybindings": [],

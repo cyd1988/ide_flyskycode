@@ -304,14 +304,20 @@ export class Util {
    *
    */
   static run_terminal(bashs: string, pwd:string='') {
+    
+    if( pwd.startsWith('/Users/chenyudong/Library/') ){
+      pwd = '';
+    }
 
-    let text = ''
+    let text = '';
     if( pwd ){
       text += 'cd "' + pwd + '"' + '\n';
     }
     text += '\n\n\n';
     text += 'clear' + '\n';
     text += bashs + '\n';
+
+    console.log( text );
 
     vscode.commands
       .executeCommand('workbench.action.terminal.toggleTerminal')
