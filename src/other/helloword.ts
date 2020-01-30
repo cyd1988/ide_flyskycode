@@ -1,7 +1,7 @@
 import path = require('path');
 import fs = require('fs');
 import * as vscode from 'vscode';
-import {Util}  from './Util';
+import {Util}  from './../Util';
 
 /**
  * 查找文件定义的provider，匹配到了就return一个location，否则不做处理

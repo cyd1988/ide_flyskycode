@@ -32,14 +32,6 @@
         },
         "commands": [
             {
-                "command": "extension.sayHello",
-                "title": "Hello，小茗同学"
-            },
-            {
-                "command": "extension.demo.getCurrentFilePath",
-                "title": "获取当前文件(夹)路径"
-            },
-            {
                 "command": "extension.demo.testMenuShow",
                 "title": "这个菜单仅在JS文件中出现",
                 "icon": {
@@ -48,24 +40,20 @@
                 }
             },
             {
-                "command": "extension.demo.openWebview",
-                "title": "打开WebView"
-            },
-            {
-                "command": "extension.demo.showWelcome",
-                "title": "显示自定义欢迎页"
-            },
-            {
-                "command": "extension.demo.openAuto",
-                "title": "打开文件"
-            },
-            {
                 "command": "extension.demo.openProject",
                 "title": "new project 新窗口"
             },
             {
                 "command": "extension.demo.openProject2",
                 "title": "new project 原窗口"
+            },
+            {
+                "command": "extension.demo.register",
+                "title": "extension.demo.register"
+            },
+            {
+                "command": "extension.demo.registerTextEditor",
+                "title": "extension.demo.registerTextEditor"
             }
         ],
         "keybindings": [],
@@ -75,10 +63,6 @@
                     "when": "editorFocus && resourceLangId == javascript",
                     "command": "extension.demo.testMenuShow",
                     "group": "z_commands"
-                },
-                {
-                    "command": "extension.demo.openWebview",
-                    "group": "navigation"
                 }
             ],
             "editor/title": [

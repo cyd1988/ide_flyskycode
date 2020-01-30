@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
-import {Util} from '../Util';
-import {service as http} from '../lib/httpIndex';
+import { Util } from '../Util';
+import { service as http } from '../lib/httpIndex';
 
 
 function backspace(textEditor: vscode.TextEditor, edit: vscode.TextEditorEdit) {
@@ -16,8 +16,8 @@ function backspace(textEditor: vscode.TextEditor, edit: vscode.TextEditorEdit) {
     range = textEditor.selections[index];
 
     if (range.start.character === range.end.character &&
-        range.start.line === range.end.line) {
-        console.log( range );
+      range.start.line === range.end.line) {
+      console.log(range);
 
       if (range.start.character > 0) {
         posins = new vscode.Position(range.start.line, 0);
@@ -41,7 +41,7 @@ function backspace(textEditor: vscode.TextEditor, edit: vscode.TextEditorEdit) {
             del_leng = 1;
           }
           posins = new vscode.Position(
-              range.start.line, range.start.character - del_leng);
+            range.start.line, range.start.character - del_leng);
         }
 
         range = new vscode.Range(posins, range.end);
@@ -51,34 +51,29 @@ function backspace(textEditor: vscode.TextEditor, edit: vscode.TextEditorEdit) {
         range = new vscode.Range(posins, range.end);
       }
     }
-    console.log( range );
+    console.log(range);
     edit.delete(range);
   }
 }
 
-async function ctrls(textEditor: vscode.TextEditor, edit: vscode.TextEditorEdit, file:string) {
+async function ctrls(textEditor: vscode.TextEditor, edit: vscode.TextEditorEdit, file: string) {
   await textEditor.document.save();
-  let param = {"type":"websock", "run":"refresh_page", "file":file};
+  let param = { "type": "websock", "run": "refresh_page", "file": file };
   http.post('/refresh_page', Object.assign(param));
 }
 
 
-export function systemEdit(
-    context: vscode.ExtensionContext, outputChannel: vscode.OutputChannel) {
-  context.subscriptions.push(vscode.commands.registerTextEditorCommand(
-      'extension.demo.systemEdit',
-      function(
-          textEditor: vscode.TextEditor, edit: vscode.TextEditorEdit, args) {
+export function main(
+  textEditor: vscode.TextEditor, edit: vscode.TextEditorEdit, args: any) {
 
-        const projectPath: string = Util.getFilePath();
-        if (!projectPath) {
-          return;
-        }
-        const data = Util.getJsonData();
-        if (args['ty'] === 'backspace') {
-          backspace(textEditor, edit);
-        }else if( args['ty'] === 'ctrls' ){
-          ctrls(textEditor, edit, projectPath);
-        }
-      }));
+  const projectPath: string = Util.getFilePath();
+  if (!projectPath) {
+    return;
+  }
+  const data = Util.getJsonData();
+  if (args['ty'] === 'backspace') {
+    backspace(textEditor, edit);
+  } else if (args['ty'] === 'ctrls') {
+    ctrls(textEditor, edit, projectPath);
+  }
 }

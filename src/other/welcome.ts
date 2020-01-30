@@ -1,8 +1,7 @@
 import fs = require('fs');
 import path = require('path');
 import * as vscode from 'vscode';
-import {Util}  from './Util';
-
+import {Util}  from './../Util';
 
 /**
  * 从某个HTML文件读取能被Webview加载的HTML内容
@@ -39,54 +38,30 @@ function invokeCallback(panel:any, message:any, resp:any) {
  * 存放所有消息回调函数，根据 message.cmd 来决定调用哪个方法
  */
 const messageHandler:any = {
-    // 弹出提示
-    alert(global:any, message:any) {
-        Util.showInfo(message.info);
+    getConfig(global:any, message:any) {
+        const result = vscode.workspace.getConfiguration().get(message.key);
+        invokeCallback(global.panel, message, result);
     },
-    // 显示错误提示
-    error(global:any, message:any) {
-        Util.showError(message.info);
-    },
-    // 获取工程名
-    getProjectName(global:any, message:any) {
-        invokeCallback(global.panel, message, Util.getProjectName(global.projectPath));
-    },
-    openFileInFinder(global:any, message:any) {
-        Util.openFileInFinder(`${global.projectPath}/${message.path}`);
-        // 这里的回调其实是假的，并没有真正判断是否成功
-        invokeCallback(global.panel, message, {code: 0, text: '成功'});
-    },
-    openFileInVscode(global:any, message:any) {
-        Util.openFileInVscode(`${global.projectPath}/${message.path}`, message.text);
-        invokeCallback(global.panel, message, {code: 0, text: '成功'});
-    },
-    openUrlInBrowser(global:any, message:any) {
-        Util.openUrlInBrowser(message.url);
-        invokeCallback(global.panel, message, {code: 0, text: '成功'});
+    setConfig(global:any, message:any) {
+        // 写入配置文件，注意，默认写入工作区配置，而不是用户配置，最后一个true表示写入全局用户配置
+        vscode.workspace.getConfiguration().update(message.key, message.value, true);
+        Util.showInfo('修改配置成功！');
     }
 };
 
-export function webview(context:any) {
+export function welcome(context:any) {
 
-    // 注册命令，可以给命令配置快捷键或者右键菜单
-    // 回调函数参数uri：当通过资源管理器右键执行命令时会自动把所选资源URI带过来，当通过编辑器中菜单执行命令时，会将当前打开的文档URI传过来
-    context.subscriptions.push(vscode.commands.registerCommand('extension.demo.openWebview', function (uri) {
-        // 工程目录一定要提前获取，因为创建了webview之后activeTextEditor会不准确
-        const projectPath = Util.getProjectPath(uri);
-        if (!projectPath) {
-            return;
-        }
+    context.subscriptions.push(vscode.commands.registerCommand('extension.demo.showWelcome', function (uri) {
         const panel = vscode.window.createWebviewPanel(
-            'testWebview', // viewType
-            "WebView演示", // 视图标题
+            'testWelcome', // viewType
+            "自定义欢迎页", // 视图标题
             vscode.ViewColumn.One, // 显示在编辑器的哪个部位
             {
                 enableScripts: true, // 启用JS，默认禁用
-                retainContextWhenHidden: true, // webview被隐藏时保持状态，避免被重置
             }
         );
-        let global = { projectPath, panel};
-        panel.webview.html = getWebViewContent(context, 'src/view/test-webview.html');
+        let global = { panel};
+        panel.webview.html = getWebViewContent(context, 'src/view/custom-welcome.html');
         panel.webview.onDidReceiveMessage(message => {
             if (messageHandler[message.cmd]) {
                 messageHandler[message.cmd](global, message);
@@ -95,4 +70,10 @@ export function webview(context:any) {
             }
         }, undefined, context.subscriptions);
     }));
+
+    const key = 'vscodePluginDemo.showTip';
+    // 如果设置里面开启了欢迎页显示，启动欢迎页
+    if (vscode.workspace.getConfiguration().get(key)) {
+        vscode.commands.executeCommand('extension.demo.showWelcome');
+    }
 }

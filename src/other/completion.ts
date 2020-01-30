@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import {Util}  from './Util';
+import {Util}  from './../Util';
 
 /**
  * 自动提示实现，这里模拟一个很简单的操作

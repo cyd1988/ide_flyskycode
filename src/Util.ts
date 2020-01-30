@@ -66,6 +66,16 @@ export class Util {
     // return projectPath;
   }
 
+  static _getShallowDirectorySizeSync(directory: string) {
+    var files = fs.readdirSync(directory);
+    var totalSize = 0;
+    for (var i = 0; i < files.length; i++) {
+      totalSize += fs.statSync(path.join(directory, files[i])).size;
+    }
+    return totalSize;
+  }
+
+
   static getFilePath(document: vscode.TextDocument | any = null) {
     if (!document) {
       document = vscode.window.activeTextEditor ?
@@ -114,7 +124,6 @@ export class Util {
     } else {
       files = editor.document.getText(editor.selections[0]);
     }
-
     return files;
   }
 
@@ -132,7 +141,6 @@ export class Util {
     if (word_dir.substr(-1) !== '/') {
       word_dir += '/';
     }
-
 
     if (file_str.substr(0, 1) !== '/') {
       if (file_str.substr(0, 2) === './') {
@@ -152,6 +160,15 @@ export class Util {
     return file_str;
   }
 
+  static isfile(file: string) {
+    if (fs.existsSync(file)) {
+      let stat = fs.lstatSync(file);
+      if (stat.isFile()) {
+        return true;
+      }
+    }
+    return false;
+  }
 
 
   static createFileDir(files: string) {
@@ -303,21 +320,18 @@ export class Util {
    *  查看温度
    *
    */
-  static run_terminal(bashs: string, pwd:string='') {
-    
-    if( pwd.startsWith('/Users/chenyudong/Library/') ){
+  static run_terminal(bashs: string, pwd: string = '') {
+    let text = '';
+    if (pwd.startsWith('/Users/chenyudong/Library/')) {
       pwd = '';
     }
 
-    let text = '';
-    if( pwd ){
+    if (pwd) {
       text += 'cd "' + pwd + '"' + '\n';
     }
     text += '\n\n\n';
     text += 'clear' + '\n';
     text += bashs + '\n';
-
-    console.log( text );
 
     vscode.commands
       .executeCommand('workbench.action.terminal.toggleTerminal')
@@ -328,8 +342,22 @@ export class Util {
           'workbench.action.terminal.sendSequence', { 'text': text });
       });
   }
+  static async ctrls(document: vscode.TextDocument, is_await=1) {
+    if (is_await) {
+      await document.save();
+    } else {
+      document.save();
+    }
+  }
 
-
+  static docSave(is_await=1) {
+    let document: vscode.TextDocument | null = vscode.window.activeTextEditor ?
+      vscode.window.activeTextEditor.document :
+      null;
+    if (document) {
+      this.ctrls( document,is_await );
+    }
+  }
 
 
   /**

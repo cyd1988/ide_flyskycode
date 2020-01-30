@@ -1,40 +1,57 @@
 import * as vscode from 'vscode';
 
-import {fileOpen} from './com/fileOpen';
-import {fileOpenProject} from './com/fileOpenProject';
-import {openAuto} from './com/openAuto';
-import {runBash} from './com/runBash';
-import {completion} from './completion';
-import {helloword} from './helloword';
-import {hover} from './hover';
-import {Util} from './Util';
-import {webview} from './webview';
-import {debugPrint} from './com/debugPrint';
-import {systemEdit} from './com/systemEdit';
-// import {welcome} from './welcome';
 
 
+import { hover } from './com/hover';
+
+import { Util } from './Util';
+import { outputChannel } from './lib/const';
+import path = require('path');
+import fs = require('fs');
+
+import { fileOpenProject } from './com/fileOpenProject';
 
 let plugin = [
-  helloword, completion, hover, webview, openAuto, runBash,
-  fileOpenProject
+  fileOpenProject,hover
 ];
 
-let plugin2 = [
-  fileOpen,debugPrint,systemEdit
-];
+interface AnyObj {
+  [name: string]: any;
+}
+let autoregistertexteditor: AnyObj = {};
+async function runs() {
+  let directory = Util.DIR() + '/src/autoregistertexteditor/';
+  var files = fs.readdirSync(directory);
+  for (var i = 0; i < files.length; i++) {
+    let parse = path.parse(path.join(directory, files[i]));
+    let utils = await import(`./autoregistertexteditor/${parse.name}`);
+    autoregistertexteditor[parse.name] = utils;
+  }
+}
+runs();
+
+
 
 export function activate(this: any, context: vscode.ExtensionContext) {
-  // 保存时自动调用
-  const outputChannel = vscode.window.createOutputChannel('outputname');
-
   plugin.map(fun => { fun(context); });
-  plugin2.map(fun => { fun(context,outputChannel); });
-  
 
+  context.subscriptions.push(vscode.commands.registerTextEditorCommand(
+    'extension.demo.registerTextEditor',
+    (textEditor: vscode.TextEditor, edit: vscode.TextEditorEdit, args) => {
+      if(autoregistertexteditor[args.fe]){
+        autoregistertexteditor[args.fe].main(textEditor, edit, args);
+      }
+    }));
+
+  context.subscriptions.push(vscode.commands.registerCommand(
+    'extension.demo.register', (args) => {
+      import(`./autoregister/${args.fe}`).then(
+        (utils) => { utils.main(args); }
+      );
+    }));
 
   vscode.workspace.onDidSaveTextDocument((document) => {
-    Util.getSystemInfo(function(msg: string) {
+    Util.getSystemInfo(function (msg: string) {
       outputChannel.appendLine(msg);
     });
   }, this);
