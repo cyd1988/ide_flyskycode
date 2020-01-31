@@ -20,10 +20,47 @@ export class Util {
    * 获取当前所在工程根目录，有3种使用方法：<br>
    * getProjectPath(uri) uri 表示工程内某个文件的路径<br>
    * getProjectPath(document) document 表示当前被打开的文件document对象<br>
-   * getProjectPath() 会自动从 activeTextEditor
-   * 拿document对象，如果没有拿到则报错
-   * @param {*} document
+   * getProjectPath() 会自动从 activeTextEditor 拿document对象，如果没有拿到则报错
+   * @param {*} document 
    */
+  static getProjectPathP(document: any) {
+    if (!document) {
+      document = vscode.window.activeTextEditor ? vscode.window.activeTextEditor.document : null;
+    }
+    if (!document) {
+      this.showError('当前激活的编辑器不是文件或者没有文件被打开！');
+      return '';
+    }
+    const currentFile = (document.uri ? document.uri : document).fsPath;
+    let projectPath = null;
+
+    let list = vscode.workspace.workspaceFolders;
+    let workspaceFolders: any[] = [];
+    if (list) {
+      workspaceFolders = list.map(item => item.uri.path);
+    }
+    // 由于存在Multi-root工作区，暂时没有特别好的判断方法，先这样粗暴判断
+    // 如果发现只有一个根文件夹，读取其子文件夹作为 workspaceFolders
+    if (workspaceFolders.length === 1 && workspaceFolders[0] === vscode.workspace.rootPath) {
+      const rootPath = workspaceFolders[0];
+      var files = fs.readdirSync(rootPath);
+      workspaceFolders = files.filter(name => !/^\./g.test(name)).map(name => path.resolve(rootPath, name));
+      // vscode.workspace.rootPath 会不准确，且已过时
+      // return vscode.workspace.rootPath + '/' + this._getProjectName(vscode, document);
+    }
+    // console.log( workspaceFolders );
+    workspaceFolders.forEach(folder => {
+      if (currentFile.indexOf(folder) === 0) {
+        projectPath = folder;
+      }
+    });
+    if (!projectPath) {
+      this.showError('获取工程根路径异常！');
+      return '';
+    }
+    return projectPath;
+  }
+
   static getProjectPath(document: vscode.TextDocument | any = null) {
     if (!document) {
       document = vscode.window.activeTextEditor ?
@@ -34,36 +71,8 @@ export class Util {
       this.showError('当前激活的编辑器不是文件或者没有文件被打开！');
       return '';
     }
-
     const currentFile = document.uri.fsPath;
-    let projectPath = null;
     return currentFile;
-
-
-    // let workspaceFolders = vscode.workspace.workspaceFolders.map(item =>
-    // item.uri.path);
-    // // 由于存在Multi-root工作区，暂时没有特别好的判断方法，先这样粗暴判断
-    // // 如果发现只有一个根文件夹，读取其子文件夹作为 workspaceFolders
-    // if (workspaceFolders.length == 1 && workspaceFolders[0] ===
-    // vscode.workspace.rootPath) {
-    //     const rootPath = workspaceFolders[0];
-    //     var files = fs.readdirSync(rootPath);
-    //     workspaceFolders = files.filter(name => !/^\./g.test(name)).map(name
-    //     => path.resolve(rootPath, name));
-    //     // vscode.workspace.rootPath会不准确，且已过时
-    //     // return vscode.workspace.rootPath + '/' +
-    //     this._getProjectName(vscode, document);
-    // }
-    // workspaceFolders.forEach(folder => {
-    //     if (currentFile.indexOf(folder) === 0) {
-    //         projectPath = folder;
-    //     }
-    // })
-    // if (!projectPath) {
-    //     this.showError('获取工程根路径异常！');
-    //     return '';
-    // }
-    // return projectPath;
   }
 
   static _getShallowDirectorySizeSync(directory: string) {
@@ -342,7 +351,7 @@ export class Util {
           'workbench.action.terminal.sendSequence', { 'text': text });
       });
   }
-  static async ctrls(document: vscode.TextDocument, is_await=1) {
+  static async ctrls(document: vscode.TextDocument, is_await = 1) {
     if (is_await) {
       await document.save();
     } else {
@@ -350,13 +359,80 @@ export class Util {
     }
   }
 
-  static docSave(is_await=1) {
+  static docSave(is_await = 1) {
     let document: vscode.TextDocument | null = vscode.window.activeTextEditor ?
       vscode.window.activeTextEditor.document :
       null;
     if (document) {
-      this.ctrls( document,is_await );
+      this.ctrls(document, is_await);
     }
+  }
+
+  static getWorkspaceFolders() {
+    let list = vscode.workspace.workspaceFolders;
+    let workspaceFolders: string[] = [];
+    if (list) {
+      list.forEach(folder => {
+        const pathp: any = Util.getDirname(folder.uri.path);
+        if (!workspaceFolders.find(v => v === pathp)) {
+          workspaceFolders.push(pathp);
+        }
+      });
+      list.forEach(folder => {
+        workspaceFolders.push(folder.uri.path);
+      });
+    }
+    return workspaceFolders;
+  }
+
+  static getWordFile(word: string) {
+    function check(workDir: string, word: string) {
+      let file = '';
+      if (!file && Util.isfile(word)) {
+        file = word;
+      }
+      if (!file && Util.isfile(workDir + '/' + word)) {
+        file = workDir + '/' + word;
+      }
+      if (!file && Util.isfile(workDir + '/' + word + ".js")) {
+        file = workDir + '/' + word + ".js";
+      }
+      if (!file && Util.isfile(workDir + '/' + word + ".ts")) {
+        file = workDir + '/' + word + ".ts";
+      }
+      if (!file && Util.isfile(workDir + '/' + word + ".php")) {
+        file = workDir + '/' + word + ".php";
+      }
+      return file;
+    }
+    let list = this.getWorkspaceFolders();
+    let file: string[] = [];
+    list.forEach(val => {
+      const tm = check(val, word);
+      if (tm && !file.find(v=>v===tm)) {
+        file.push(tm);
+      }
+    });
+    return file;
+  }
+
+  static getFileLine(word: string) {
+    let line = 0;
+    let tm = word.match(/(.*)::R(\d+)$/);
+    if (tm) {
+      word = tm[1];
+      line = parseInt(tm[2]);
+    } else {
+      tm = word.match(/(.*):(\d+)$/);
+      if (tm) {
+        word = tm[1];
+        line = parseInt(tm[2]);
+      }
+    }
+    if (line > 0) {
+      line--;
+    }
+    return [word, line];
   }
 
 
