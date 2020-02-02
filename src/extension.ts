@@ -1,11 +1,9 @@
 import * as vscode from 'vscode';
 
-
-
 import { hover } from './com/hover';
 
 import { Util } from './Util';
-import { outputChannel } from './lib/const';
+import { outputChannel,AnyObj } from './lib/const';
 import path = require('path');
 import fs = require('fs');
 
@@ -15,9 +13,7 @@ let plugin = [
   fileOpenProject,hover
 ];
 
-interface AnyObj {
-  [name: string]: any;
-}
+
 let autoregistertexteditor: AnyObj = {};
 async function runs() {
   let directory = Util.DIR() + '/src/autoregistertexteditor/';
