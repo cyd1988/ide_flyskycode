@@ -3,31 +3,29 @@ import fs = require('fs');
 import readline = require('readline');
 import path = require('path');
 
+import { jsonData } from './cont';
+import { smi } from './smi';
+
+export interface AnyObj {
+    [name: string]: any;
+  }
 
 
-interface Person3 {
-  name: string;
-  val: any;
+let obj:AnyObj = {"fdfd":4343,"afd":3311};
+
+for (const key in obj) {
+console.log( key );
+console.log( obj[key] );
+    if (obj.hasOwnProperty(key)) {
+        const element = obj[key];
+        
+    }
 }
-interface Child extends Person3 {}
-let autoregistertexteditor: Person3[] = [];
 
-let item: Person3 = {"name":"dfdd","val":path};
 
-autoregistertexteditor.push(item);
+// console.log( jsonData.d );
 
-// console.log(autoregistertexteditor);
-
-interface Person {
-  [name: string]: any;
-}
-let ac:Person = {name:'43'};
-
-ac.ccc= 4343;
-ac.ddd = 'ffdfd';
-console.log(ac['cccq']);
-console.log(ac);
-
+// smi();
 
 // interface namelist { 
 //   [index:string]:any 

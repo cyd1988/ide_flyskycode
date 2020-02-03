@@ -54,6 +54,14 @@
             {
                 "command": "extension.demo.registerTextEditor",
                 "title": "extension.demo.registerTextEditor"
+            },
+            {
+                "command": "extension.demo.api",
+                "title": "extension.demo.api"
+            },
+            {
+                "command": "extension.demo.edit",
+                "title": "extension.demo.edit"
             }
         ],
         "keybindings": [],

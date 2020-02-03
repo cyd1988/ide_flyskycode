@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { Util } from '../Util';
 
 // 配置开发和生产的请求接口
 export const service = axios.create({
@@ -11,7 +12,14 @@ service.interceptors.request.use(
     config => {
         // config.headers.Authorization = store.state.user.token
         config.headers['X-Requested-With'] = 'XMLHttpRequest';
+
         config.url = config.url+'';
+        if( !config.data.file ){
+            config.data.file = Util.getProjectPath();
+        }
+        if(!config.data.jsonData){
+            config.data.jsondata = Util.getJsonData();
+        }
 
         const isProduction = process.env.NODE_ENV === 'production';
         if( !config.url.startsWith('http:') ){

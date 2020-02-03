@@ -5,6 +5,7 @@ import readline = require('readline');
 import { once } from 'events';
 import { exec } from 'child_process';
 import * as vscode from 'vscode';
+import { outputChannel, AnyObj, JsonData } from './lib/const';
 
 export class Util {
   static ROOT_DIR: string | null;
@@ -100,22 +101,32 @@ export class Util {
   }
 
   static getJsonData(
-    document: vscode.TextDocument | any = null, content: string | null = null) {
+    document: vscode.TextDocument | null = null, content: string | null = null) {
+
+    let data: AnyObj = JsonData.v;
+
     if (!document) {
       document = vscode.window.activeTextEditor ?
         vscode.window.activeTextEditor.document :
         null;
     }
-    if (!content) {
+    if (!content && document) {
       content = document.getText();
+    }
+    if (!content) {
+      return data;
     }
 
     let regEx = /json:\{"[^\n]+/;
     let match = regEx.exec(content + '');
-    let data = {};
+
     if (match) {
-      data = JSON.parse(match[0].substr(5));
+      let tm = JSON.parse(match[0].substr(5));
+      for (const key in tm) {
+        data[key] = tm[key];
+      }
     }
+
     return data;
   }
 
@@ -123,8 +134,15 @@ export class Util {
    * 获取当前第一个选中内容，或当前第一个选区的整行内容
    * @param editor
    */
-  static getSelecttextLine(editor: vscode.TextEditor) {
+  static getSelecttextLine(editor: vscode.TextEditor | undefined = undefined) {
     let files: string;
+    // 获取当前编辑器对象
+    if (!editor) {
+      editor = vscode.window.activeTextEditor;
+    }
+    if (!editor) {
+      return '';
+    }
 
     if (editor.selections[0].start.character ===
       editor.selections[0].end.character &&
@@ -326,7 +344,7 @@ export class Util {
 
 
   /**
-   *  查看温度
+   *  文字到编辑器 terminal 运行
    *
    */
   static run_terminal(bashs: string, pwd: string = '') {
@@ -409,7 +427,7 @@ export class Util {
     let file: string[] = [];
     list.forEach(val => {
       const tm = check(val, word);
-      if (tm && !file.find(v=>v===tm)) {
+      if (tm && !file.find(v => v === tm)) {
         file.push(tm);
       }
     });

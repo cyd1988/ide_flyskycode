@@ -4,5 +4,12 @@ export const outputChannel = vscode.window.createOutputChannel('outputname');
 
 
 export interface AnyObj {
-    [name: string]: any;
-  }
+  [name: string]: any;
+}
+
+export class JsonData {
+  static v: AnyObj = {};
+}
+
+
+

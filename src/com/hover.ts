@@ -25,13 +25,13 @@ function provideHover(document: vscode.TextDocument, position: any, token: any) 
     const fileName = document.fileName;
     const workDir = path.dirname(fileName);
     let word: string = getWord(document, position);
-    let tm = Util.getFileLine(word);
-    word = tm[0] + '';
-    let file = Util.getWordFile(word);
+
+    let tm = getWordRegs(document,position);
+    const file = tm[1];
 
     if (file.length > 0) {
         let html: string[] = [];
-        file.forEach(val => {
+        file.forEach((val: string) => {
             val = path.join(val, "");
             val = val.replace(/ /g, '%20');
             let name = path.basename(val);
@@ -113,15 +113,45 @@ class LinkProvider implements DocumentLinkProvider {
     }
 }
 
-function getWord(document: vscode.TextDocument, position: vscode.Position) {
-    let word = document.getText(document.getWordRangeAtPosition(position));
-    // const word4 = document.getText(document.getWordRangeAtPosition(position, /[.\w+\/|<>:_-]+/));
-    const word4 = document.getText(document.getWordRangeAtPosition(position, /[^ '"]+/));
-
-    if (word4.length > 2) {
-        word = word4;
+function getWordRegs(document: vscode.TextDocument, position: vscode.Position) {
+    // let regs = [undefined, /[^'"]+/];
+    let regs = [/[^ '"]+/, /[^'"]+/,undefined ];
+    let file:any = [];
+    let line = 0;
+    for (let index = 0; index < regs.length; index++) {
+        const reg = regs[index];
+        let word: string = getWord(document, position, reg);
+        if( word.length < 1 ){
+            continue;
+        }
+        let tm = Util.getFileLine(word);
+        word = tm[0] + '';
+        line = parseInt(tm[1] + '');
+        file = Util.getWordFile(word);
+        if (file.length > 0){
+            break;
+        }
     }
-    if (word.length > 120) {
+    return [line, file];
+}
+
+function getWord(document: vscode.TextDocument, position: vscode.Position, reg?: RegExp | undefined) {
+
+    let word = '';
+    word = document.getText(document.getWordRangeAtPosition(position, reg));
+    // if (reg) {
+    //     word = document.getText(document.getWordRangeAtPosition(position, reg));
+    // } else {
+    //     word = document.getText(document.getWordRangeAtPosition(position));
+    //     // const word4 = document.getText(document.getWordRangeAtPosition(position, /[.\w+\/|<>:_-]+/));
+    //     const word4 = document.getText(document.getWordRangeAtPosition(position, /[^ '"]+/));
+
+    //     if (word4.length > 2) {
+    //         word = word4;
+    //     }
+    // }
+
+    if (word.length > 160) {
         return '';
     }
     word = word.trim();
@@ -136,11 +166,10 @@ function getWord(document: vscode.TextDocument, position: vscode.Position) {
  * @param {*} token 
  */
 function provideDefinition(document: vscode.TextDocument, position: vscode.Position, token: vscode.CancellationToken) {
-    let word: string = getWord(document, position);
-    let tm = Util.getFileLine(word);
-    word = tm[0] + '';
-    let line = parseInt(tm[1] + '');
-    let file = Util.getWordFile(word);
+    let tm = getWordRegs(document,position);
+    const line = tm[0];
+    const file = tm[1];
+
     if (file.length > 0) {
         let file_name = path.join(file[0], "");
         // file = file.replace(/ /g, '%20');
