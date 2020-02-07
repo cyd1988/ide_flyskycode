@@ -130,6 +130,9 @@ export function main(args: any) {
                 }
               }
             });
+        } else if (uri === 'alt-') {
+          let bash = fs.readFileSync(destPath+'', "utf-8");
+          Util.run_terminal(bash);
         } else {
           runShFile(destPath, outputChannel);
         }
