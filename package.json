@@ -18,6 +18,11 @@
             "type": "object",
             "title": "Code插件demo",
             "properties": {
+                "flyskycode.netdebug":{
+                    "type": "boolean",
+                    "default": false,
+                    "description": "是否显示网络请求日志"
+                },
                 "vscodePluginDemo.yourName": {
                     "type": "string",
                     "default": "guest",

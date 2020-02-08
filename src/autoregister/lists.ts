@@ -3,16 +3,24 @@ import { Util } from '../Util';
 import { service as http } from '../lib/httpIndex';
 import { outputChannel, AnyObj } from './../lib/const';
 import fs = require('fs');
+import { Api } from './../lib/api';
 
 
-export async function fun_list(lists: AnyObj) {
+
+
+
+export async function fun_list(lists: AnyObj, call_list?: (...args: any[]) => any) {
   let arr: any = [];
-  for (const key in lists) {
-    if (lists.hasOwnProperty(key)) {
-      const element = lists[key].list;
-      element.forEach((v: any) => {
-        arr.push({ 'label': v.name, 'path': v.val });
-      });
+  if (call_list) {
+    arr = call_list(lists);
+  } else {
+    for (const key in lists) {
+      if (lists.hasOwnProperty(key)) {
+        const element = lists[key].list;
+        element.forEach((v: any) => {
+          arr.push({ 'label': v.name, 'path': v.val });
+        });
+      }
     }
   }
 
@@ -32,21 +40,31 @@ export async function fun_list(lists: AnyObj) {
         }
       })
     .then((value: any) => {
-      let val: string = (value.path + '').trim();
+      if( typeof value !== 'object' ){
+        console.log( 'lists',lists );
+        console.log( 'value',value );
+        return ;
+      }
 
-      if (fs.existsSync(val)) {
-        let uri = vscode.Uri.file(val);
-        vscode.commands.executeCommand('vscode.openFolder', uri);
+      if (value.hasOwnProperty('run')) {
+        Api.run(value);
       } else {
-        let editor = vscode.window.activeTextEditor;
-        if (editor && editor.selections.length > 0) {
-          let pos: vscode.Position = editor.selections[0].start;
-          let uri = [{ "key": 'insert', "line": pos.line, 'char': pos.character, 'con': val }];
-          vscode.commands.executeCommand('extension.demo.edit', uri);
+        let val: string = (value.path + '').trim();
+
+        if (fs.existsSync(val)) {
+          let uri = vscode.Uri.file(val);
+          vscode.commands.executeCommand('vscode.openFolder', uri);
         } else {
-          outputChannel.show();
-          outputChannel.clear();
-          outputChannel.appendLine(val);
+          let editor = vscode.window.activeTextEditor;
+          if (editor && editor.selections.length > 0) {
+            let pos: vscode.Position = editor.selections[0].start;
+            let uri = [{ "key": 'insert', "line": pos.line, 'char': pos.character, 'con': val }];
+            vscode.commands.executeCommand('extension.demo.edit', uri);
+          } else {
+            outputChannel.show();
+            outputChannel.clear();
+            outputChannel.appendLine(val);
+          }
         }
       }
     });

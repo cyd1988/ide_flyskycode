@@ -71,6 +71,8 @@ export function welcome(context:any) {
         }, undefined, context.subscriptions);
     }));
 
+    
+
     const key = 'vscodePluginDemo.showTip';
     // 如果设置里面开启了欢迎页显示，启动欢迎页
     if (vscode.workspace.getConfiguration().get(key)) {

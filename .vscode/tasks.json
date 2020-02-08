@@ -11,15 +11,10 @@
 			"presentation": {
 				"reveal": "never"
 			},
-			"group": "build"
+			"group": {
+				"kind": "build",
+				"isDefault": true
+			}
 		}
-		// ,
-		// {
-		// 	"label": "Oneaaa",
-		// 	"type": "shell",
-		// 	"command": "echo Hello ",
-		// 	"dependsOrder": "sequence",
-		// 	"dependsOn": ["Two", "Three"]
-		// }		  
 	]
 }

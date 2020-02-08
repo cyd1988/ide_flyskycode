@@ -56,12 +56,10 @@ export function activate(this: any, context: vscode.ExtensionContext) {
   context.subscriptions.push(vscode.commands.registerCommand(
     'extension.demo.api', (args) => {
 
+      args.p = Api.argsRun(args.p);
 
       http.post(args.u, Object.assign(args.p)).then(res => {
-        console.log(res);
-        // Api.res(textEditor,edit,res,args);
         Api.res(res, args);
-
       });
     }));
 
