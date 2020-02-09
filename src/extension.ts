@@ -35,6 +35,37 @@ runs();
 export function activate(this: any, context: vscode.ExtensionContext) {
   plugin.map(fun => { fun(context); });
 
+  let commands: AnyObj[] = [
+    {
+      name: 'extension.demo.paste_link',
+      names: '粘贴-软链接',
+      'to->v': 'fsPath|p.api.p.dir',
+      p: {
+        run: 'api', api: {
+          u: "/files/paste_link",
+          p: { "dir": "" }
+        }
+      }
+    }
+    // {
+    //   name: 'extension.demo.paste_link',
+    //   names: '粘贴-软链接',
+    //   'to->v': 'fsPath|p.paste_link.dir',
+    //   p: { run: 'paste_link', paste_link: { dir: '' } }
+    // }
+  ];
+
+  for (const key in commands) {
+    if (commands.hasOwnProperty(key)) {
+      let info = commands[key];
+      context.subscriptions.push(vscode.commands.registerCommand(
+        info.name, (args) => {
+          info = Util.to_v(info, args);
+          Api.run(info.p);
+        }));
+    }
+  }
+
   context.subscriptions.push(vscode.commands.registerTextEditorCommand(
     'extension.demo.registerTextEditor',
     (textEditor: vscode.TextEditor, edit: vscode.TextEditorEdit, args) => {

@@ -330,7 +330,7 @@ export class Util {
 
 
   /**
-   *  查看温度
+   *  bash
    *
    */
   static exec(bash: string, data: any, func: any) {
@@ -457,84 +457,101 @@ export class Util {
     return [word, line];
   }
 
-  static str_to_obj(data:any, strs:string, val:any) {
+  static str_to_obj(data: any, strs: string, val: any) {
     let va = strs.split('.');
     let tm: any = data;
     let is_right = 1;
-    va.forEach((v1:any) => {
-        if (tm.hasOwnProperty(v1)) {
-            tm = tm[v1];
-        }else{
-            is_right = 0;
-        }
+    va.forEach((v1: any) => {
+      if (tm.hasOwnProperty(v1)) {
+        tm = tm[v1];
+      } else {
+        is_right = 0;
+      }
     });
-    if(is_right===1){
-        let evals = 'data';
-        va.forEach((v:string) => {
-            evals += '["'+v+'"]';
-        });
-        evals += '=val;';
-        // evals += '="'+val+'"';
-        eval(evals);
+    if (is_right === 1) {
+      let evals = 'data';
+      va.forEach((v: string) => {
+        evals += '["' + v + '"]';
+      });
+      evals += '=val;';
+      // evals += '="'+val+'"';
+      eval(evals);
     }
     return data;
   }
 
-/**
- * 自定义深度的数组合并
- * @param args 数组
- */
-static merge(...args: any[]): any {
-  let deel = 2;
-  if (typeof args[0] === 'number') {
+  static to_v(data: any, search_data: any) {
+    if (data.hasOwnProperty('to->v')) {
+      let tm = data['to->v'].split('|');
+      let source_val = search_data;
+      tm[0].split('.').forEach((key: string) => {
+        if (source_val[key]) {
+          // if (source_val.hasOwnProperty(key)) {
+          source_val = source_val[key];
+        }
+      });
+      data = this.str_to_obj(data, tm[1], source_val);
+    }
+    return data;
+  }
+
+
+
+  /**
+   * 自定义深度的数组合并
+   * @param args 数组
+   */
+  static merge(...args: any[]): any {
+    let deel = 2;
+    if (typeof args[0] === 'number') {
       deel = args[0];
       args = args.slice(1);
-  } else if (typeof args[0] === 'boolean') {
+    } else if (typeof args[0] === 'boolean') {
       deel = -1;
       args = args.slice(1);
-  }
-  let tm = [];
-  for (const key in args) {
+    }
+    let tm = [];
+    for (const key in args) {
       if (typeof args[key] === 'object') {
-          tm.push(args[key]);
+        tm.push(args[key]);
       }
-  }
-  args = tm;
-  if(tm.length===0){
+    }
+    args = tm;
+    if (tm.length === 0) {
       return {};
-  }else if(tm.length === 1){
+    } else if (tm.length === 1) {
       return tm[0];
-  }
-  let data = args[0];
+    }
+    let data = args[0];
 
-  for (const k in args[1]) {
+    for (const k in args[1]) {
       if (data.hasOwnProperty(k)) {
-          if (typeof data[k] !== typeof args[1][k]) {
-              data[k] = args[1][k];
-          } else if (typeof data[k] === 'string') {
-              if(data[k].length ===0 ){
-                  data[k] = args[1][k];
-              }
-          } else if (typeof data[k] === 'object') {
-              if(deel>1 || deel < 0){
-                  data[k] = this.merge(--deel, data[k], args[1][k]);
-              }else{
-                  data[k] = args[1][k];
-              }
-          }
-      } else {
+        if (typeof data[k] !== typeof args[1][k]) {
           data[k] = args[1][k];
+        } else if (typeof data[k] === 'string') {
+          if (data[k].length === 0) {
+            data[k] = args[1][k];
+          }
+        } else if (typeof data[k] === 'object') {
+          if (deel > 1 || deel < 0) {
+            data[k] = this.merge(--deel, data[k], args[1][k]);
+          } else {
+            data[k] = args[1][k];
+          }
+        }
+      } else {
+        data[k] = args[1][k];
       }
-  }
-  if (args.length > 2) {
+    }
+    if (args.length > 2) {
       args = args.slice(2);
       args.unshift(data);
       args.unshift(deel);
       return this.merge.apply(null, args);
-  } else {
+    } else {
       return data;
+    }
   }
-}
 
 
 

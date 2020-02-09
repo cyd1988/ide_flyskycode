@@ -47,24 +47,34 @@ service.interceptors.request.use(
 );
 
 
-  
+
 // respone拦截器，发起请求后做的事情
 service.interceptors.response.use(
     res => {
         console.log('res', res);
-        if(vscode.workspace.getConfiguration('flyskycode').get('netdebug')){
-            let msg = 'status:'+res.status+', statusText:'+res.statusText;
+        if (vscode.workspace.getConfiguration('flyskycode').get('netdebug')) {
+            let msg = 'status:' + res.status + ', statusText:' + res.statusText;
             outputChannel.appendLine("\n");
             outputChannel.appendLine(msg);
-            outputChannel.appendLine(JSON.stringify(res.config.url).replace(/\\"/g,'"'));
-            outputChannel.appendLine(JSON.stringify(res.config.method).replace(/\\"/g,'"'));
-            outputChannel.appendLine(JSON.stringify(res.config.data).replace(/\\"/g,'"'));
-            outputChannel.appendLine(JSON.stringify(res.data).replace(/\\"/g,'"'));
+            outputChannel.appendLine(JSON.stringify(res.config.url).replace(/\\"/g, '"'));
+            outputChannel.appendLine(JSON.stringify(res.config.method).replace(/\\"/g, '"'));
+            outputChannel.appendLine(JSON.stringify(res.config.data).replace(/\\"/g, '"'));
+            
+            // let da = JSON.stringify(res.config.data).replace(/\\"/g, '"');
+            // da = da.substr(1,da.length-2);
+
+            let da = JSON.stringify(res.config.data);
+            
+            let bash = "curl -s '" + res.config.url +
+            "' -H 'Content-Type: application/json;' --data-binary " + da + " ";
+            outputChannel.appendLine(bash);
+            
+            outputChannel.appendLine(JSON.stringify(res.data).replace(/\\"/g, '"'));
         }
 
 
 
-        
+
         // 当有新的token时自动更新新的token
         if (res.headers.authorization) {
 
@@ -78,73 +88,69 @@ service.interceptors.response.use(
         if (res.data.status === 'success') {
             return Promise.resolve(res.data);
         } else {
-            let msg = '错误提示';
-            if (typeof res.data === 'string') {
-                msg = res.data;
-            } else if (res.data.message) {
-                msg = res.data.message;
-            }
-            console.log('错误提示', msg);
-            Util.showError(msg);
+            // let msg = '错误提示';
+            // if (typeof res.data === 'string') {
+            //     msg = res.data;
+            // } else if (res.data.message) {
+            //     msg = res.data.message;
+            // }
+            // console.log('错误提示', res);
 
-            // Message({
-            //   message: res.data.message,
-            //   type: 'error',
-            //   duration: 2000
-            // })
         }
         // 打印错误信息
         return Promise.reject(res.data);
     },
 
     error => {
-        
-        console.log( 3434343 );
+
+        console.log(3434343);
+        console.log( 'error', error );
+
         let msg = error.response.string;
         Util.showError(msg);
 
-        if (error.response.status === 401) {
-            // 登录过期
-            console.log({
-                title: '登录提示',
-                desc: error.response.data.message,
-                duration: 2,
-                onClose() {
+        // if (error.response.status === 401) {
+        //     // 登录过期
+        //     console.log({
+        //         title: '登录提示',
+        //         desc: error.response.data.message,
+        //         duration: 2,
+        //         onClose() {
 
-                }
-            });
+        //         }
+        //     });
 
-        } else if (error.response.status === 422) {
-            // token过期
-            console.log({
-                title: '温馨提示',
-                desc: error.response.data.message,
-                duration: 2
-            });
+        // } else if (error.response.status === 422) {
+        //     // token过期
+        //     console.log({
+        //         title: '温馨提示',
+        //         desc: error.response.data.message,
+        //         duration: 2
+        //     });
 
-        } else if (error.response.status === 403) {
-            // 没有权限
-            console.log({
-                title: '用户权限提示',
-                desc: error.response.data.message,
-                duration: 2,
-                onClose() {
-                }
-            });
-        } else if (error.response.status === 500) {
-            // 服务器连接失败
-            console.log({
-                title: '网络提示',
-                desc: '服务器连接失败，请稍后再试',
-                duration: 2
-            });
-        } else {
-            console.log({
-                title: '错误提示 ' + error.response.status,
-                desc: error.response.data.message,
-                duration: 2
-            });
-        }
+        // } else if (error.response.status === 403) {
+        //     // 没有权限
+        //     console.log({
+        //         title: '用户权限提示',
+        //         desc: error.response.data.message,
+        //         duration: 2,
+        //         onClose() {
+        //         }
+        //     });
+        // } else if (error.response.status === 500) {
+        //     // 服务器连接失败
+        //     console.log({
+        //         title: '网络提示',
+        //         desc: '服务器连接失败，请稍后再试',
+        //         duration: 2
+        //     });
+        // } else {
+        //     console.log({
+        //         title: '错误提示 ' + error.response.status,
+        //         desc: error.response.data.message,
+        //         duration: 2
+        //     });
+        // }
         return Promise.reject(error);
     }
 );

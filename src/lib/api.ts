@@ -8,11 +8,43 @@ import fs = require('fs');
 
 export class Api {
     static ROOT_DIR: string | null;
-
-    static resa(textEditor: vscode.TextEditor, edit: vscode.TextEditorEdit, res: any, args: any) {
-        let position_ins: vscode.Position = new vscode.Position(1, 0);
-        edit.insert(position_ins, 'text');  //代替文本,插入文本
+    // static resa(textEditor: vscode.TextEditor, edit: vscode.TextEditorEdit, res: any, args: any) {
+    //     let position_ins: vscode.Position = new vscode.Position(1, 0);
+    //     edit.insert(position_ins, 'text');  //代替文本,插入文本
+    // }
+    static res(res: any, args: any) {
+        if (res.data.hasOwnProperty('run')) {
+            this.run(res.data);
+        }
     }
+
+    static argsRun(args: any) {
+        for (const key in args) {
+            if (args.hasOwnProperty(key)) {
+                const val = args[key];
+                if (val === 'VS-LINE') {
+                    args[key] = Util.getSelecttextLine().trim();
+                } else if (val === 'VS-FILE_DIR') {
+                    args[key] = Util.getDirname(Util.getProjectPath()) + '/';
+                    if (args[key] === '/') {
+                        Util.showError('获取不到文件目录！');
+                    }
+                } else if (val === 'VS-FILE_FILE') {
+                    args[key] = Util.getProjectPath();
+                    if (args[key] === '') {
+                        Util.showError('获取不到文件路径！');
+                    }
+                }
+            }
+        }
+        return args;
+    }
+
+
+
+
+
+
     static run(data: any) {
         if (!data.hasOwnProperty('run') || !data.hasOwnProperty(data['run'])) {
             console.log('data', data);
@@ -29,11 +61,12 @@ export class Api {
             this.r_open_file(data[data['run']]);
         } else if (data.run === 'run_shell') {
             this.r_run_shell(data[data['run']]);
-        }else{
-            
-            console.log( 'api.run.data', data );
+        } else {
+
+            console.log('没找到方法：api.run.data', data);
         }
     }
+
 
     static r_run_shell(data: any, run?: string) {
         Util.run_terminal(data['val']);
@@ -88,31 +121,9 @@ export class Api {
         });
     }
 
-    static res(res: any, args: any) {
-        if (res.data.hasOwnProperty('run')) {
-            this.run(res.data);
-        }
-    }
 
-    static argsRun(args: any) {
-        for (const key in args) {
-            if (args.hasOwnProperty(key)) {
-                const val = args[key];
-                if (val === 'VS-LINE') {
-                    args[key] = Util.getSelecttextLine().trim();
-                }else if(val === 'VS-FILE_DIR'){
-                    args[key] = Util.getDirname(Util.getProjectPath())+'/';
-                    if(args[key]==='/'){
-                        Util.showError('获取不到文件目录！');
-                    }
-                }else if(val === 'VS-FILE_FILE'){
-                    args[key] = Util.getProjectPath();
-                    if(args[key]===''){
-                        Util.showError('获取不到文件路径！');
-                    }
-                }
-            }
-        }
-        return args;
-    }
+
+
+
+
 }

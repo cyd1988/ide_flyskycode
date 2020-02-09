@@ -40,6 +40,10 @@ export async function fun_list(lists: AnyObj, call_list?: (...args: any[]) => an
         }
       })
     .then((value: any) => {
+      if( typeof value === 'undefined' ){
+        return;
+      }
+
       if( typeof value !== 'object' ){
         console.log( 'lists',lists );
         console.log( 'value',value );
