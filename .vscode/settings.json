@@ -8,7 +8,8 @@
     },
     // Turn off tsc task auto detection since we have the necessary tasks as npm scripts
     "typescript.tsc.autoDetect": "off",
-    "python.pythonPath": "/usr/local/bin/python3.6"
+    "python.pythonPath": "/usr/local/bin/python3.6",
+    "commentTranslate.targetLanguage": "zh-CN"
 }
 
 
