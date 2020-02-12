@@ -384,7 +384,7 @@ export class Util {
     if (document && document.isDirty) {
       await this.ctrls(document, is_await);
     }
-    
+
     return Promise.resolve('运行结束');
   }
 
@@ -529,17 +529,23 @@ export class Util {
     for (const k in args[1]) {
       if (data.hasOwnProperty(k)) {
         if (typeof data[k] !== typeof args[1][k]) {
+
           data[k] = args[1][k];
+
         } else if (typeof data[k] === 'string') {
-          if (data[k].length === 0) {
+
+          if (args[1][k].length !== 0) {
             data[k] = args[1][k];
           }
+
         } else if (typeof data[k] === 'object') {
+
           if (deel > 1 || deel < 0) {
             data[k] = this.merge(--deel, data[k], args[1][k]);
           } else {
             data[k] = args[1][k];
           }
+          
         }
       } else {
         data[k] = args[1][k];
