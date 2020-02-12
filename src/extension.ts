@@ -10,12 +10,14 @@ import fs = require('fs');
 import { service as http } from './lib/httpIndex';
 
 
+import { Jsoncd_init, Jsoncd } from './com/jsonOutline';
 import { fileOpenProject } from './com/fileOpenProject';
 import { editauto } from './com/edit';
 
 let plugin = [
-  fileOpenProject, hover, editauto
+  fileOpenProject, hover, editauto, Jsoncd_init
 ];
+
 
 
 let autoregistertexteditor: AnyObj = {};
@@ -30,9 +32,8 @@ async function runs() {
 }
 runs();
 
-
-
 export function activate(this: any, context: vscode.ExtensionContext) {
+
   plugin.map(fun => { fun(context); });
 
   let commands: AnyObj[] = [
@@ -87,14 +88,23 @@ export function activate(this: any, context: vscode.ExtensionContext) {
   context.subscriptions.push(vscode.commands.registerCommand(
     'extension.demo.api', (args) => {
 
+
+
+
+      function ruPost() {
+        http.post(args.u, Object.assign(args.p)).then(res => {
+          Api.res(res, args);
+        });
+      }
       args.p = Api.argsRun(args.p);
 
-      http.post(args.u, Object.assign(args.p)).then(res => {
-        Api.res(res, args);
-      });
+      if (args.save) {
+        Util.docSave().then(ruPost);
+      } else {
+        ruPost();
+      }
+
     }));
-
-
 
   vscode.workspace.onDidSaveTextDocument((document) => {
     Util.getSystemInfo(function (msg: string) {

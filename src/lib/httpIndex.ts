@@ -2,7 +2,7 @@ import axios from 'axios';
 import { Util } from '../Util';
 import * as vscode from 'vscode';
 import { outputChannel, AnyObj, JsonData, StatusBarMessage } from './../lib/const';
-
+import { Jsoncd_init,Jsoncd } from './../com/jsonOutline';
 
 // 配置开发和生产的请求接口
 export const service = axios.create({
@@ -26,7 +26,8 @@ service.interceptors.request.use(
         if (!config.data.jsondata) {
             config.data.jsondata = {};
         }
-        config.data.jsondata = Util.merge(true, Util.getJsonData(), config.data.jsondata);
+
+        config.data.jsondata = Util.merge(true, Jsoncd.json.getJson(), config.data.jsondata);
 
         config.data = JSON.stringify(config.data);
 

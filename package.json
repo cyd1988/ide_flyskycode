@@ -18,7 +18,7 @@
             "type": "object",
             "title": "Code插件demo",
             "properties": {
-                "flyskycode.netdebug":{
+                "flyskycode.netdebug": {
                     "type": "boolean",
                     "default": false,
                     "description": "是否显示网络请求日志"
@@ -32,10 +32,44 @@
                     "type": "boolean",
                     "default": true,
                     "description": "启动时显示自定义欢迎页"
+                },
+                "flyskycodeData.autorefresh": {
+                    "type": "boolean",
+                    "default": false
                 }
             }
         },
+        "views": {
+            "explorer": [
+                {
+                    "id": "flyskycodeData",
+                    "name": "flyskycode Data"
+                }
+            ]
+        },
         "commands": [
+            {
+                "command": "flyskycodeData.refresh",
+                "title": "Refresh",
+                "icon": {
+                    "light": "resources/light/refresh.svg",
+                    "dark": "resources/dark/refresh.svg"
+                }
+            },
+            {
+                "command": "flyskycodeData.refreshNode",
+                "title": "Refresh",
+                "icon": {
+                    "light": "resources/light/refresh.svg",
+                    "dark": "resources/dark/refresh.svg"
+                }
+            },
+            {
+                "command": "flyskycodeData.renameNode",
+                "title": "Rename"
+            },
+
+
             {
                 "command": "extension.demo.testMenuShow",
                 "title": "这个菜单仅在JS文件中出现",
@@ -75,6 +109,24 @@
         ],
         "keybindings": [],
         "menus": {
+            "view/title": [
+                {
+                    "command": "flyskycodeData.refresh",
+                    "when": "view == flyskycodeData",
+                    "group": "navigation"
+                }
+            ],
+            "view/item/context": [
+                {
+                    "command": "flyskycodeData.renameNode",
+                    "when": "view == flyskycodeData"
+                },
+                {
+                    "command": "flyskycodeData.refreshNode",
+                    "when": "view == flyskycodeData",
+                    "group": "inline"
+                }
+            ],
             "editor/context": [
                 {
                     "when": "editorFocus && resourceLangId == javascript",
@@ -154,6 +206,7 @@
         "@types/redis": "^2.8.14",
         "@types/ws": "^6.0.4",
         "axios": "^0.19.1",
+        "jsonc-parser": "^2.2.0",
         "mysql": "^2.17.1",
         "redis": "^2.8.0",
         "save": "^2.4.0"

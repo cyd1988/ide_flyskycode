@@ -4,7 +4,7 @@ import { Util } from '../Util';
 import { service as http } from './../lib/httpIndex';
 import fs = require('fs');
 import { outputChannel, AnyObj, JsonData } from './../lib/const';
-
+import { Jsoncd_init, Jsoncd } from './../com/jsonOutline';
 
 
 export class Api {
@@ -64,10 +64,17 @@ export class Api {
             this.r_run_shell(data[data['run']]);
         } else if (data.run === 'outputChannel') {
             this.r_outputChannel(data[data['run']]);
+        } else if (data.run === 'setJson') {
+            this.r_setJson(data[data['run']]);
         } else {
             console.log('没找到方法：api.run.data', data);
         }
     }
+
+    static r_setJson(data: any, run?: string) {
+        Jsoncd.json.setJson(data.json);
+    }
+
     static r_outputChannel(data: any, run?: string) {
         let op: any = { show: 1, clear: 0 };
         op = Util.merge(true, op, data);

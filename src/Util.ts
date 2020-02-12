@@ -377,13 +377,15 @@ export class Util {
     }
   }
 
-  static docSave(is_await = 1) {
+  static async docSave(is_await = 1) {
     let document: vscode.TextDocument | null = vscode.window.activeTextEditor ?
       vscode.window.activeTextEditor.document :
       null;
-    if (document) {
-      this.ctrls(document, is_await);
+    if (document && document.isDirty) {
+      await this.ctrls(document, is_await);
     }
+    
+    return Promise.resolve('运行结束');
   }
 
   static getWorkspaceFolders() {

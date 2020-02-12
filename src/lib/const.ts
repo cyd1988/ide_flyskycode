@@ -15,7 +15,7 @@ export class StatusBarMessage {
   static nIntervId: AnyObj = {};
   static data: AnyObj = {};
   static max = 26;
-  static lm: string = '.';
+  static lm: string = '-';
   static slm = '+';
 
   static delAllStatusBarMessage(){
