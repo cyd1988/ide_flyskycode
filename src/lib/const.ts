@@ -2,14 +2,18 @@ import * as vscode from 'vscode';
 
 export const outputChannel = vscode.window.createOutputChannel('outputname');
 
+export const configUrl = 'http://blog.laravel.flyskycode.cn/ide/v1';
+
 
 export interface AnyObj {
   [name: string]: any;
 }
 
-export class JsonData {
-  static v: AnyObj = {};
-}
+
+
+
+
+
 
 export class StatusBarMessage {
   static nIntervId: AnyObj = {};

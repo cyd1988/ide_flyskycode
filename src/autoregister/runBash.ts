@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 import { Util } from '../Util';
-import { outputChannel, AnyObj, JsonData } from './../lib/const';
+import { outputChannel, AnyObj } from './../lib/const';
 import { service as http } from '../lib/httpIndex';
 
 function terminal() {

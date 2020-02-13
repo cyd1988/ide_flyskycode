@@ -4,7 +4,7 @@ import { hover } from './com/hover';
 
 import { Util } from './Util';
 import { Api } from './lib/api';
-import { outputChannel, AnyObj, JsonData } from './lib/const';
+import { outputChannel, AnyObj } from './lib/const';
 import path = require('path');
 import fs = require('fs');
 import { service as http } from './lib/httpIndex';
@@ -114,10 +114,6 @@ export function activate(this: any, context: vscode.ExtensionContext) {
 
 
   function getJsonData(document: vscode.TextDocument) {
-    if (document.uri.fsPath.endsWith('cfig.json')) {
-      let data: AnyObj = Util.getJsonData(document);
-      JsonData.v = data;
-    }
   }
   vscode.workspace.onDidOpenTextDocument((document) => {
     getJsonData(document);

@@ -2,11 +2,14 @@ import * as vscode from 'vscode';
 import * as json from 'jsonc-parser';
 import * as path from 'path';
 import { Util } from '../Util';
-import { service as http } from './../lib/httpIndex';
+import axios from 'axios';
+import { configUrl } from './../lib/const';
+
 
 export function Jsoncd_init(context: vscode.ExtensionContext) {
     Jsoncd.main(context);
 }
+
 
 export class Jsoncd {
     static json: JsonOutlineProvider;
@@ -37,7 +40,7 @@ export class JsonOutlineProvider implements vscode.TreeDataProvider<number> {
     private json: any;
     private editor: vscode.TextEditor | undefined;
     private autoRefresh: boolean | undefined = true;
-
+    private sshnData:any = {};
     constructor(private context: vscode.ExtensionContext) {
         this.json = { ssh: "", sshn: "" };
         this.text = JSON.stringify(this.json);
@@ -47,7 +50,7 @@ export class JsonOutlineProvider implements vscode.TreeDataProvider<number> {
         this.json = Util.merge(true, this.json, data);
         this.parseTree();
         this.refresh();
- 
+
         if (this.json.ssh && this.json.sshn.indexOf(this.json.ssh) === -1) {
             this.getSshName();
         }
@@ -55,10 +58,26 @@ export class JsonOutlineProvider implements vscode.TreeDataProvider<number> {
 
 
     async getSshName() {
-        let con = this.json.ssh.substr(0.-2)+'name)';
-        http.post('/account/decode', Object.assign({ "con": con })).then(res => {
-            console.log(res);
-        });
+        if(this.sshnData[this.json.ssh]){
+            this.json.sshn = this.sshnData[this.json.ssh];
+            this.parseTree();
+            this.refresh();
+        }else{
+
+            let data = {
+                "con": this.json.ssh,
+                "notGetJsonData": 1,
+                'getInfo': 1
+            };
+            axios.post(configUrl + '/account/decode', Object.assign(data)).then(res => {
+                if(res.status === 200 && res.data.status === 'success'){
+                    this.json.sshn = res.data.data.info.sshn;
+                    this.sshnData[this.json.ssh] = this.json.sshn;
+                    this.parseTree();
+                    this.refresh();
+                }
+            });
+        }
     }
 
 

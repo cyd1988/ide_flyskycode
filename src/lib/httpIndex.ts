@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { Util } from '../Util';
 import * as vscode from 'vscode';
-import { outputChannel, AnyObj, JsonData, StatusBarMessage } from './../lib/const';
+import { outputChannel, StatusBarMessage,configUrl } from './../lib/const';
 import { Jsoncd_init,Jsoncd } from './../com/jsonOutline';
 
 // 配置开发和生产的请求接口
@@ -17,7 +17,6 @@ service.interceptors.request.use(
         // config.headers['X-Requested-With'] = 'XMLHttpRequest';
         config.headers['Content-Type'] = 'application/json';
 
-
         config.url = config.url + '';
         if (!config.data.file) {
             config.data.file = Util.getProjectPath();
@@ -27,17 +26,21 @@ service.interceptors.request.use(
             config.data.jsondata = {};
         }
 
-        config.data.jsondata = Util.merge(true, Util.getJsonData(), config.data.jsondata);
-        config.data.jsondata = Util.merge(true, Jsoncd.json.getJson(), config.data.jsondata);
+        if(!config.data.notGetJsonData){
+            config.data.jsondata = Util.merge(true, Util.getJsonData(), config.data.jsondata);
+            config.data.jsondata = Util.merge(true, Jsoncd.json.getJson(), config.data.jsondata);
+        }
 
         config.data = JSON.stringify(config.data);
 
         const isProduction = process.env.NODE_ENV === 'production';
         if (!config.url.startsWith('http:')) {
-            config.url = 'http://blog.laravel.flyskycode.cn/ide/v1' + config.url;
+            config.url = configUrl + config.url;
         }
 
-        StatusBarMessage.setStatusBarMessage('f-net');
+        if(!config.data.notGetJsonData){
+            StatusBarMessage.setStatusBarMessage('f-net');
+        }
 
         return config;
     },
@@ -57,6 +60,7 @@ service.interceptors.request.use(
 service.interceptors.response.use(
     res => {
         StatusBarMessage.delStatusBarMessage('f-net');
+        
         console.log('res', res);
         if (vscode.workspace.getConfiguration('flyskycode').get('netdebug')) {
             let msg = 'status:' + res.status + ', statusText:' + res.statusText;

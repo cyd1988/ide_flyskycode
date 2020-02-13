@@ -5,7 +5,9 @@ import readline = require('readline');
 import { once } from 'events';
 import { exec } from 'child_process';
 import * as vscode from 'vscode';
-import { outputChannel, AnyObj, JsonData } from './lib/const';
+import { outputChannel, AnyObj } from './lib/const';
+import { Jsoncd_init,Jsoncd } from './com/jsonOutline';
+
 
 export class Util {
   static ROOT_DIR: string | null;
@@ -103,7 +105,7 @@ export class Util {
   static getJsonData(
     document: vscode.TextDocument | null = null, content: string | null = null) {
 
-    let data: AnyObj = JsonData.v;
+    let data: AnyObj = {};
 
     if (!document) {
       document = vscode.window.activeTextEditor ?
@@ -125,6 +127,7 @@ export class Util {
       for (const key in tm) {
         data[key] = tm[key];
       }
+      Jsoncd.json.setJson(data);
     }
 
     return data;

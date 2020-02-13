@@ -3,8 +3,8 @@ import { fun_list } from './../autoregister/lists';
 import { Util } from '../Util';
 import { service as http } from './../lib/httpIndex';
 import fs = require('fs');
-import { outputChannel, AnyObj, JsonData } from './../lib/const';
-import { Jsoncd_init, Jsoncd } from './../com/jsonOutline';
+import { outputChannel } from './../lib/const';
+import { Jsoncd } from './../com/jsonOutline';
 
 
 export class Api {
