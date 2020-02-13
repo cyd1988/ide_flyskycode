@@ -30,8 +30,13 @@ export class Api {
                     if (args[key] === '/') {
                         Util.showError('获取不到文件目录！');
                     }
-                } else if (val === 'VS-FILE_FILE') {
+                } else if (val === 'VS-FILE_PATH') {
                     args[key] = Util.getProjectPath();
+                    if (args[key] === '') {
+                        Util.showError('获取不到文件路径！');
+                    }
+                } else if (val === 'VS-DIRS') {
+                    args[key] = Util.getWorkspaceFolders();
                     if (args[key] === '') {
                         Util.showError('获取不到文件路径！');
                     }

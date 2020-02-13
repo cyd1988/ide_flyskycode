@@ -27,6 +27,7 @@ service.interceptors.request.use(
             config.data.jsondata = {};
         }
 
+        config.data.jsondata = Util.merge(true, Util.getJsonData(), config.data.jsondata);
         config.data.jsondata = Util.merge(true, Jsoncd.json.getJson(), config.data.jsondata);
 
         config.data = JSON.stringify(config.data);
@@ -56,7 +57,6 @@ service.interceptors.request.use(
 service.interceptors.response.use(
     res => {
         StatusBarMessage.delStatusBarMessage('f-net');
-
         console.log('res', res);
         if (vscode.workspace.getConfiguration('flyskycode').get('netdebug')) {
             let msg = 'status:' + res.status + ', statusText:' + res.statusText;
