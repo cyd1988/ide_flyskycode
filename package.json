@@ -105,6 +105,10 @@
             {
                 "command": "extension.demo.paste_link",
                 "title": "粘贴-软链接"
+            },
+            {
+                "command": "extension.demo.shell_open",
+                "title": "SHELL打开文件"
             }
         ],
         "keybindings": [],
@@ -155,6 +159,10 @@
                 },
                 {
                     "command": "extension.demo.paste_link",
+                    "group": "navigation"
+                },
+                {
+                    "command": "extension.demo.shell_open",
                     "group": "navigation"
                 }
             ]
