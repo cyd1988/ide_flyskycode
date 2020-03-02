@@ -14,8 +14,18 @@ export class Api {
     //     edit.insert(position_ins, 'text');  //代替文本,插入文本
     // }
     static res(res: any, args: any) {
-        if (res.data.hasOwnProperty('run')) {
-            this.run(res.data);
+
+        let that = this;
+        function ruPost() {
+            res.data = Api.argsRun(res.data);
+            if (res.data.hasOwnProperty('run')) {
+                that.run(res.data);
+            }
+        }
+        if (res.data.save) {
+            Util.docSave().then(ruPost);
+        } else {
+            ruPost();
         }
     }
 
@@ -23,6 +33,7 @@ export class Api {
         for (const key in args) {
             if (args.hasOwnProperty(key)) {
                 const val = args[key];
+                // VS-SELECT-LINE-ONE
                 if (val === 'VS-LINE') {
                     args[key] = Util.getSelecttextLine().trim();
                 } else if (val === 'VS-FILE_DIR') {

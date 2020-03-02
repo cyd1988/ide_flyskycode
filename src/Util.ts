@@ -549,6 +549,8 @@ export class Util {
             data[k] = args[1][k];
           }
           
+        }else{
+          data[k] = args[1][k];
         }
       } else {
         data[k] = args[1][k];

@@ -47,7 +47,21 @@ export function activate(this: any, context: vscode.ExtensionContext) {
           p: { "dir": "" }
         }
       }
-    }
+    },
+    {
+      name: 'extension.demo.shell_open',
+      names: 'SHELL打开文件',
+      'to->v': 'fsPath|p.api.p.file_name',
+      p: {
+        run: 'api', 
+        api: {
+          u: "/files/shell_open",
+          p: { "file_name": "" }
+        }
+      }
+    },
+
+
     // {
     //   name: 'extension.demo.paste_link',
     //   names: '粘贴-软链接',
@@ -55,6 +69,8 @@ export function activate(this: any, context: vscode.ExtensionContext) {
     //   p: { run: 'paste_link', paste_link: { dir: '' } }
     // }
   ];
+
+  console.log( commands );
 
   for (const key in commands) {
     if (commands.hasOwnProperty(key)) {
@@ -88,15 +104,16 @@ export function activate(this: any, context: vscode.ExtensionContext) {
   context.subscriptions.push(vscode.commands.registerCommand(
     'extension.demo.api', (args) => {
 
-
-
-
       function ruPost() {
-        http.post(args.u, Object.assign(args.p)).then(res => {
-          Api.res(res, args);
-        });
+        args.p = Api.argsRun(args.p);
+        if (args.run) {
+          Api.run(args);
+        } else {
+          http.post(args.u, Object.assign(args.p)).then(res => {
+            Api.res(res, args);
+          });
+        }
       }
-      args.p = Api.argsRun(args.p);
 
       if (args.save) {
         Util.docSave().then(ruPost);
