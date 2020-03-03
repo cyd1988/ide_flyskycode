@@ -2,13 +2,19 @@ import axios from 'axios';
 import { Util } from '../Util';
 import * as vscode from 'vscode';
 import { outputChannel, StatusBarMessage,configUrl } from './../lib/const';
+import {MessageService } from './../lib/webSocket';
 import { Jsoncd_init,Jsoncd } from './../com/jsonOutline';
+
+
 
 // 配置开发和生产的请求接口
 export const service = axios.create({
     // baseURL: process.env.VUE_APP_URL,
     timeout: 10000
 });
+
+
+
 
 // 设置header请求头，发起请求前做的事情
 service.interceptors.request.use(
@@ -31,9 +37,10 @@ service.interceptors.request.use(
             config.data.jsondata = Util.merge(true, Jsoncd.json.getJson(), config.data.jsondata);
         }
 
-        config.data = JSON.stringify(config.data);
+        // config.data = JSON.stringify(config.data);
 
         const isProduction = process.env.NODE_ENV === 'production';
+
         if (!config.url.startsWith('http:')) {
             config.url = configUrl + config.url;
         }
@@ -42,6 +49,15 @@ service.interceptors.request.use(
             StatusBarMessage.setStatusBarMessage('f-net');
         }
 
+        // console.log(JSON.stringify(config));
+        MessageService.send(config);
+        config.cancelToken = new axios.CancelToken(cancel => {
+            cancel();
+         });
+
+
+        // this.source.cancel('Operation canceled by the user.');
+        // return;
         return config;
     },
     error => {
@@ -49,7 +65,7 @@ service.interceptors.request.use(
         if (typeof error === 'string') {
             msg = error;
         }
-        Util.showError(msg);
+        // Util.showError(msg);
         Promise.reject(error);
     }
 );
@@ -99,13 +115,31 @@ service.interceptors.response.use(
 
     error => {
         StatusBarMessage.delStatusBarMessage('f-net');
-        console.log(3434343);
-        console.log('error', error);
-
-        let msg = error.response.string;
-        Util.showError(msg);
+        // console.log('error', error);
+        // let msg = error.response.string;
+        // Util.showError(msg);
         return Promise.reject(error);
     }
 );
 
 export default service;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

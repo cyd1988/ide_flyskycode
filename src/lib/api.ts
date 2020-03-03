@@ -13,8 +13,7 @@ export class Api {
     //     let position_ins: vscode.Position = new vscode.Position(1, 0);
     //     edit.insert(position_ins, 'text');  //代替文本,插入文本
     // }
-    static res(res: any, args: any) {
-
+    static res(res: any, args?: any) {
         let that = this;
         function ruPost() {
             res.data = Api.argsRun(res.data);
@@ -22,7 +21,7 @@ export class Api {
                 that.run(res.data);
             }
         }
-        if (res.data.save) {
+        if ( res.data.hasOwnProperty('save') ) {
             Util.docSave().then(ruPost);
         } else {
             ruPost();

@@ -68,8 +68,6 @@
                 "command": "flyskycodeData.renameNode",
                 "title": "Rename"
             },
-
-
             {
                 "command": "extension.demo.testMenuShow",
                 "title": "这个菜单仅在JS文件中出现",
@@ -217,6 +215,7 @@
         "jsonc-parser": "^2.2.0",
         "mysql": "^2.17.1",
         "redis": "^2.8.0",
-        "save": "^2.4.0"
+        "save": "^2.4.0",
+        "ws": "^7.2.1"
     }
 }
