@@ -68,8 +68,10 @@ export function main(
     }
 
     selec.push([
-      range.start.line, range.start.character,
-      editor.document.getText(range)
+      range.start.line,
+      range.start.character,
+      editor.document.getText(range),
+      editor.document.lineAt(range.start.line).text
     ]);
   }
 

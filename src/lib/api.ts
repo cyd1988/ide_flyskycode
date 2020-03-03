@@ -51,6 +51,33 @@ export class Api {
                     if (args[key] === '') {
                         Util.showError('获取不到文件路径！');
                     }
+                } else if (val === 'VS-SELECT-LINES') {
+                    
+                    let editor: vscode.TextEditor|undefined = vscode.window.activeTextEditor;
+                    if(!editor){
+                        continue;
+                    }
+                    let range;
+                    let selec: any[] = [];
+                    for (let index = editor.selections.length - 1; index >= 0; index--) {
+                  
+                      range = editor.selections[index];
+                      selec.push([
+                        range.start.line, 
+                        range.start.character,
+                        editor.document.getText(range),
+                        editor.document.lineAt(range.start.line).text
+                      ]);
+                    }
+
+                    selec = selec.sort((x: any, y: any) => {
+                      if (x[0] === y[0]) {
+                        return x[1] - y[1];
+                      } else {
+                        return x[0] - y[0];
+                      }
+                    });
+                    args[key] = selec;
                 }
             }
         }
@@ -68,6 +95,7 @@ export class Api {
             Util.showError('属性不存在-' + data.string);
             return;
         }
+        
         if (data['run'] === 'api') {
             this.r_api(data[data['run']]);
         } else if (data.run === 'lists' || data.run === 'ecs_lists') {
@@ -82,10 +110,38 @@ export class Api {
             this.r_outputChannel(data[data['run']]);
         } else if (data.run === 'setJson') {
             this.r_setJson(data[data['run']]);
+        } else if (data.run === 'insert') {
+            this.r_insert(data[data['run']]);
+        } else if (data.run === 'set_selections') {
+            this.r_set_selections(data[data['run']]);
         } else {
             console.log('没找到方法：api.run.data', data);
         }
     }
+
+    static r_set_selections(data: any, run?: string) {
+        let editor: vscode.TextEditor|undefined = vscode.window.activeTextEditor;
+        if(!editor){
+            return;
+        }
+        let selec_ar:any[]= [];
+        for (const key in data) {
+            if (data.hasOwnProperty(key)) {
+                const val = data[key];
+                let posins1 = new vscode.Position(val['start']['line'], val['start']['character']);
+                let posins2 = new vscode.Position(val['end']['line'], val['end']['character']);
+                selec_ar.push(new vscode.Selection(posins1, posins2));
+            }
+        }
+        editor.selections = selec_ar;
+    }
+
+    static r_insert(data: any, run?: string) {
+        let obj = { "key": 'insert', "line": 0, 'char': 0, 'con': '' };
+        let uri = [Util.merge(true, obj, data)];
+        vscode.commands.executeCommand('extension.demo.edit', uri);
+    }
+
 
     static r_setJson(data: any, run?: string) {
         Jsoncd.json.setJson(data.json);

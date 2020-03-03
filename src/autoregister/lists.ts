@@ -7,8 +7,6 @@ import { Api } from './../lib/api';
 
 
 
-
-
 export async function fun_list(lists: AnyObj, call_list?: (...args: any[]) => any) {
   let arr: any = [];
   if (call_list) {

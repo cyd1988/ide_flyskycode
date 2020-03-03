@@ -103,6 +103,10 @@ export function activate(this: any, context: vscode.ExtensionContext) {
 
   context.subscriptions.push(vscode.commands.registerCommand(
     'extension.demo.api', (args) => {
+      if( !args.u ){
+        let tm = args;
+        args = {'p':tm,'u':'/init'};
+      }
 
       function ruPost() {
         args.p = Api.argsRun(args.p);
