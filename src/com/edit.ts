@@ -9,8 +9,6 @@ import { Api } from './../lib/api';
 async function demoEdie(textEditor: vscode.TextEditor, edit: vscode.TextEditorEdit, args:any) {
     // await edit.insert(position_ins, text);  //代替文本,插入文本
 
-    console.log(args);
-
     for (const key in args) {
         if (args.hasOwnProperty(key)) {
             const info = args[key];
@@ -22,7 +20,7 @@ async function demoEdie(textEditor: vscode.TextEditor, edit: vscode.TextEditorEd
                 } else {
                     let position_ins: vscode.Position = new vscode.Position(info.line, info.char);
                     edit.insert(position_ins, info.con);
-                }    
+                }
             }
         }
     }

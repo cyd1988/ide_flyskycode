@@ -6,7 +6,7 @@ import { once } from 'events';
 import { exec } from 'child_process';
 import * as vscode from 'vscode';
 import { outputChannel, AnyObj } from './lib/const';
-import { Jsoncd_init,Jsoncd } from './com/jsonOutline';
+import { Jsoncd_init, Jsoncd } from './com/jsonOutline';
 
 
 export class Util {
@@ -548,8 +548,8 @@ export class Util {
           } else {
             data[k] = args[1][k];
           }
-          
-        }else{
+
+        } else {
           data[k] = args[1][k];
         }
       } else {
@@ -565,6 +565,39 @@ export class Util {
       return data;
     }
   }
+
+
+  static SELECT_LINES(max_len = 0) {
+    let selec: any[] = [];
+    let editor: vscode.TextEditor | undefined = vscode.window.activeTextEditor;
+    if (!editor) {
+      return selec;
+    }
+    let range;
+    for (let index = editor.selections.length - 1; index >= 0; index--) {
+      range = editor.selections[index];
+      selec.push([
+        range.start.line,
+        range.start.character,
+        editor.document.getText(range),
+        editor.document.lineAt(range.start.line).text
+      ]);
+    }
+
+    selec = selec.sort((x: any, y: any) => {
+      if (x[0] === y[0]) {
+        return x[1] - y[1];
+      } else {
+        return x[0] - y[0];
+      }
+    });
+    if (max_len > 0) {
+      selec.slice(0, max_len);
+    }
+    return selec;
+  }
+
+
 
 
 
@@ -650,15 +683,41 @@ export class Util {
   /**
    * 弹出错误信息
    */
-  static showError(info: string) {
-    vscode.window.showErrorMessage(info);
+  static showError(...args: any) {
+    let text = '';
+    for (const key in args) {
+      if (args.hasOwnProperty(key)) {
+        const element = args[key];
+        if (typeof element === 'object') {
+          text += JSON.stringify(element);
+        } else if (typeof element === 'string') {
+          text += element;
+        } else {
+          text += element.toString;
+        }
+      }
+    }
+    vscode.window.showErrorMessage(text);
   }
 
   /**
    * 弹出提示信息
    */
-  static showInfo(info: string) {
-    vscode.window.showInformationMessage(info);
+  static showInfo(...args: any) {
+    let text = '';
+    for (const key in args) {
+      if (args.hasOwnProperty(key)) {
+        const element = args[key];
+        if (typeof element === 'object') {
+          text += JSON.stringify(element);
+        } else if (typeof element === 'string') {
+          text += element;
+        } else {
+          text += element.toString;
+        }
+      }
+    }
+    vscode.window.showInformationMessage(text);
   }
 
   static findStrInFolder(folderPath: any, str: any) { }

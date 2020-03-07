@@ -50,33 +50,11 @@ export class Api {
                     if (args[key] === '') {
                         Util.showError('获取不到文件路径！');
                     }
+                } else if (val === 'VS-SELECT-LINE-') {  // VS-SELECT-LINE-5
+                    let len =  parseInt(val.replace('VS-SELECT-LINE-',''));
+                    args[key] = Util.SELECT_LINES(len);
                 } else if (val === 'VS-SELECT-LINES') {
-                    
-                    let editor: vscode.TextEditor|undefined = vscode.window.activeTextEditor;
-                    if(!editor){
-                        continue;
-                    }
-                    let range;
-                    let selec: any[] = [];
-                    for (let index = editor.selections.length - 1; index >= 0; index--) {
-                  
-                      range = editor.selections[index];
-                      selec.push([
-                        range.start.line, 
-                        range.start.character,
-                        editor.document.getText(range),
-                        editor.document.lineAt(range.start.line).text
-                      ]);
-                    }
-
-                    selec = selec.sort((x: any, y: any) => {
-                      if (x[0] === y[0]) {
-                        return x[1] - y[1];
-                      } else {
-                        return x[0] - y[0];
-                      }
-                    });
-                    args[key] = selec;
+                    args[key] = Util.SELECT_LINES();
                 }
             }
         }

@@ -2,6 +2,7 @@
 import * as WebSocket from "ws";
 
 import { Api } from './../lib/api';
+import { Util } from '../Util';
 
 
 let webSocketStatus = 0;
@@ -12,7 +13,7 @@ export class MessageService {
   types = '';
   static obj: any;
   static arr: any[] = [];
-  static reload_time: Date = new Date( -3 );
+  static reload_time: Date = new Date(-3);
 
   static async send(masg?: Object | string) {
     if (masg) {
@@ -38,7 +39,7 @@ export class MessageService {
     }
   }
 
-  static async reload(run?:number) {
+  static async reload(run?: number) {
     this.arr = [];
     if (webSocketStatus) {
       return;
@@ -46,7 +47,7 @@ export class MessageService {
     let time = 1500;
     let data_n = new Date();
 
-    if(run){
+    if (run) {
       this.obj = new MessageService();
     }
 
@@ -54,7 +55,7 @@ export class MessageService {
       this.reload_time = data_n;
       setTimeout(function () {
         MessageService.reload(1);
-      }, time+30);
+      }, time + 30);
     }
   }
 
@@ -81,16 +82,20 @@ export class MessageService {
   webSocketOnMessage(res: WebSocket.MessageEvent) {
 
     try {
-      let data = JSON.parse(res.data+'');
-      if( data.status === 'success' ){
+
+      let data = JSON.parse(res.data + '');
+      if (data.status === 'success') {
         Api.res(data);
-      }else{
-        console.log('错误', data);
+
+        if (typeof data.data === 'object' && data.data.show_msg) {
+          Util.showInfo(data.data.show_msg);
+        }
+      } else {
+        Util.showError('错误', data);
       }
 
     } catch (error) {
-      console.log( error );
-      console.log('错误-catch', res);
+      Util.showError('错误-catch', res);
     }
 
     //给后台发送数据
