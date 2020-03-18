@@ -50,13 +50,25 @@ export function activate(this: any, context: vscode.ExtensionContext) {
     },
     {
       name: 'extension.demo.shell_open',
-      names: 'SHELL打开文件',
+      names: 'SHELL 打开文件',
       'to->v': 'fsPath|p.api.p.file_name',
       p: {
         run: 'api', 
         api: {
           u: "/files/shell_open",
           p: { "file_name": "" }
+        }
+      }
+    },
+    {
+      name: 'extension.demo.shell_paste',
+      names: 'SHELL 粘贴',
+      'to->v': 'fsPath|p.api.p.path',
+      p: {
+        run: 'api', 
+        api: {
+          u: "/files/shell_paste",
+          p: { "path": "" }
         }
       }
     },

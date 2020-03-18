@@ -106,7 +106,11 @@
             },
             {
                 "command": "extension.demo.shell_open",
-                "title": "SHELL打开文件"
+                "title": "SHELL 打开文件"
+            },
+            {
+                "command": "extension.demo.shell_paste",
+                "title": "SHELL 粘贴"
             }
         ],
         "keybindings": [],
@@ -161,6 +165,10 @@
                 },
                 {
                     "command": "extension.demo.shell_open",
+                    "group": "navigation"
+                },
+                {
+                    "command": "extension.demo.shell_paste",
                     "group": "navigation"
                 }
             ]
