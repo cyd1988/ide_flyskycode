@@ -53,7 +53,7 @@ export function activate(this: any, context: vscode.ExtensionContext) {
       names: 'SHELL 打开文件',
       'to->v': 'fsPath|p.api.p.file_name',
       p: {
-        run: 'api', 
+        run: 'api',
         api: {
           u: "/files/shell_open",
           p: { "file_name": "" }
@@ -65,7 +65,7 @@ export function activate(this: any, context: vscode.ExtensionContext) {
       names: 'SHELL 粘贴',
       'to->v': 'fsPath|p.api.p.path',
       p: {
-        run: 'api', 
+        run: 'api',
         api: {
           u: "/files/shell_paste",
           p: { "path": "" }
@@ -81,8 +81,6 @@ export function activate(this: any, context: vscode.ExtensionContext) {
     //   p: { run: 'paste_link', paste_link: { dir: '' } }
     // }
   ];
-
-  console.log( commands );
 
   for (const key in commands) {
     if (commands.hasOwnProperty(key)) {
@@ -115,9 +113,9 @@ export function activate(this: any, context: vscode.ExtensionContext) {
 
   context.subscriptions.push(vscode.commands.registerCommand(
     'extension.demo.api', (args) => {
-      if( !args.u ){
+      if (!args.u) {
         let tm = args;
-        args = {'p':tm,'u':'/init'};
+        args = { 'p': tm, 'u': '/init' };
       }
 
       function ruPost() {
@@ -140,21 +138,44 @@ export function activate(this: any, context: vscode.ExtensionContext) {
     }));
 
   vscode.workspace.onDidSaveTextDocument((document) => {
+    console.log('onDidSaveTextDocument');
     Util.getSystemInfo(function (msg: string) {
       outputChannel.appendLine(msg);
     });
   }, this);
 
 
-  function getJsonData(document: vscode.TextDocument) {
+  function getJsonData(document: vscode.TextDocument, type_name: string) {
+
+
+
+    if (type_name !== 'onDidChangeTextDocument') {
+      let data = {
+        'run': 'api',
+        'api': {
+          'u': '/envt/on_type',
+          'p': {
+            "run_file": document.uri.fsPath,
+            "type_name": type_name,
+          }
+        }
+      };
+      Api.run(data);
+    }
+
   }
   vscode.workspace.onDidOpenTextDocument((document) => {
-    getJsonData(document);
+    getJsonData(document, 'onDidOpenTextDocument');
+  }, this);
+
+  vscode.workspace.onDidCloseTextDocument((document) => {
+    getJsonData(document, 'onDidCloseTextDocument');
   }, this);
 
   vscode.workspace.onDidChangeTextDocument((envs) => {
-    getJsonData(envs.document);
+    getJsonData(envs.document, 'onDidChangeTextDocument');
   }, this);
+
 
 
   // 自动提示演示，在dependencies后面输入.会自动带出依赖

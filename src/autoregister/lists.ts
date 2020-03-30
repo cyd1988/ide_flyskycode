@@ -31,21 +31,20 @@ export async function fun_list(lists: AnyObj, call_list?: (...args: any[]) => an
           true,  // 设置为true可以在焦点移到编辑器的另一部分或另一个窗口时保持选择器处于打开状态。
         matchOnDescription: true,  // 筛选标志时包含描述的可选标志。
         matchOnDetail: true,  // 一个可选标志，用于在筛选选项时包括详细信息
-        placeHolder:
-          '选择要打开的文件？',  // 在输入框中显示为占位符的可选字符串，以指导用户选择内容。
+        placeHolder: '选择要打开的文件？',  // 在输入框中显示为占位符的可选字符串，以指导用户选择内容。
         onDidSelectItem: function (item) {
           // console.log('aaa ', item);
         }
       })
     .then((value: any) => {
-      if( typeof value === 'undefined' ){
+      if (typeof value === 'undefined') {
         return;
       }
 
-      if( typeof value !== 'object' ){
-        console.log( 'lists',lists );
-        console.log( 'value',value );
-        return ;
+      if (typeof value !== 'object') {
+        console.log('lists', lists);
+        console.log('value', value);
+        return;
       }
 
       if (value.hasOwnProperty('run')) {

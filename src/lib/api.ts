@@ -21,7 +21,7 @@ export class Api {
                 that.run(res.data);
             }
         }
-        if ( res.data.hasOwnProperty('save') ) {
+        if (res.data.hasOwnProperty('save')) {
             Util.docSave().then(ruPost);
         } else {
             ruPost();
@@ -51,7 +51,7 @@ export class Api {
                         Util.showError('获取不到文件路径！');
                     }
                 } else if (val === 'VS-SELECT-LINE-') {  // VS-SELECT-LINE-5
-                    let len =  parseInt(val.replace('VS-SELECT-LINE-',''));
+                    let len = parseInt(val.replace('VS-SELECT-LINE-', ''));
                     args[key] = Util.SELECT_LINES(len);
                 } else if (val === 'VS-SELECT-LINES') {
                     args[key] = Util.SELECT_LINES();
@@ -72,7 +72,18 @@ export class Api {
             Util.showError('属性不存在-' + data.string);
             return;
         }
-        
+
+        if (data.hasOwnProperty('run_sleep') && data['run_sleep'] > 0) {
+            let tm = data['run_sleep'];
+            data['run_sleep'] = 0;            
+            setTimeout(function(){
+                data = Api.argsRun(data);
+                Api.run(data);
+            }, tm);
+            return;
+        }
+
+
         if (data['run'] === 'api') {
             this.r_api(data[data['run']]);
         } else if (data.run === 'lists' || data.run === 'ecs_lists') {
@@ -91,17 +102,32 @@ export class Api {
             this.r_insert(data[data['run']]);
         } else if (data.run === 'set_selections') {
             this.r_set_selections(data[data['run']]);
+        } else if (data.run === 'demo_edit') {
+            this.r_demo_edit(data[data['run']]);
         } else {
             console.log('没找到方法：api.run.data', data);
         }
+
+        // 执行子 run 方法
+        if( data.run !== 'input' ){
+            let new_data = data[data['run']];
+            if (new_data.hasOwnProperty('run')) {
+                this.run(new_data);
+            }
+        }
+    }
+    static r_demo_edit(data: any, run?: string) {
+    console.log('r_demo_edit', data );
+        vscode.commands.executeCommand('extension.demo.edit', data);
     }
 
+
     static r_set_selections(data: any, run?: string) {
-        let editor: vscode.TextEditor|undefined = vscode.window.activeTextEditor;
-        if(!editor){
+        let editor: vscode.TextEditor | undefined = vscode.window.activeTextEditor;
+        if (!editor) {
             return;
         }
-        let selec_ar:any[]= [];
+        let selec_ar: any[] = [];
         for (const key in data) {
             if (data.hasOwnProperty(key)) {
                 const val = data[key];

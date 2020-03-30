@@ -2,7 +2,8 @@
     "name": "vscode-plugin-flyskycode",
     "displayName": "vscode-plugin-flyskycode",
     "description": "cyd1988",
-    "version": "0.0.1",
+    "version": "0.0.3",
+    "publisher": "flyskycode",
     "engines": {
         "vscode": "^1.41.0"
     },
@@ -225,5 +226,9 @@
         "redis": "^2.8.0",
         "save": "^2.4.0",
         "ws": "^7.2.1"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/sxei/vscode-plugin-demo"
     }
 }

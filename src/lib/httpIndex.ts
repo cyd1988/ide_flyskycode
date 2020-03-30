@@ -46,7 +46,7 @@ service.interceptors.request.use(
         }
 
         if(!config.data.notGetJsonData){
-            StatusBarMessage.setStatusBarMessage('f-net');
+            // StatusBarMessage.setStatusBarMessage('f-net');
         }
 
         // console.log(JSON.stringify(config));
@@ -75,7 +75,7 @@ service.interceptors.request.use(
 // respone拦截器，发起请求后做的事情
 service.interceptors.response.use(
     res => {
-        StatusBarMessage.delStatusBarMessage('f-net');
+        // StatusBarMessage.delStatusBarMessage('f-net');
         
         console.log('res', res);
         if (vscode.workspace.getConfiguration('flyskycode').get('netdebug')) {
@@ -114,7 +114,7 @@ service.interceptors.response.use(
     },
 
     error => {
-        StatusBarMessage.delStatusBarMessage('f-net');
+        // StatusBarMessage.delStatusBarMessage('f-net');
         // console.log('error', error);
         // let msg = error.response.string;
         // Util.showError(msg);
