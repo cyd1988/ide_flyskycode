@@ -50,6 +50,11 @@ export class Api {
                     if (args[key] === '') {
                         Util.showError('获取不到文件路径！');
                     }
+                } else if (val === 'VS-DIRS-SOURCE') {
+                    args[key] = Util.getWorkspaceFolders(1);
+                    if (args[key] === '') {
+                        Util.showError('获取不到文件路径！');
+                    }
                 } else if (val === 'VS-SELECT-LINE-') {  // VS-SELECT-LINE-5
                     let len = parseInt(val.replace('VS-SELECT-LINE-', ''));
                     args[key] = Util.SELECT_LINES(len);

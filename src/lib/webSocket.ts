@@ -89,6 +89,8 @@ export class MessageService {
 
         if (typeof data.data === 'object' && data.data.show_msg) {
           Util.showInfo(data.data.show_msg);
+        }else if (typeof data.data === 'object' && data.data.show_msg_error) {
+          Util.showError(data.data.show_msg_error);
         }
       } else {
         Util.showError('错误', data);
