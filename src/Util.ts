@@ -391,23 +391,32 @@ export class Util {
     return Promise.resolve('运行结束');
   }
 
-  static getWorkspaceFolders() {
+  static getWorkspaceFolders(source = 0) {
     let list = vscode.workspace.workspaceFolders;
+
     let workspaceFolders: string[] = [];
-    if (list) {
-      list.forEach(folder => {
-        const pathp: any = Util.getDirname(folder.uri.path);
-        if (!workspaceFolders.find(v => v === pathp)) {
-          workspaceFolders.push(pathp);
-        }
-      });
-      list.forEach(folder => {
-        workspaceFolders.push(folder.uri.path);
-      });
-    }
-    let tm = this.getProjectPath();
-    if (tm) {
-      workspaceFolders.push(this.getDirname(tm));
+    if (source) {
+      if (list) {
+        list.forEach(folder => {
+          workspaceFolders.push(folder.uri.path);
+        });
+      }
+    } else {
+      if (list) {
+        list.forEach(folder => {
+          const pathp: any = Util.getDirname(folder.uri.path);
+          if (!workspaceFolders.find(v => v === pathp)) {
+            workspaceFolders.push(pathp);
+          }
+        });
+        list.forEach(folder => {
+          workspaceFolders.push(folder.uri.path);
+        });
+      }
+      let tm = this.getProjectPath();
+      if (tm) {
+        workspaceFolders.push(this.getDirname(tm));
+      }
     }
     return workspaceFolders;
   }
