@@ -31,10 +31,11 @@ export class Api {
     static argsRun(args: any) {
         for (const key in args) {
             if (args.hasOwnProperty(key)) {
-                const val = args[key];
-                // VS-SELECT-LINE-ONE
+                let val = args[key]+'';
                 if (val === 'VS-LINE') {
                     args[key] = Util.getSelecttextLine().trim();
+                } else if (val === 'VS-SELECT-LINE-ONE') {
+                    args[key] = Util.getSelecttextLineOne().trim();
                 } else if (val === 'VS-FILE_DIR') {
                     args[key] = Util.getDirname(Util.getProjectPath()) + '/';
                     if (args[key] === '/') {
@@ -55,7 +56,7 @@ export class Api {
                     if (args[key] === '') {
                         Util.showError('获取不到文件路径！');
                     }
-                } else if (val === 'VS-SELECT-LINE-') {  // VS-SELECT-LINE-5
+                } else if (val.substr(0,15) === 'VS-SELECT-LINE-') {  // VS-SELECT-LINE-5
                     let len = parseInt(val.replace('VS-SELECT-LINE-', ''));
                     args[key] = Util.SELECT_LINES(len);
                 } else if (val === 'VS-SELECT-LINES') {

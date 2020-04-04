@@ -137,6 +137,31 @@ export class Util {
    * 获取当前第一个选中内容，或当前第一个选区的整行内容
    * @param editor
    */
+  static getSelecttextLineOne(editor: vscode.TextEditor | undefined = undefined) {
+    let files: string;
+    // 获取当前编辑器对象
+    if (!editor) {
+      editor = vscode.window.activeTextEditor;
+    }
+    if (!editor) {
+      return '';
+    }
+
+    if (editor.selections[0].start.character ===
+      editor.selections[0].end.character &&
+      editor.selections[0].start.line === editor.selections[0].end.line) {
+        files = '';
+    } else {
+      files = editor.document.getText(editor.selections[0]);
+    }
+    return files;
+  }
+
+
+  /**
+   * 获取当前第一个选中内容，或当前第一个选区的整行内容
+   * @param editor
+   */
   static getSelecttextLine(editor: vscode.TextEditor | undefined = undefined) {
     let files: string;
     // 获取当前编辑器对象
@@ -156,6 +181,7 @@ export class Util {
     }
     return files;
   }
+
 
 
   static getStringPath(files: string, word_dir: string, data: any) {
