@@ -31,7 +31,7 @@ export class Api {
     static argsRun(args: any) {
         for (const key in args) {
             if (args.hasOwnProperty(key)) {
-                let val = args[key]+'';
+                let val = args[key] + '';
                 if (val === 'VS-LINE') {
                     args[key] = Util.getSelecttextLine().trim();
                 } else if (val === 'VS-SELECT-LINE-ONE') {
@@ -56,7 +56,7 @@ export class Api {
                     if (args[key] === '') {
                         Util.showError('获取不到文件路径！');
                     }
-                } else if (val.substr(0,15) === 'VS-SELECT-LINE-') {  // VS-SELECT-LINE-5
+                } else if (val.substr(0, 15) === 'VS-SELECT-LINE-') {  // VS-SELECT-LINE-5
                     let len = parseInt(val.replace('VS-SELECT-LINE-', ''));
                     args[key] = Util.SELECT_LINES(len);
                 } else if (val === 'VS-SELECT-LINES') {
@@ -81,8 +81,8 @@ export class Api {
 
         if (data.hasOwnProperty('run_sleep') && data['run_sleep'] > 0) {
             let tm = data['run_sleep'];
-            data['run_sleep'] = 0;            
-            setTimeout(function(){
+            data['run_sleep'] = 0;
+            setTimeout(function () {
                 data = Api.argsRun(data);
                 Api.run(data);
             }, tm);
@@ -110,20 +110,30 @@ export class Api {
             this.r_set_selections(data[data['run']]);
         } else if (data.run === 'demo_edit') {
             this.r_demo_edit(data[data['run']]);
+        } else if (data.run === 'diff') {
+            this.r_diff(data[data['run']]);
         } else {
             console.log('没找到方法：api.run.data', data);
         }
 
         // 执行子 run 方法
-        if( data.run !== 'input' ){
+        if (data.run !== 'input') {
             let new_data = data[data['run']];
             if (new_data.hasOwnProperty('run')) {
                 this.run(new_data);
             }
         }
     }
+    static r_diff(data: any, run?: string) {
+
+        // vscode.commands.executeCommand("vscode.diff", 
+        // vscode.Uri.file(backupFilePath), 
+        // vscode.Uri.file(file), "Fix " + path.basename(file) + "", opts)
+
+        // vscode.commands.executeCommand('extension.demo.edit', data);
+    }
+
     static r_demo_edit(data: any, run?: string) {
-    console.log('r_demo_edit', data );
         vscode.commands.executeCommand('extension.demo.edit', data);
     }
 
@@ -175,10 +185,28 @@ export class Api {
 
     static r_open_file(data: any, run?: string) {
         if (fs.existsSync(data.file)) {
+
             let stat = fs.lstatSync(data.file);
             if (stat.isFile()) {
+
                 let uri = vscode.Uri.file(data.file);
-                vscode.commands.executeCommand('vscode.openFolder', uri);
+
+                if (data.hasOwnProperty('line')) {
+                    const options = {
+                        // 选中第3行第9列到第3行第17列
+                        selection: new vscode.Range(
+                            new vscode.Position(data.line, 0),
+                            new vscode.Position(data.line, 0)
+                        ),
+                        // 是否预览，默认true，预览的意思是下次再打开文件是否会替换当前文件
+                        preview: false,
+                        // 显示在第二个编辑器
+                        // viewColumn: vscode.ViewColumn.Two
+                    };
+                    vscode.window.showTextDocument(uri, options);
+                }else{
+                    vscode.commands.executeCommand('vscode.openFolder', uri);
+                }
             }
         }
     }

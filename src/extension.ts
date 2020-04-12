@@ -147,34 +147,46 @@ export function activate(this: any, context: vscode.ExtensionContext) {
 
   function getJsonData(document: vscode.TextDocument, type_name: string) {
 
-
-
-    if (type_name !== 'onDidChangeTextDocument') {
-      let data = {
-        'run': 'api',
-        'api': {
-          'u': '/envt/on_type',
-          'p': {
-            "run_file": document.uri.fsPath,
-            "type_name": type_name,
-          }
-        }
-      };
-      Api.run(data);
+    if(document.uri.query){
+      return;
     }
 
+    console.log(type_name, document, document.uri.fsPath);
+
+    let data = {
+      'run': 'api',
+      'api': {
+        'u': '/envt/on_type',
+        'p': {
+          "run_file": document.uri.fsPath,
+          "type_name": type_name,
+        }
+      }
+    };
+    Api.run(data);
+
+
   }
-  vscode.workspace.onDidOpenTextDocument((document) => {
-    getJsonData(document, 'onDidOpenTextDocument');
+  vscode.window.onDidChangeActiveTextEditor((Event) => {
+    if(Event){
+      getJsonData(Event.document, 'onDidChangeActiveTextEditor');
+    }
   }, this);
 
-  vscode.workspace.onDidCloseTextDocument((document) => {
-    getJsonData(document, 'onDidCloseTextDocument');
+  
+  vscode.workspace.onDidSaveTextDocument((document) => {
+    getJsonData(document, 'onDidSaveTextDocument');
   }, this);
 
-  vscode.workspace.onDidChangeTextDocument((envs) => {
-    getJsonData(envs.document, 'onDidChangeTextDocument');
-  }, this);
+
+  // vscode.workspace.onDidOpenTextDocument((document) => {
+  //   getJsonData(document, 'onDidOpenTextDocument');
+  // }, this);
+
+  // vscode.workspace.onDidCloseTextDocument((document) => {
+  //   getJsonData(document, 'onDidCloseTextDocument');
+  // }, this);
+
 
 
 

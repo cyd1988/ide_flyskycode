@@ -31,7 +31,7 @@ export class Util {
       document = vscode.window.activeTextEditor ? vscode.window.activeTextEditor.document : null;
     }
     if (!document) {
-      this.showError('当前激活的编辑器不是文件或者没有文件被打开！');
+      // this.showError('当前激活的编辑器不是文件或者没有文件被打开！');
       return '';
     }
     const currentFile = (document.uri ? document.uri : document).fsPath;
@@ -71,7 +71,7 @@ export class Util {
         null;
     }
     if (!document) {
-      this.showError('当前激活的编辑器不是文件或者没有文件被打开！');
+      // this.showError('当前激活的编辑器不是文件或者没有文件被打开！');
       return '';
     }
     const currentFile = document.uri.fsPath;
