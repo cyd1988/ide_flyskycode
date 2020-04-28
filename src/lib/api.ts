@@ -229,25 +229,36 @@ export class Api {
     }
 
     static r_input(data: any) {
-        let input: any = { password: false, placeHolder: '', value: '', prompt: '请输入目录：' };
-        for (const key in input) {
-            if (input.hasOwnProperty(key) && data.hasOwnProperty(key)) {
-                input[key] = data[key];
-            }
+
+        if (!data.hasOwnProperty('list')) {
+            data['list'] = [data];
         }
+
+        let info = data['list'].shift();
+        let input: any = { password: false, placeHolder: '', value: '', prompt: '请输入目录：' };
+        input = Util.merge(true, input, info);
+
         vscode.window.showInputBox({
             placeHolder: input.placeHolder,
             value: input.value,
             prompt: input.prompt,
             password: input.password
         }).then((name) => {
-            if (data.hasOwnProperty('to->v')) {
-                data = Util.str_to_obj(data, data['to->v'], name);
+
+            data['value'] = name;
+            if (info.hasOwnProperty('to->v')) {
+                data = Util.str_to_obj(data, info['to->v'], name);
             }
-            if (data.hasOwnProperty('run')) {
+
+            if(data.list.length>0){
+                Api.r_input(data);
+
+            }else if (data.hasOwnProperty('run')) {
                 Api.run(data);
             }
         });
+
+
     }
 
 

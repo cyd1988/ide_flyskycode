@@ -615,7 +615,9 @@ export class Util {
         range.start.line,
         range.start.character,
         editor.document.getText(range),
-        editor.document.lineAt(range.start.line).text
+        editor.document.lineAt(range.start.line).text,
+        range.end.line,
+        range.end.character
       ]);
     }
 

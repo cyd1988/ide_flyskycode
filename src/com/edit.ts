@@ -21,26 +21,15 @@ async function demoEdie(textEditor: vscode.TextEditor, edit: vscode.TextEditorEd
                     let position_ins: vscode.Position = new vscode.Position(info.line, info.char);
                     edit.insert(position_ins, info.con);
                 }
+            }else if(info.key === 'edit'){
+                let position_ins: vscode.Position = new vscode.Position(info.line, info.char);
+                let position_ins_end: vscode.Position = new vscode.Position(info.end.line, info.end.char);
+                let Range_ins: vscode.Range = new vscode.Range(position_ins, position_ins_end);
+                await edit.replace(Range_ins, info.con);
             }
         }
     }
 
-
-    // /**
-    //  * Replace a certain text region with a new value.
-    //  * You can use \r\n or \n in `value` and they will be normalized to the current [document](#TextDocument).
-    //  *
-    //  * @param location The range this operation should remove.
-    //  * @param value The new text this operation should insert after removing `location`.
-    //  */
-    // replace(location: Position | Range | Selection, value: string): void;
-
-    // /**
-    //  * Delete a certain text region.
-    //  *
-    //  * @param location The range this operation should remove.
-    //  */
-    // delete (location: Range | Selection): void;
 
 
 }
