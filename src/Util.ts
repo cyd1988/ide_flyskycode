@@ -51,7 +51,6 @@ export class Util {
       // vscode.workspace.rootPath 会不准确，且已过时
       // return vscode.workspace.rootPath + '/' + this._getProjectName(vscode, document);
     }
-    // console.log( workspaceFolders );
     workspaceFolders.forEach(folder => {
       if (currentFile.indexOf(folder) === 0) {
         projectPath = folder;

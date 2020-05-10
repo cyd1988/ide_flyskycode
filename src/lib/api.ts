@@ -112,6 +112,8 @@ export class Api {
             this.r_demo_edit(data[data['run']]);
         } else if (data.run === 'diff') {
             this.r_diff(data[data['run']]);
+        } else if (data.run === 'editSnippet') {
+            this.r_editSnippet(data[data['run']]);
         } else {
             console.log('没找到方法：api.run.data', data);
         }
@@ -124,6 +126,17 @@ export class Api {
             }
         }
     }
+
+    static r_editSnippet(data: any, run?: string) {
+        // let data = { 'value': 'fdsfsd', 'line': 3, 'chat': 3 };
+        let editor = vscode.window.activeTextEditor;
+        if (editor) {
+            let insertPosition = new vscode.Position(data.line, data.chat);
+            editor.insertSnippet(new vscode.SnippetString(data.value), insertPosition);
+        }
+    }
+
+
     static r_diff(data: any, run?: string) {
 
         // vscode.commands.executeCommand("vscode.diff", 
@@ -204,7 +217,7 @@ export class Api {
                         // viewColumn: vscode.ViewColumn.Two
                     };
                     vscode.window.showTextDocument(uri, options);
-                }else{
+                } else {
                     vscode.commands.executeCommand('vscode.openFolder', uri);
                 }
             }
@@ -250,10 +263,10 @@ export class Api {
                 data = Util.str_to_obj(data, info['to->v'], name);
             }
 
-            if(data.list.length>0){
+            if (data.list.length > 0) {
                 Api.r_input(data);
 
-            }else if (data.hasOwnProperty('run')) {
+            } else if (data.hasOwnProperty('run')) {
                 Api.run(data);
             }
         });
