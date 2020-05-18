@@ -72,7 +72,18 @@ export function activate(this: any, context: vscode.ExtensionContext) {
         }
       }
     },
-
+    {
+      name: 'extension.demo.sublime_list',
+      names: '右键列表',
+      'to->v': 'fsPath|p.api.p.SUBLIME_LIST_PATH',
+      p: {
+        run: 'api',
+        api: {
+          u: "/files/sublime_list",
+          p: { "SUBLIME_LIST_PATH": "" }
+        }
+      }
+    },
 
     // {
     //   name: 'extension.demo.paste_link',
@@ -87,7 +98,9 @@ export function activate(this: any, context: vscode.ExtensionContext) {
       let info = commands[key];
       context.subscriptions.push(vscode.commands.registerCommand(
         info.name, (args) => {
-          info = Util.to_v(info, args);
+          if (args) {
+            info = Util.to_v(info, args);
+          }
           Api.run(info.p);
         }));
     }
@@ -147,7 +160,7 @@ export function activate(this: any, context: vscode.ExtensionContext) {
 
   function getJsonData(document: vscode.TextDocument, type_name: string) {
 
-    if(document.uri.query){
+    if (document.uri.query) {
       return;
     }
 
@@ -168,12 +181,12 @@ export function activate(this: any, context: vscode.ExtensionContext) {
 
   }
   vscode.window.onDidChangeActiveTextEditor((Event) => {
-    if(Event){
+    if (Event) {
       getJsonData(Event.document, 'onDidChangeActiveTextEditor');
     }
   }, this);
 
-  
+
   vscode.workspace.onDidSaveTextDocument((document) => {
     getJsonData(document, 'onDidSaveTextDocument');
   }, this);

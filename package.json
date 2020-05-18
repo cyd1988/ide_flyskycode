@@ -2,7 +2,7 @@
     "name": "vscode-plugin-flyskycode",
     "displayName": "vscode-plugin-flyskycode",
     "description": "cyd1988",
-    "version": "0.1.0",
+    "version": "0.1.2",
     "publisher": "flyskycode",
     "engines": {
         "vscode": "^1.44.0"
@@ -106,6 +106,10 @@
                 "title": "粘贴-软链接"
             },
             {
+                "command": "extension.demo.sublime_list",
+                "title": "右键列表"
+            },
+            {
                 "command": "extension.demo.shell_open",
                 "title": "SHELL 打开文件"
             },
@@ -170,6 +174,10 @@
                 },
                 {
                     "command": "extension.demo.shell_paste",
+                    "group": "navigation"
+                },
+                {
+                    "command": "extension.demo.sublime_list",
                     "group": "navigation"
                 }
             ]
