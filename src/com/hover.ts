@@ -81,12 +81,22 @@ function getWordRegs(document: vscode.TextDocument, position: vscode.Position) {
     let regs = [/[^ '"]+/, /[^'"]+/,undefined ];
     let file:any = [];
     let line = 0;
+
+    let boot_dir = Util.getBootDir();
+
     for (let index = 0; index < regs.length; index++) {
         const reg = regs[index];
         let word: string = getWord(document, position, reg);
+
+   
         if( word.length < 1 ){
             continue;
         }
+        
+        if(  word.trim().substr(0,3) === '~+/' && boot_dir !==''  ){
+            word = boot_dir+word.trim().substr(2);
+        }
+
         let tm = Util.getFileLine(word);
         word = tm[0] + '';
         line = parseInt(tm[1] + '');

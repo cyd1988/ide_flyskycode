@@ -235,6 +235,7 @@ export class Api {
     }
 
     static r_api(data: any) {
+        data.p.file_dirs_s = 'VS-DIRS-SOURCE';
         data.p = Api.argsRun(data.p);
         http.post(data.u, Object.assign(data.p)).then(res => {
             Api.res(res, data);

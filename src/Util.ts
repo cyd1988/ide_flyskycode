@@ -149,7 +149,7 @@ export class Util {
     if (editor.selections[0].start.character ===
       editor.selections[0].end.character &&
       editor.selections[0].start.line === editor.selections[0].end.line) {
-        files = '';
+      files = '';
     } else {
       files = editor.document.getText(editor.selections[0]);
     }
@@ -416,6 +416,23 @@ export class Util {
     return Promise.resolve('运行结束');
   }
 
+  static getBootDir() {
+    let dirs = this.getWorkspaceFolders(0);
+    let boot_dir = '';
+    for (let index = 0; index < dirs.length; index++) {
+      const path = dirs[index];
+      if (
+        fs.existsSync(path + '/.env') ||
+        fs.existsSync(path + '/package.json') ||
+        fs.existsSync(path + '/composer.json') ||
+        fs.existsSync(path + '/node_modules')
+      ) {
+        boot_dir = path;
+        break;
+      }
+    }
+    return boot_dir;
+  }
   static getWorkspaceFolders(source = 0) {
     let list = vscode.workspace.workspaceFolders;
 
