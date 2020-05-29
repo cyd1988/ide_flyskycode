@@ -22,11 +22,11 @@ export class StatusBarMessage {
   static lm: string = '-';
   static slm = '+';
 
-  static delAllStatusBarMessage(){
-    if(this.nIntervId.length<=0){
+  static delAllStatusBarMessage() {
+    if (this.nIntervId.length <= 0) {
       return;
     }
-    let ar :string[]=[];
+    let ar: string[] = [];
     for (const key in this.nIntervId) {
       ar.push(key);
     }
