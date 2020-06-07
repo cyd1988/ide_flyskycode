@@ -150,21 +150,12 @@ export function activate(this: any, context: vscode.ExtensionContext) {
 
     }));
 
-  vscode.workspace.onDidSaveTextDocument((document) => {
-    console.log('onDidSaveTextDocument');
-    Util.getSystemInfo(function (msg: string) {
-      outputChannel.appendLine(msg);
-    });
-  }, this);
-
 
   function getJsonData(document: vscode.TextDocument, type_name: string) {
 
     if (document.uri.query) {
       return;
     }
-
-    console.log(type_name, document, document.uri.fsPath);
 
     let data = {
       'run': 'api',
@@ -177,15 +168,12 @@ export function activate(this: any, context: vscode.ExtensionContext) {
       }
     };
     Api.run(data);
-
-
   }
   vscode.window.onDidChangeActiveTextEditor((Event) => {
     if (Event) {
       getJsonData(Event.document, 'onDidChangeActiveTextEditor');
     }
   }, this);
-
 
   vscode.workspace.onDidSaveTextDocument((document) => {
     getJsonData(document, 'onDidSaveTextDocument');

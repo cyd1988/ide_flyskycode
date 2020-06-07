@@ -265,42 +265,6 @@ export class Util {
 
   static getPluginPath() { }
 
-  /**
-   *  查看温度
-   *
-   */
-  static getSystemInfo(func: Function) {
-    let bash = '/Volumes/webS/www/frame/git/mac/osx-cpu-temp/a.out -a';
-    let new_env = process.env;
-    new_env['MEGAVARIABLE'] = 'MEGAVALUE';
-    new_env['LC_CTYPE'] = 'UTF-8';
-    new_env['LANG'] = 'en_US.UTF-8';
-
-    let data = { 'cwd': '/tmp', 'env': new_env };
-
-    exec(bash, data, function (error: any, stdout: string, stderr: string) {
-      if (error !== null) {
-        console.log('exec error: ' + error);
-      } else {
-        let show_text = stdout;
-        show_text = show_text.replace(/\n/g, ' ');
-        show_text =
-          show_text.replace('Num fans: 2 Fan 0 - Left side   at ', ', ');
-        show_text = show_text.replace('Fan 1 - Right side  at ', ', ');
-        func(show_text);
-
-        // view.erase_status('prefixr_cpu_fan')
-        // view.set_status('prefixr_cpu_fan', stdout)
-        // sublime.set_timeout(lambda: view.erase_status('prefixr_cpu_fan'),
-        // 9000)
-
-        // console.log('复制完成 ', show_text);
-      }
-    });
-  }
-
-
-
   static async sublime_file_list(files: string) {
     let lm_strat: string = 'sublime_list_start:';
     let lm_end: string = 'sublime_list_end:';
