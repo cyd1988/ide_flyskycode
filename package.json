@@ -2,7 +2,7 @@
     "name": "vscode-plugin-flyskycode",
     "displayName": "vscode-plugin-flyskycode",
     "description": "cyd1988",
-    "version": "0.1.3",
+    "version": "0.1.6",
     "publisher": "flyskycode",
     "engines": {
         "vscode": "^1.44.0"
@@ -15,6 +15,109 @@
     ],
     "main": "./out/extension.js",
     "contributes": {
+        "languages": [
+            {
+                "id": "NGINX",
+                "aliases": [
+                    "NGINX"
+                ],
+                "extensions": [
+                    ".conf"
+                ],
+                "configuration": "./syntaxes/configuration/nginx-language-configuration.json"
+            },
+            {
+                "id": "dotenv",
+                "aliases": [
+                    "dotenv",
+                    "env"
+                ],
+                "extensions": [
+                    ".env"
+                ],
+                "configuration": "./syntaxes/configuration/env.language-configuration.json"
+            },
+            {
+                "id": "new_plain_text",
+                "aliases": [
+                    "new_plain_text"
+                ],
+                "extensions": [
+                    ".txt"
+                ],
+                "configuration": "./syntaxes/configuration/plain_text-language-configuration.json"
+            },
+            {
+                "id": "new_markdown",
+                "aliases": [
+                    "new_markdown"
+                ],
+                "extensions": [
+					".md",
+					".mkd",
+					".mdwn",
+					".mdown",
+					".markdown",
+					".markdn",
+					".mdtxt",
+					".mdtext",
+					".workbook"
+                ],
+                "configuration": "./syntaxes/configuration/markdown-language-configuration.json"
+            },
+            {
+                "id": "hosts",
+                "aliases": [
+                    "hosts"
+                ],
+                "extensions": [
+                    ".hosts"
+                ],
+                "configuration": "./syntaxes/configuration/hosts.language-configuration.json"
+            },
+            {
+                "id": "crontab",
+                "aliases": [
+                    "crontab"
+                ],
+                "extensions": [
+                    ".crontab"
+                ],
+                "configuration": "./syntaxes/configuration/crontab.language-configuration.json"
+            }
+        ],
+        "grammars": [
+            {
+                "language": "NGINX",
+                "scopeName": "source.nginx",
+                "path": "./syntaxes/nginx.tmLanguage"
+            },
+            {
+                "language": "dotenv",
+                "scopeName": "source.env",
+                "path": "./syntaxes/env.tmLanguage"
+            },
+            {
+                "language": "new_plain_text",
+                "scopeName": "source.txt",
+                "path": "./syntaxes/plain_text.tmLanguage"
+            },
+            {
+                "language": "new_markdown",
+                "scopeName": "text.html.new.markdown",
+                "path": "./syntaxes/markdown.json"
+            },
+            {
+                "language": "hosts",
+                "scopeName": "source.hosts",
+                "path": "./syntaxes/hosts.tmLanguage"
+            },
+            {
+                "language": "crontab",
+                "scopeName": "source.crontab",
+                "path": "./syntaxes/crontab.tmLanguage"
+            }
+        ],
         "configuration": {
             "type": "object",
             "title": "Code插件demo",

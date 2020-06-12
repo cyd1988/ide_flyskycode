@@ -1,0 +1,225 @@
+#################################################################
+## Iro
+################################################################ 
+##
+## * Press Ctrl + '+'/'-' To Zoom in
+## * Press Ctrl + S to save and recalculate... 
+## * Documents are saved to web storage.
+## * Only one save slot supported.
+## * Matches cannot span lines.
+## * Unicode chars must be defined in \u0000 to \uffff format.
+## * All matches must be contained by a single group ( ... )
+## * Look behinds not permitted, (?<= or (?<!
+## * Look forwards are permitted (?= or (?!
+## * Constants are defined as __my_const = (......)
+## * The \= format allows unescaped regular expressions
+## * Constants referenced by match \= $${__my_const}
+## * Constants can reference other constants
+## * You are free to delete all the default scopes.
+## * Twitter : ainslec , Web: http://eeyo.io/iro
+##
+################################################################
+
+name                   = plain_text
+file_extensions []     = txt;
+
+################################################################
+## Constants
+################################################################
+
+__MY_CONSTANT \= (\b[a-z][a-z0-9]*)
+
+################################################################
+## Styles
+################################################################
+
+
+styles [] {
+
+.comment : style {
+   color                 = light_green
+   italic                = true
+   ace_scope             = comment
+   textmate_scope        = comment
+   pygments_scope        = Comment
+}
+
+
+
+.numeric : style {
+   color                 = gold
+   ace_scope             = constant.numeric
+   textmate_scope        = constant.numeric
+   pygments_scope        = Number
+}
+
+.punctuation : style {
+   color     = red_2
+   ace_scope             = punctuation
+   textmate_scope        = punctuation
+   pygments_scope        = Punctuation
+}
+
+.text : style {
+   color                 = brown
+   ace_scope             = text
+   textmate_scope        = text
+   pygments_scope        = String
+}
+
+.illegal : style {
+   color                 = white
+   background_color      = red
+   ace_scope             = invalid
+   textmate_scope        = invalid
+   pygments_scope        = Generic.Error
+}
+
+
+
+
+
+
+.keyword : style {
+   color     = cyan
+   ace_scope             = keyword
+   textmate_scope        = keyword
+   pygments_scope        = Keyword
+}
+
+.double : style {
+   color                 = gold
+   ace_scope             = string.quoted.double
+   textmate_scope        = string.quoted.double
+   pygments_scope        = String
+}
+
+.single : style {
+   color                 = gold
+   ace_scope             = string.quoted.single
+   textmate_scope        = string.quoted.single
+   pygments_scope        = String
+}
+
+.quoted : style {
+   color                 = gold
+   ace_scope             = string.quoted
+   textmate_scope        = string.quoted
+   pygments_scope        = String
+}
+
+.function : style {
+   color                 = gold
+   ace_scope             = support.function
+   textmate_scope        = support.function
+   pygments_scope        = String
+}
+
+
+
+
+}
+
+#################################################
+## Parse contexts
+#################################################
+
+contexts [] {
+
+##############################################
+## Main Context - Entry point context
+##############################################
+
+main : context {
+
+   # string
+   : pattern {
+      regex          \= (\"[^\"]*?\")
+      styles []       = .double;
+   }
+   
+   # string
+   : pattern {
+      regex          \= (?='[^\n]*'.*$)(?!'s\s+[^\n]*'s\s+)('[^\n]*')
+      styles []       = .single;
+   }
+   
+   # special name
+   : pattern {
+      regex          \= ([A-Z]+\_[A-Z]+[A-Z\_]*)
+      styles []       = .quoted;
+   }
+   
+   # ll url
+   : pattern {
+      regex          \= (?:https?|s?ftp|ftps|file|smb|afp|nfs|(x-)?man|gopher|txmt)://\w+\.\w+(?:\.[a-zA-Z_/\?\=\d\-%]+)
+      styles []       = .quoted;
+   }
+
+   # title tag
+   : pattern {
+      regex          \= (^((?!\/\/|##).*(?:：|: ))[^\n]*?$)
+      styles []       = .keyword;
+   }
+    
+
+   # tag
+   : pattern {
+      regex          \= (\[[^\n]+?\])
+      styles []       = .function;
+   }
+    
+   
+   # title name
+   : pattern {
+      regex          \= (^\s*>>+[^\n]*)
+      styles []       = .keyword;
+   }
+    
+
+   # switch
+   : pattern {
+      regex          \= (?:^[\s]*|\b[\s]+)-[^-\s]+?(?=[\s:\|@]+)
+      styles []       = .quoted;
+   }
+    
+  
+   
+   
+   
+   
+}
+
+#################################################
+## End of Contexts
+#################################################
+
+###########################################
+## Numeric Context
+###########################################
+
+numeric : context {
+   : pattern {
+      regex          \= (\b\d+)
+      styles []       = .numeric;
+   }
+}
+
+###########################################
+## Multi Line Comment Context
+###########################################
+
+multi_line_comment : context {
+   description        = multiline
+   : inline_push {
+      regex          \= (/\*)
+      styles []       = .comment;
+      default_style   = .comment
+      : pop {
+         regex       \= (\*/)
+         styles []    = .comment;
+      }
+   }
+}
+   
+}

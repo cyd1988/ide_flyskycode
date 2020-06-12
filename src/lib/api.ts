@@ -61,13 +61,15 @@ export class Api {
                     args[key] = Util.SELECT_LINES(len);
                 } else if (val === 'VS-SELECT-LINES') {
                     args[key] = Util.SELECT_LINES();
+                } else if (val === 'VS-LANGUAGE_ID') {
+                    args[key] = Util.getLanguageId();
+                } else if (val === 'VS-SELECTED_TEXT') {
+                    args[key] = Util.getSelectedText();
                 }
             }
         }
         return args;
     }
-
-
 
 
 

@@ -614,6 +614,33 @@ export class Util {
     return selec;
   }
 
+  static getLanguageId() {
+    let document: vscode.TextDocument | null = vscode.window.activeTextEditor ?
+      vscode.window.activeTextEditor.document :
+      null;
+    if (document) {
+      return document.languageId + '';
+    } else {
+      return '';
+    }
+  }
+  static getSelectedText() {
+    let editor: vscode.TextEditor | undefined = vscode.window.activeTextEditor;
+
+    if (!editor) {
+      return '';
+    }
+
+    const selection = editor.selection;
+    let text = editor.document.getText(selection);
+
+    if (!text) {
+      const range = editor.document.getWordRangeAtPosition(selection.active);
+      text = editor.document.getText(range);
+    }
+    return text;
+  }
+
 
 
 
