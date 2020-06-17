@@ -263,13 +263,13 @@ export class Api {
             password: false, 
             placeHolder: '',  // 在输入框中显示为占位符的可选字符串，以指导用户键入内容。
             ignoreFocusOut: true,  // 设置为true可以在焦点移到编辑器的另一部分或另一个窗口时使输入框保持打开状态。
-            valueSelection: null,  // 
+            valueSelection: [],  // 
             value: '', 
             prompt: '请输入目录：'
         };
         input = Util.merge(true, input, info);
 
-        if(!input.valueSelection){
+        if(input.valueSelection.length < 1){
             input.valueSelection = [input.value.length, input.value.length];
         }
 
