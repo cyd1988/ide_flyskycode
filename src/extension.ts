@@ -131,6 +131,25 @@ export function activate(this: any, context: vscode.ExtensionContext) {
         args = { 'p': tm, 'u': '/init' };
       }
 
+
+      // 测试
+      if (args.p.hasOwnProperty('key') && args.p.key == 'ctrl+shift+alt+cmd+p') {
+
+        let data = {
+          run: 'input',
+          input: {
+            value: "/Users/webS/www/mynotes/web/test/test.md"
+          }
+        };
+        
+        console.log( data );
+        Api.run(data);
+
+        return;
+      }
+
+
+
       function ruPost() {
         args.p = Api.argsRun(args.p);
         if (args.run) {

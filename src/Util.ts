@@ -7,6 +7,7 @@ import { exec } from 'child_process';
 import * as vscode from 'vscode';
 import { outputChannel, AnyObj } from './lib/const';
 import { Jsoncd_init, Jsoncd } from './com/jsonOutline';
+import { FileSystemError, Uri, workspace } from 'vscode';
 
 
 export class Util {
@@ -639,6 +640,11 @@ export class Util {
       text = editor.document.getText(range);
     }
     return text;
+  }
+
+  public static async move(path: string, targetPath: string) {
+    await workspace.fs.rename(
+      Uri.file(path), Uri.file(targetPath), { overwrite: true });
   }
 
 

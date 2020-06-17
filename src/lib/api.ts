@@ -116,6 +116,8 @@ export class Api {
             this.r_diff(data[data['run']]);
         } else if (data.run === 'editSnippet') {
             this.r_editSnippet(data[data['run']]);
+        } else if (data.run === 'move_file') {
+            this.r_move_file(data[data['run']]);
         } else {
             console.log('没找到方法：api.run.data', data);
         }
@@ -127,6 +129,11 @@ export class Api {
                 this.run(new_data);
             }
         }
+    }
+
+    static r_move_file(data: any, run?: string) {
+        console.log( data );
+        Util.move(data['path'], data['targetPath']);
     }
 
     static r_editSnippet(data: any, run?: string) {
@@ -251,13 +258,27 @@ export class Api {
         }
 
         let info = data['list'].shift();
-        let input: any = { password: false, placeHolder: '', value: '', prompt: '请输入目录：' };
+
+        let input: any = { 
+            password: false, 
+            placeHolder: '',  // 在输入框中显示为占位符的可选字符串，以指导用户键入内容。
+            ignoreFocusOut: true,  // 设置为true可以在焦点移到编辑器的另一部分或另一个窗口时使输入框保持打开状态。
+            valueSelection: null,  // 
+            value: '', 
+            prompt: '请输入目录：'
+        };
         input = Util.merge(true, input, info);
+
+        if(!input.valueSelection){
+            input.valueSelection = [input.value.length, input.value.length];
+        }
 
         vscode.window.showInputBox({
             placeHolder: input.placeHolder,
             value: input.value,
             prompt: input.prompt,
+            ignoreFocusOut: input.ignoreFocusOut,
+            valueSelection: input.valueSelection,
             password: input.password
         }).then((name) => {
 
