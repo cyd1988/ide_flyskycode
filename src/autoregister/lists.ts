@@ -63,7 +63,8 @@ export async function fun_list(lists: AnyObj, call_list?: (...args: any[]) => an
       if (value.hasOwnProperty('run')) {
         Api.run(value);
       } else {
-        let val: string = (value.path + '').trim();
+        let source_val = value.path + '';
+        let val: string = source_val.trim();
 
         if (fs.existsSync(val)) {
           let uri = vscode.Uri.file(val);
@@ -72,7 +73,7 @@ export async function fun_list(lists: AnyObj, call_list?: (...args: any[]) => an
           let editor = vscode.window.activeTextEditor;
           if (editor && editor.selections.length > 0) {
             let pos: vscode.Position = editor.selections[0].start;
-            let uri = [{ "key": 'insert', "line": pos.line, 'char': pos.character, 'con': val }];
+            let uri = [{ "key": 'insert', "line": pos.line, 'char': pos.character, 'con': source_val }];
             vscode.commands.executeCommand('extension.demo.edit', uri);
           } else {
             outputChannel.show();

@@ -1,6 +1,7 @@
 import * as vscode from 'vscode';
 
 import { hover } from './com/hover';
+import {MessageService } from './lib/webSocket';
 
 import { Util } from './Util';
 import { Api } from './lib/api';
@@ -106,6 +107,8 @@ export function activate(this: any, context: vscode.ExtensionContext) {
     }
   }
 
+  MessageService.start();
+
   context.subscriptions.push(vscode.commands.registerTextEditorCommand(
     'extension.demo.registerTextEditor',
     (textEditor: vscode.TextEditor, edit: vscode.TextEditorEdit, args) => {
@@ -135,6 +138,15 @@ export function activate(this: any, context: vscode.ExtensionContext) {
       // 测试
       if (args.p.hasOwnProperty('key') && args.p.key == 'ctrl+shift+alt+cmd+p') {
 
+
+        Util.run_terminal({
+          pwd: '//Users/webS/', 
+          clear: 0, 
+          rest_focus: 0, 
+          val: 'll'
+        });
+
+        return;
         let data = {
           run: 'input',
           input: {
@@ -148,7 +160,17 @@ export function activate(this: any, context: vscode.ExtensionContext) {
         return;
       }
 
+      if (args.p.hasOwnProperty('key') && 
+        Object.keys(MessageService.SystemKeysList).length > 0 &&
+        MessageService.SystemKeysList[args.p.key]
+      ) {
+        const keys = args.p.key;
+        args = JSON.parse(JSON.stringify(MessageService.SystemKeysList[args.p.key]));
 
+        if (args.run && args[args.run].p) {
+          args[args.run].p.run_keyboard = keys;
+        }
+      }
 
       function ruPost() {
         args.p = Api.argsRun(args.p);

@@ -5,6 +5,7 @@ import { service as http } from './../lib/httpIndex';
 import fs = require('fs');
 import { outputChannel } from './../lib/const';
 import { Jsoncd } from './../com/jsonOutline';
+import { MessageService } from './../lib/webSocket';
 
 
 export class Api {
@@ -34,35 +35,44 @@ export class Api {
                 let val = args[key] + '';
                 if (val === 'VS-LINE') {
                     args[key] = Util.getSelecttextLine().trim();
+
                 } else if (val === 'VS-SELECT-LINE-ONE') {
                     args[key] = Util.getSelecttextLineOne().trim();
+
                 } else if (val === 'VS-FILE_DIR') {
                     args[key] = Util.getDirname(Util.getProjectPath()) + '/';
                     if (args[key] === '/') {
                         Util.showError('获取不到文件目录！');
                     }
+
                 } else if (val === 'VS-FILE_PATH') {
                     args[key] = Util.getProjectPath();
                     if (args[key] === '') {
                         Util.showError('获取不到文件路径！');
                     }
+
                 } else if (val === 'VS-DIRS') {
                     args[key] = Util.getWorkspaceFolders();
                     if (args[key] === '') {
                         Util.showError('获取不到文件路径！');
                     }
+
                 } else if (val === 'VS-DIRS-SOURCE') {
                     args[key] = Util.getWorkspaceFolders(1);
                     if (args[key] === '') {
                         Util.showError('获取不到文件路径！');
                     }
+
                 } else if (val.substr(0, 15) === 'VS-SELECT-LINE-') {  // VS-SELECT-LINE-5
                     let len = parseInt(val.replace('VS-SELECT-LINE-', ''));
                     args[key] = Util.SELECT_LINES(len);
+
                 } else if (val === 'VS-SELECT-LINES') {
                     args[key] = Util.SELECT_LINES();
+
                 } else if (val === 'VS-LANGUAGE_ID') {
                     args[key] = Util.getLanguageId();
+
                 } else if (val === 'VS-SELECTED_TEXT') {
                     args[key] = Util.getSelectedText();
                 }
@@ -74,7 +84,27 @@ export class Api {
 
 
 
-    static run(data: any) {
+    static run(data: any, old_data: any = {}) {
+
+        if (old_data.hasOwnProperty('runToken')) {
+            let run_api;
+            if (MessageService.SystemKeysList['runToken']) {
+                run_api = MessageService.SystemKeysList['runToken'];
+            } else {
+                run_api = {
+                    u: "/init/runToken",
+                    p: {
+                        'empty': '',
+                    }
+                };
+            }
+            run_api['p'] = data;
+            this.r_api(run_api);
+            return;
+        }
+
+
+
         if (!data.hasOwnProperty('run') || !data.hasOwnProperty(data['run'])) {
             console.log('data', data);
             Util.showError('属性不存在-' + data.string);
@@ -94,30 +124,44 @@ export class Api {
 
         if (data['run'] === 'api') {
             this.r_api(data[data['run']]);
+
         } else if (data.run === 'lists' || data.run === 'ecs_lists') {
             this.r_list(data[data['run']], data['run']);
+
         } else if (data.run === 'input') {
             this.r_input(data[data['run']]);
+
         } else if (data.run === 'open_file') {
             this.r_open_file(data[data['run']]);
+
         } else if (data.run === 'run_shell') {
             this.r_run_shell(data[data['run']]);
+
         } else if (data.run === 'outputChannel') {
             this.r_outputChannel(data[data['run']]);
+
         } else if (data.run === 'setJson') {
             this.r_setJson(data[data['run']]);
+
         } else if (data.run === 'insert') {
             this.r_insert(data[data['run']]);
+
         } else if (data.run === 'set_selections') {
             this.r_set_selections(data[data['run']]);
+
         } else if (data.run === 'demo_edit') {
             this.r_demo_edit(data[data['run']]);
+
         } else if (data.run === 'diff') {
             this.r_diff(data[data['run']]);
+
         } else if (data.run === 'editSnippet') {
             this.r_editSnippet(data[data['run']]);
+
         } else if (data.run === 'move_file') {
             this.r_move_file(data[data['run']]);
+        } else if (data.run === 'getText') {
+            this.r_getText(data[data['run']], data);
         } else {
             console.log('没找到方法：api.run.data', data);
         }
@@ -131,8 +175,31 @@ export class Api {
         }
     }
 
+    static r_getText(data: any, old_data: any) {
+
+        let document: vscode.TextDocument | null = vscode.window.activeTextEditor ?
+            vscode.window.activeTextEditor.document : null;
+
+        if (!document) {
+            for (let index = 0; index < data.length; index++) {
+                data[index]['con'] = '';
+            }
+        } else {
+
+            for (let index = 0; index < data.length; index++) {
+                const info = data[index];
+                let position_ins: vscode.Position = new vscode.Position(info.line, info.char);
+                let position_ins_end: vscode.Position = new vscode.Position(info.end_line, info.end_char);
+                let Range_ins: vscode.Range = new vscode.Range(position_ins, position_ins_end);
+                data[index]['con'] = document.getText(Range_ins);
+            }
+        }
+        Api.run(data, old_data);
+    }
+
+
     static r_move_file(data: any, run?: string) {
-        console.log( data );
+        console.log(data);
         Util.move(data['path'], data['targetPath']);
     }
 
@@ -199,10 +266,13 @@ export class Api {
         }
         outputChannel.appendLine(op.val);
     }
-
-
+    // run_terminal 的data内容说明
+    // pwd: '',      // 当前路径
+    // clear: 1,     // 清除之前内容
+    // val: '',      // 要执行的命令
+    // rest_focus: 0 // 焦点回到编辑器
     static r_run_shell(data: any, run?: string) {
-        Util.run_terminal(data['val']);
+        Util.run_terminal(data);
     }
 
     static r_open_file(data: any, run?: string) {
@@ -236,6 +306,7 @@ export class Api {
     static r_list(data: any, run: string) {
         if (run === 'lists') {
             fun_list(data);
+
         } else if (run === 'ecs_lists') {
             fun_list(data, lists => {
                 return lists;
@@ -259,17 +330,17 @@ export class Api {
 
         let info = data['list'].shift();
 
-        let input: any = { 
-            password: false, 
+        let input: any = {
+            password: false,
             placeHolder: '',  // 在输入框中显示为占位符的可选字符串，以指导用户键入内容。
             ignoreFocusOut: true,  // 设置为true可以在焦点移到编辑器的另一部分或另一个窗口时使输入框保持打开状态。
             valueSelection: [],  // 
-            value: '', 
+            value: '',
             prompt: '请输入目录：'
         };
         input = Util.merge(true, input, info);
 
-        if(input.valueSelection.length < 1){
+        if (input.valueSelection.length < 1) {
             input.valueSelection = [input.value.length, input.value.length];
         }
 
@@ -289,6 +360,7 @@ export class Api {
 
             if (data.list.length > 0) {
                 Api.r_input(data);
+
 
             } else if (data.hasOwnProperty('run')) {
                 Api.run(data);

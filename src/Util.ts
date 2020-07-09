@@ -340,26 +340,48 @@ export class Util {
    *  文字到编辑器 terminal 运行
    *
    */
-  static run_terminal(bashs: string, pwd: string = '') {
+  static run_terminal(data: any) {
+    let fig: any = {
+      pwd: '',      // 当前路径
+      clear: 1,     // 清除之前内容
+      val: '',      // 要执行的命令
+      rest_focus: 0 // 焦点回到编辑器
+    };
+    fig = Util.merge(true, fig, data);
+
     let text = '';
-    if (pwd.startsWith('/Users/chenyudong/Library/')) {
-      pwd = '';
+    if (fig.pwd.startsWith('/Users/chenyudong/Library/')) {
+      fig.pwd = '';
     }
 
-    if (pwd) {
-      text += 'cd "' + pwd + '"' + '\n';
+    if (fig.pwd) {
+      text += 'cd "' + fig.pwd + '"' + '\n';
     }
-    text += '\n\n\n';
-    text += 'clear' + '\n';
-    text += bashs + '\n';
+
+    if (fig.clear == 1) {
+      text += 'clear' + '\n';
+    } else {
+      text += '\n\n\n';
+    }
+
+    text += fig.val + '\n';
 
     vscode.commands
       .executeCommand('workbench.action.terminal.toggleTerminal')
       .then(sucess => {
-        vscode.commands.executeCommand(
-          'workbench.action.terminal.clear');  // 清除控制台
-        vscode.commands.executeCommand(
-          'workbench.action.terminal.sendSequence', { 'text': text });
+
+        if (fig.clear == 1) {
+          vscode.commands.executeCommand('workbench.action.terminal.clear');  // 清除控制台
+        }
+
+        vscode.commands.executeCommand('workbench.action.terminal.sendSequence', { 'text': text })
+          .then(sucess => {
+            // 回到焦点
+            if (fig.rest_focus == 1 && vscode.window.activeTextEditor) {
+              vscode.window.showTextDocument(vscode.window.activeTextEditor.document.uri);
+            }
+          });
+
       });
   }
   static async ctrls(document: vscode.TextDocument, is_await = 1) {

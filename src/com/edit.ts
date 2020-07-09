@@ -25,7 +25,7 @@ async function demoEdie(textEditor: vscode.TextEditor, edit: vscode.TextEditorEd
                 let position_ins: vscode.Position = new vscode.Position(info.line, info.char);
                 let position_ins_end: vscode.Position = new vscode.Position(info.end.line, info.end.char);
                 let Range_ins: vscode.Range = new vscode.Range(position_ins, position_ins_end);
-                await edit.replace(Range_ins, info.con);
+                edit.replace(Range_ins, info.con);
             }
         }
     }

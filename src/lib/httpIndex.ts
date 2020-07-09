@@ -45,12 +45,15 @@ service.interceptors.request.use(
             config.url = configUrl + config.url;
         }
 
+
+        MessageService.send(config);
+  
+
         if(!config.data.notGetJsonData){
             // StatusBarMessage.setStatusBarMessage('f-net');
         }
 
         // console.log(JSON.stringify(config));
-        MessageService.send(config);
         config.cancelToken = new axios.CancelToken(cancel => {
             cancel();
          });

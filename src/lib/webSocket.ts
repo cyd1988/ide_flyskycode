@@ -3,9 +3,98 @@ import * as WebSocket from "ws";
 
 import { Api } from './../lib/api';
 import { Util } from '../Util';
-
+import e = require("express");
 
 let webSocketStatus = 0;
+
+
+/**
+ * 分析返回维埃里
+ * 功能列表: 
+ * 1. 如果为 runTOken 的返回就不处理，添加到 MessageService.runTokens 列表
+ * 2. 如果查找到就，外理下 MessageService.runTokens 的超时内容
+ * 说明: 
+ * #. 如果查找到就不进行后边的外理
+ * @param data 返回的结果
+ */
+function runToken(data: any) {
+
+  if (
+    data.hasOwnProperty('data') &&
+    typeof data.data === 'object' &&
+    data.data.hasOwnProperty('runToken') &&
+    data.data.runToken !== '') {
+
+    let new_time = (new Date()).getTime();
+    let info = data.data;
+
+    info['runTokenAddTime'] = new_time;
+
+    MessageService.runTokens[info.runToken] = info;
+
+
+    for (const key in MessageService.runTokens) {
+      if (MessageService.runTokens.hasOwnProperty(key)) {
+
+        const element = MessageService.runTokens[key];
+
+        if (new_time - element['runTokenAddTime'] > 30 * 1000) {
+          delete (MessageService.runTokens[key]);
+        }
+
+      }
+    }
+
+    return true;
+  } else {
+    return false;
+  }
+}
+
+/**
+ * 快捷键-方法映射存储
+ * 检查是否返回 SystemKeysList 快捷键-方法映射
+ * @param data 返回结果
+ */
+function runSystemKeysList(data: any) {
+  let back = false;
+
+  if (
+    data.hasOwnProperty('data') &&
+    typeof data.data === 'object' &&
+    data.data.hasOwnProperty('SystemKeysList')) {
+
+    MessageService.SystemKeysList = data.data['SystemKeysList'];
+
+    back = true;
+  }
+
+  return back;
+}
+
+
+/**
+ * 1. 重置 快捷键-方法映射
+ * 1. 发起一个 快捷键-方法映射 的请求
+ */
+function runSystemKeysListReloat() {
+  MessageService.SystemKeysList = {}
+  let data = {
+    run: 'api',
+    api: {
+      u: "/init/getKeys",
+      p: {
+        'empty': '',
+      }
+    }
+  };
+  Api.run(data);
+}
+
+
+
+
+
 
 export class MessageService {
   webSocket: WebSocket;
@@ -13,7 +102,17 @@ export class MessageService {
   types = '';
   static obj: any;
   static arr: any[] = [];
+  static runTokens: any = {};
+  static SystemKeysList: any = {};
   static reload_time: Date = new Date(-3);
+
+
+  static async start() {
+    if (!this.obj) {
+      this.obj = new MessageService();
+    }
+  }
+
 
   static async send(masg?: Object | string) {
     if (masg) {
@@ -27,13 +126,14 @@ export class MessageService {
         return;
       }
 
-      masg = this.arr.shift();
-      if (typeof masg === 'object') {
-        masg = JSON.stringify(masg);
+      let data = this.arr.shift();
+
+      let masg_str = data;
+      if (typeof masg_str === 'object') {
+        masg_str = JSON.stringify(masg_str);
       }
 
-      this.obj.webSocket.send(masg, (aa: any) => {
-        // console.log('aaa', aa);
+      this.obj.webSocket.send(masg_str, (aa: any) => {
         MessageService.send();
       });
     }
@@ -61,7 +161,6 @@ export class MessageService {
 
 
 
-
   // async inits() {
   constructor() {
     let url = `ws://${this.url}/${this.types}`;
@@ -76,20 +175,25 @@ export class MessageService {
   // 建立连接成功后的状态
   webSocketOnOpen(event: WebSocket.OpenEvent) {
     webSocketStatus = 1;
-    MessageService.send();
+    runSystemKeysListReloat();
   }
   // 获取到后台消息的事件，操作数据的代码在onmessage中书写
   webSocketOnMessage(res: WebSocket.MessageEvent) {
 
     try {
-
       let data = JSON.parse(res.data + '');
+
+      if (runToken(data)) { return; }
+
+      if (runSystemKeysList(data)) { return; }
+
+
       if (data.status === 'success') {
         Api.res(data);
 
         if (typeof data.data === 'object' && data.data.show_msg) {
           Util.showInfo(data.data.show_msg);
-        }else if (typeof data.data === 'object' && data.data.show_msg_error) {
+        } else if (typeof data.data === 'object' && data.data.show_msg_error) {
           Util.showError(data.data.show_msg_error);
         }
       } else {
@@ -106,6 +210,7 @@ export class MessageService {
   }
   // 关闭连接
   webSocketOnClose() {
+    MessageService.SystemKeysList = {}
     webSocketStatus = 0;
     console.log('websocket连接已关闭');
     MessageService.reload();
@@ -113,6 +218,7 @@ export class MessageService {
 
   //连接失败的事件
   webSocketOnError(res: any) {
+    MessageService.SystemKeysList = {}
     webSocketStatus = 0;
     console.log('websocket连接失败');
     MessageService.reload();

@@ -2,6 +2,8 @@ import * as vscode from 'vscode';
 import path = require('path');
 import fs = require('fs');
 import { Util } from '../Util';
+import { Api } from '../lib/api';
+import {MessageService } from './../lib/webSocket';
 import {
     DocumentLinkProvider,
     TextDocument,
@@ -78,8 +80,8 @@ class LinkProvider implements DocumentLinkProvider {
 
 function getWordRegs(document: vscode.TextDocument, position: vscode.Position) {
     // let regs = [undefined, /[^'"]+/];
-    let regs = [/[^ '"]+/, /[^'"]+/,undefined ];
-    let file:any = [];
+    let regs = [/[^ '"]+/, /[^'"]+/, undefined];
+    let file: any = [];
     let line = 0;
 
     let boot_dir = Util.getBootDir();
@@ -88,20 +90,20 @@ function getWordRegs(document: vscode.TextDocument, position: vscode.Position) {
         const reg = regs[index];
         let word: string = getWord(document, position, reg);
 
-   
-        if( word.length < 1 ){
+
+        if (word.length < 1) {
             continue;
         }
-        
-        if(  word.trim().substr(0,3) === '~+/' && boot_dir !==''  ){
-            word = boot_dir+word.trim().substr(2);
+
+        if (word.trim().substr(0, 3) === '~+/' && boot_dir !== '') {
+            word = boot_dir + word.trim().substr(2);
         }
 
         let tm = Util.getFileLine(word);
         word = tm[0] + '';
         line = parseInt(tm[1] + '');
         file = Util.getWordFile(word);
-        if (file.length > 0){
+        if (file.length > 0) {
             break;
         }
     }
@@ -133,7 +135,7 @@ function provideHover(document: vscode.TextDocument, position: any, token: any) 
     const workDir = path.dirname(fileName);
     let word: string = getWord(document, position);
 
-    let tm = getWordRegs(document,position);
+    let tm = getWordRegs(document, position);
     const file = tm[1];
 
     if (file.length > 0) {
@@ -167,7 +169,7 @@ function provideHover(document: vscode.TextDocument, position: any, token: any) 
  * @param {*} token 
  */
 function provideDefinition(document: vscode.TextDocument, position: vscode.Position, token: vscode.CancellationToken) {
-    let tm = getWordRegs(document,position);
+    let tm = getWordRegs(document, position);
     const line = tm[0];
     const file = tm[1];
 
@@ -177,6 +179,95 @@ function provideDefinition(document: vscode.TextDocument, position: vscode.Posit
     }
     return;
 }
+
+
+const sleep = () => new Promise((res, rej) => setTimeout(res, 10));
+
+let provideDefinitionAc: vscode.DefinitionProvider = {
+    async provideDefinition(document: vscode.TextDocument, position: vscode.Position, token: vscode.CancellationToken) {
+
+        let word: string = getWord(document, position);
+        let runToken = (new Date()).getTime();
+
+        let data = {
+            run: 'api',
+            api: {
+                u: "/envt/on_provideDefinition",
+                p: { 
+                    'word' : word,
+                    'runToken': runToken,
+                    'position': position,
+                    'select_lines': Util.SELECT_LINES(),
+                }
+            }
+        };
+        Api.run(data);
+
+        let info;
+
+        for (let index = 0; index < 40; index++) {
+            if(MessageService.runTokens[runToken]){
+                info = MessageService.runTokens[runToken];
+                delete(MessageService.runTokens[runToken]);
+                break;
+            }
+            await sleep();
+        }
+
+        if(info && info['provide'] && info['provide'].length>0){
+            let one = info['provide'][0];
+            return new vscode.Location(vscode.Uri.file(one['file']), new vscode.Position(one['line'], one['character']));
+        }
+
+        return;
+    }
+}
+
+
+
+
+let provideHoverAc: vscode.HoverProvider = {
+    async provideHover(document: vscode.TextDocument, position: any, token: any) {
+
+        let word: string = getWord(document, position);
+        let runToken = (new Date()).getTime();
+
+        let data = {
+            run: 'api',
+            api: {
+                u: "/envt/on_provideHover",
+                p: { 
+                    'word' : word,
+                    'runToken': runToken,
+                    'position': position,
+                    'select_lines': Util.SELECT_LINES(),
+                }
+            }
+        };
+        Api.run(data);
+
+        let info;
+        let html: string[] = [];
+
+        for (let index = 0; index < 40; index++) {
+            if(MessageService.runTokens[runToken]){
+                info = MessageService.runTokens[runToken];
+                delete(MessageService.runTokens[runToken]);
+                break;
+            }
+            await sleep();
+        }
+
+        if(info && info['hover']){
+            html = info['hover']
+        }
+
+        return new vscode.Hover(html);
+    }
+}
+
+
+
 
 export function hover(context: any) {
     // 注册鼠标悬停提示
@@ -188,6 +279,9 @@ export function hover(context: any) {
     context.subscriptions.push(vscode.languages.registerDefinitionProvider('*', {
         provideDefinition
     }));
+
+    context.subscriptions.push(vscode.languages.registerHoverProvider('*', provideHoverAc));
+    context.subscriptions.push(vscode.languages.registerDefinitionProvider('*', provideDefinitionAc));
 
     // context.subscriptions.push(vscode.languages.registerDocumentLinkProvider('*', new LinkProvider()));
 }
