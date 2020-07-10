@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 
 import { hover } from './com/hover';
-import {MessageService } from './lib/webSocket';
+import { MessageService } from './lib/webSocket';
 
 import { Util } from './Util';
 import { Api } from './lib/api';
@@ -138,11 +138,18 @@ export function activate(this: any, context: vscode.ExtensionContext) {
       // 测试
       if (args.p.hasOwnProperty('key') && args.p.key == 'ctrl+shift+alt+cmd+p') {
 
+        Api.r_outputChannel({
+          rest_focus: 1,
+          val: 'fsdfsdf',
+          show: 1,
+          clear: 0
+        });
 
+        return;
         Util.run_terminal({
-          pwd: '//Users/webS/', 
-          clear: 0, 
-          rest_focus: 0, 
+          pwd: '//Users/webS/',
+          clear: 0,
+          rest_focus: 0,
           val: 'll'
         });
 
@@ -153,14 +160,14 @@ export function activate(this: any, context: vscode.ExtensionContext) {
             value: "/Users/webS/www/mynotes/web/test/test.md"
           }
         };
-        
-        console.log( data );
+
+        console.log(data);
         Api.run(data);
 
         return;
       }
 
-      if (args.p.hasOwnProperty('key') && 
+      if (args.p.hasOwnProperty('key') &&
         Object.keys(MessageService.SystemKeysList).length > 0 &&
         MessageService.SystemKeysList[args.p.key]
       ) {

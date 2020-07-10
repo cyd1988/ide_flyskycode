@@ -256,16 +256,22 @@ export class Api {
     }
 
     static r_outputChannel(data: any, run?: string) {
-        let op: any = { show: 1, clear: 0 };
+        let op: any = { show: 1, clear: 0, rest_focus: 1 };
         op = Util.merge(true, op, data);
+
         if (op.show) {
-            outputChannel.show();
+            let preserveFocus = op.rest_focus == 1 ? true : false;
+            outputChannel.show(preserveFocus);
         }
+
         if (op.clear) {
             outputChannel.clear();
         }
+
         outputChannel.appendLine(op.val);
     }
+
+
     // run_terminal 的data内容说明
     // pwd: '',      // 当前路径
     // clear: 1,     // 清除之前内容
