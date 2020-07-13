@@ -2,7 +2,7 @@
     "name": "vscode-plugin-flyskycode",
     "displayName": "vscode-plugin-flyskycode",
     "description": "cyd1988",
-    "version": "0.2.5",
+    "version": "0.2.6",
     "publisher": "flyskycode",
     "engines": {
         "vscode": "^1.44.0"
@@ -53,15 +53,15 @@
                     "new_markdown"
                 ],
                 "extensions": [
-					".md",
-					".mkd",
-					".mdwn",
-					".mdown",
-					".markdown",
-					".markdn",
-					".mdtxt",
-					".mdtext",
-					".workbook"
+                    ".md",
+                    ".mkd",
+                    ".mdwn",
+                    ".mdown",
+                    ".markdown",
+                    ".markdn",
+                    ".mdtxt",
+                    ".mdtext",
+                    ".workbook"
                 ],
                 "configuration": "./syntaxes/configuration/markdown-language-configuration.json"
             },
@@ -84,6 +84,16 @@
                     ".crontab"
                 ],
                 "configuration": "./syntaxes/configuration/crontab.language-configuration.json"
+            },
+            {
+                "id": "applescript",
+                "aliases": [
+                    "applescript"
+                ],
+                "extensions": [
+                    ".applescript"
+                ],
+                "configuration": "./syntaxes/applescript/config/applescript.configuration.json"
             }
         ],
         "grammars": [
@@ -116,6 +126,21 @@
                 "language": "crontab",
                 "scopeName": "source.crontab",
                 "path": "./syntaxes/crontab.tmLanguage"
+            },
+            {
+                "language": "applescript",
+                "scopeName": "source.applescript",
+                "path": "./syntaxes/applescript/syntaxes/applescript.tmLanguage"
+            }
+        ],
+        "snippets": [
+            {
+                "language": "javascript",
+                "path": "./snippets/javascript.json"
+            },
+            {
+                "language": "applescript",
+                "path": "./syntaxes/applescript/snippets/applescript.json"
             }
         ],
         "configuration": {
@@ -285,12 +310,6 @@
                 }
             ]
         },
-        "snippets": [
-            {
-                "language": "javascript",
-                "path": "./snippets/javascript.json"
-            }
-        ],
         "viewsContainers": {
             "activitybar": [
                 {
