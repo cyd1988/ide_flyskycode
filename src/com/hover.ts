@@ -3,7 +3,10 @@ import path = require('path');
 import fs = require('fs');
 import { Util } from '../Util';
 import { Api } from '../lib/api';
-import {MessageService } from './../lib/webSocket';
+import { MessageService } from './../lib/webSocket';
+import { sockRunToken } from './../lib/sockRunToken';
+
+
 import {
     DocumentLinkProvider,
     TextDocument,
@@ -78,10 +81,15 @@ class LinkProvider implements DocumentLinkProvider {
     }
 }
 
-function getWordRegs(document: vscode.TextDocument, position: vscode.Position) {
+function getWordRegs(document: vscode.TextDocument, position: vscode.Position, run_name = '') {
     // let regs = [undefined, /[^'"]+/];
-    let regs = [/[^ '"]+/, /[^'"]+/, undefined];
+    let regs = [
+        /[^'"]+/,
+        /[^ '"]+/,
+        undefined
+    ];
     let file: any = [];
+    let line_tm: any = [];
     let line = 0;
 
     let boot_dir = Util.getBootDir();
@@ -89,7 +97,6 @@ function getWordRegs(document: vscode.TextDocument, position: vscode.Position) {
     for (let index = 0; index < regs.length; index++) {
         const reg = regs[index];
         let word: string = getWord(document, position, reg);
-
 
         if (word.length < 1) {
             continue;
@@ -99,10 +106,12 @@ function getWordRegs(document: vscode.TextDocument, position: vscode.Position) {
             word = boot_dir + word.trim().substr(2);
         }
 
-        let tm = Util.getFileLine(word);
-        word = tm[0] + '';
-        line = parseInt(tm[1] + '');
-        file = Util.getWordFile(word);
+        line_tm = Util.getFileLine(word);
+        word = line_tm[0] + '';
+        line = parseInt(line_tm[1] + '');
+
+        file = Util.getWordFile(word, line_tm, run_name);
+
         if (file.length > 0) {
             break;
         }
@@ -135,16 +144,16 @@ function provideHover(document: vscode.TextDocument, position: any, token: any) 
     const workDir = path.dirname(fileName);
     let word: string = getWord(document, position);
 
-    let tm = getWordRegs(document, position);
+    let tm = getWordRegs(document, position, 'provideHover');
     const file = tm[1];
 
     if (file.length > 0) {
         let html: string[] = [];
         file.forEach((val: string) => {
-            val = path.join(val, "");
-            val = val.replace(/ /g, '%20');
-            let name = path.basename(val);
-            html.push(`[${name}](${val}) ${val}`);
+            let file_path = path.join(val[0], "");
+            file_path = file_path.replace(/ /g, '%20');
+            let name = path.basename(file_path);
+            html.push(`[${name}](${file_path}) ${file_path}`);
         });
         return new vscode.Hover(html);
     } else if (/\/package\.json$/.test(fileName)) {
@@ -169,19 +178,29 @@ function provideHover(document: vscode.TextDocument, position: any, token: any) 
  * @param {*} token 
  */
 function provideDefinition(document: vscode.TextDocument, position: vscode.Position, token: vscode.CancellationToken) {
-    let tm = getWordRegs(document, position);
+    let tm = getWordRegs(document, position, 'provideDefinition');
     const line = tm[0];
     const file = tm[1];
 
     if (file.length > 0) {
-        let file_name = path.join(file[0], "");
-        return new vscode.Location(vscode.Uri.file(file_name), new vscode.Position(line, 0));
+
+        let file_path = path.join(file[0][0], "");
+        if (file[0].length === 4) {
+
+            return new vscode.Location(vscode.Uri.file(file_path),
+                new vscode.Range(
+                    new vscode.Position(file[0][1], file[0][2]),
+                    new vscode.Position(file[0][1], file[0][3])
+                )
+            );
+        } else {
+            return new vscode.Location(vscode.Uri.file(file_path), new vscode.Position(line, 0));
+        }
     }
     return;
 }
 
 
-const sleep = () => new Promise((res, rej) => setTimeout(res, 10));
 
 let provideDefinitionAc: vscode.DefinitionProvider = {
     async provideDefinition(document: vscode.TextDocument, position: vscode.Position, token: vscode.CancellationToken) {
@@ -193,28 +212,18 @@ let provideDefinitionAc: vscode.DefinitionProvider = {
             run: 'api',
             api: {
                 u: "/envt/on_provideDefinition",
-                p: { 
-                    'word' : word,
+                p: {
+                    'word': word,
                     'runToken': runToken,
                     'position': position,
                     'select_lines': Util.SELECT_LINES(),
                 }
             }
         };
-        Api.run(data);
 
-        let info;
+        let info:any = await sockRunToken.apiRun(data);
 
-        for (let index = 0; index < 40; index++) {
-            if(MessageService.runTokens[runToken]){
-                info = MessageService.runTokens[runToken];
-                delete(MessageService.runTokens[runToken]);
-                break;
-            }
-            await sleep();
-        }
-
-        if(info && info['provide'] && info['provide'].length>0){
+        if (info && info['provide'] && info['provide'].length > 0) {
             let one = info['provide'][0];
             return new vscode.Location(vscode.Uri.file(one['file']), new vscode.Position(one['line'], one['character']));
         }
@@ -230,35 +239,24 @@ let provideHoverAc: vscode.HoverProvider = {
     async provideHover(document: vscode.TextDocument, position: any, token: any) {
 
         let word: string = getWord(document, position);
-        let runToken = (new Date()).getTime();
-
+   
         let data = {
             run: 'api',
             api: {
                 u: "/envt/on_provideHover",
-                p: { 
-                    'word' : word,
-                    'runToken': runToken,
+                p: {
+                    'word': word,
+                    'runToken': sockRunToken.getToken(),
                     'position': position,
                     'select_lines': Util.SELECT_LINES(),
                 }
             }
         };
-        Api.run(data);
+        let info:any = await sockRunToken.apiRun(data);
 
-        let info;
         let html: string[] = [];
 
-        for (let index = 0; index < 40; index++) {
-            if(MessageService.runTokens[runToken]){
-                info = MessageService.runTokens[runToken];
-                delete(MessageService.runTokens[runToken]);
-                break;
-            }
-            await sleep();
-        }
-
-        if(info && info['hover']){
+        if (info && info['hover']) {
             html = info['hover']
         }
 

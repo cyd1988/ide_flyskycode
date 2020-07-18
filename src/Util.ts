@@ -450,7 +450,8 @@ export class Util {
     return workspaceFolders;
   }
 
-  static getWordFile(word: string) {
+  static getWordFile(word: string, line_tm: string, run_name: string) {
+
     function check(workDir: string, word: string) {
       let file = '';
       if (!file && Util.isfile(word)) {
@@ -474,30 +475,55 @@ export class Util {
     let file: string[] = [];
     list.forEach(val => {
       const tm = check(val, word);
-      if (tm && !file.find(v => v === tm)) {
-        file.push(tm);
+      if (tm && !file.find(v => v[0] === tm)) {
+
+        let item: any = [tm];
+        if (run_name == 'provideDefinition' && line_tm.length === 4 && line_tm[2] == '::KK') {
+
+          let content = fs.readFileSync(tm + '', "utf-8");
+          let pos = content.indexOf(line_tm[3]);
+
+          if (pos !== -1) {
+            let list = content.substr(0, pos).split("\n");
+            content = '';
+            item.push( list.length - 1 );
+
+            item.push(list[list.length - 1].length);
+            item.push(item[2] + line_tm[3].length);
+          }
+        }
+        file.push(item);
       }
     });
     return file;
   }
 
   static getFileLine(word: string) {
-    let line = 0;
-    let tm = word.match(/(.*)::R(\d+)$/);
-    if (tm) {
-      word = tm[1];
-      line = parseInt(tm[2]);
+    let tm;
+    let data: any = [word, 0];
+
+    if (tm = word.match(/(.*)::R(\d+)$/)) {
+      data[0] = tm[1];
+      data[1] = parseInt(tm[2]);
+
+    } else if (tm = word.match(/(.*) +::KK +(.+)$/)) {
+      data[0] = tm[1];
+      data.push('::KK', tm[2]);
+
     } else {
+
       tm = word.match(/(.*):(\d+)$/);
       if (tm) {
-        word = tm[1];
-        line = parseInt(tm[2]);
+        data[0] = tm[1];
+        data[1] = parseInt(tm[2]);
       }
     }
-    if (line > 0) {
-      line--;
+
+    if (data[1] > 0) {
+      data[1]--;
     }
-    return [word, line];
+
+    return data;
   }
 
   static str_to_obj(data: any, strs: string, val: any) {

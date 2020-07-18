@@ -1,11 +1,7 @@
 import * as vscode from 'vscode';
-import { fun_list } from './../autoregister/lists';
 import { Util } from '../Util';
-import { service as http } from './../lib/httpIndex';
-import fs = require('fs');
-import { outputChannel } from './../lib/const';
-import { Jsoncd } from './../com/jsonOutline';
 import { MessageService } from './../lib/webSocket';
+import { apiModel } from './../lib/apiModel';
 
 
 export class Api {
@@ -86,25 +82,6 @@ export class Api {
 
     static run(data: any, old_data: any = {}) {
 
-        if (old_data.hasOwnProperty('runToken')) {
-            let run_api;
-            if (MessageService.SystemKeysList['runToken']) {
-                run_api = MessageService.SystemKeysList['runToken'];
-            } else {
-                run_api = {
-                    u: "/init/runToken",
-                    p: {
-                        'empty': '',
-                    }
-                };
-            }
-            run_api['p'] = data;
-            this.r_api(run_api);
-            return;
-        }
-
-
-
         if (!data.hasOwnProperty('run') || !data.hasOwnProperty(data['run'])) {
             console.log('data', data);
             Util.showError('属性不存在-' + data.string);
@@ -123,45 +100,47 @@ export class Api {
 
 
         if (data['run'] === 'api') {
-            this.r_api(data[data['run']]);
+            apiModel.r_api(data[data['run']]);
 
         } else if (data.run === 'lists' || data.run === 'ecs_lists') {
-            this.r_list(data[data['run']], data['run']);
+            apiModel.r_list(data[data['run']], data['run']);
 
         } else if (data.run === 'input') {
-            this.r_input(data[data['run']]);
+            apiModel.r_input(data[data['run']]);
 
         } else if (data.run === 'open_file') {
-            this.r_open_file(data[data['run']]);
+            apiModel.r_open_file(data[data['run']]);
 
         } else if (data.run === 'run_shell') {
-            this.r_run_shell(data[data['run']]);
+            apiModel.r_run_shell(data[data['run']]);
 
         } else if (data.run === 'outputChannel') {
-            this.r_outputChannel(data[data['run']]);
+            apiModel.r_outputChannel(data[data['run']]);
 
         } else if (data.run === 'setJson') {
-            this.r_setJson(data[data['run']]);
+            apiModel.r_setJson(data[data['run']]);
 
         } else if (data.run === 'insert') {
-            this.r_insert(data[data['run']]);
+            apiModel.r_insert(data[data['run']]);
 
         } else if (data.run === 'set_selections') {
-            this.r_set_selections(data[data['run']]);
+            apiModel.r_set_selections(data[data['run']]);
 
         } else if (data.run === 'demo_edit') {
-            this.r_demo_edit(data[data['run']]);
+            apiModel.r_demo_edit(data[data['run']]);
 
         } else if (data.run === 'diff') {
-            this.r_diff(data[data['run']]);
+            apiModel.r_diff(data[data['run']]);
 
         } else if (data.run === 'editSnippet') {
-            this.r_editSnippet(data[data['run']]);
+            apiModel.r_editSnippet(data[data['run']]);
 
         } else if (data.run === 'move_file') {
-            this.r_move_file(data[data['run']]);
+            apiModel.r_move_file(data[data['run']]);
+
         } else if (data.run === 'getText') {
-            this.r_getText(data[data['run']], data);
+            apiModel.r_getText(data[data['run']], data);
+
         } else {
             console.log('没找到方法：api.run.data', data);
         }
@@ -175,206 +154,7 @@ export class Api {
         }
     }
 
-    static r_getText(data: any, old_data: any) {
 
-        let document: vscode.TextDocument | null = vscode.window.activeTextEditor ?
-            vscode.window.activeTextEditor.document : null;
-
-        if (!document) {
-            for (let index = 0; index < data.length; index++) {
-                data[index]['con'] = '';
-            }
-        } else {
-
-            for (let index = 0; index < data.length; index++) {
-                const info = data[index];
-                let position_ins: vscode.Position = new vscode.Position(info.line, info.char);
-                let position_ins_end: vscode.Position = new vscode.Position(info.end_line, info.end_char);
-                let Range_ins: vscode.Range = new vscode.Range(position_ins, position_ins_end);
-                data[index]['con'] = document.getText(Range_ins);
-            }
-        }
-        Api.run(data, old_data);
-    }
-
-
-    static r_move_file(data: any, run?: string) {
-        console.log(data);
-        Util.move(data['path'], data['targetPath']);
-    }
-
-    static r_editSnippet(data: any, run?: string) {
-        // let data = { 'value': 'fdsfsd', 'line': 3, 'chat': 3 };
-        let editor = vscode.window.activeTextEditor;
-        if (editor) {
-            let insertPosition = new vscode.Position(data.line, data.chat);
-            editor.insertSnippet(new vscode.SnippetString(data.value), insertPosition);
-        }
-    }
-
-
-    static r_diff(data: any, run?: string) {
-
-        // vscode.commands.executeCommand("vscode.diff", 
-        // vscode.Uri.file(backupFilePath), 
-        // vscode.Uri.file(file), "Fix " + path.basename(file) + "", opts)
-
-        // vscode.commands.executeCommand('extension.demo.edit', data);
-    }
-
-    static r_demo_edit(data: any, run?: string) {
-        vscode.commands.executeCommand('extension.demo.edit', data);
-    }
-
-
-    static r_set_selections(data: any, run?: string) {
-        let editor: vscode.TextEditor | undefined = vscode.window.activeTextEditor;
-        if (!editor) {
-            return;
-        }
-        let selec_ar: any[] = [];
-        for (const key in data) {
-            if (data.hasOwnProperty(key)) {
-                const val = data[key];
-                let posins1 = new vscode.Position(val['start']['line'], val['start']['character']);
-                let posins2 = new vscode.Position(val['end']['line'], val['end']['character']);
-                selec_ar.push(new vscode.Selection(posins1, posins2));
-            }
-        }
-        editor.selections = selec_ar;
-    }
-
-    static r_insert(data: any, run?: string) {
-        let obj = { "key": 'insert', "line": 0, 'char': 0, 'con': '' };
-        let uri = [Util.merge(true, obj, data)];
-        vscode.commands.executeCommand('extension.demo.edit', uri);
-    }
-
-
-    static r_setJson(data: any, run?: string) {
-        Jsoncd.json.setJson(data.json);
-    }
-
-    static r_outputChannel(data: any, run?: string) {
-        let op: any = { show: 1, clear: 0, rest_focus: 1 };
-        op = Util.merge(true, op, data);
-
-        if (op.show) {
-            let preserveFocus = op.rest_focus == 1 ? true : false;
-            outputChannel.show(preserveFocus);
-        }
-
-        if (op.clear) {
-            outputChannel.clear();
-        }
-
-        outputChannel.appendLine(op.val);
-    }
-
-
-    // run_terminal 的data内容说明
-    // pwd: '',      // 当前路径
-    // clear: 1,     // 清除之前内容
-    // val: '',      // 要执行的命令
-    // rest_focus: 0 // 焦点回到编辑器
-    static r_run_shell(data: any, run?: string) {
-        Util.run_terminal(data);
-    }
-
-    static r_open_file(data: any, run?: string) {
-        if (fs.existsSync(data.file)) {
-
-            let stat = fs.lstatSync(data.file);
-            if (stat.isFile()) {
-
-                let uri = vscode.Uri.file(data.file);
-
-                if (data.hasOwnProperty('line')) {
-                    const options = {
-                        // 选中第3行第9列到第3行第17列
-                        selection: new vscode.Range(
-                            new vscode.Position(data.line, 0),
-                            new vscode.Position(data.line, 0)
-                        ),
-                        // 是否预览，默认true，预览的意思是下次再打开文件是否会替换当前文件
-                        preview: false,
-                        // 显示在第二个编辑器
-                        // viewColumn: vscode.ViewColumn.Two
-                    };
-                    vscode.window.showTextDocument(uri, options);
-                } else {
-                    vscode.commands.executeCommand('vscode.openFolder', uri);
-                }
-            }
-        }
-    }
-
-    static r_list(data: any, run: string) {
-        if (run === 'lists') {
-            fun_list(data);
-
-        } else if (run === 'ecs_lists') {
-            fun_list(data, lists => {
-                return lists;
-            });
-        }
-    }
-
-    static r_api(data: any) {
-        data.p.file_dirs_s = 'VS-DIRS-SOURCE';
-        data.p = Api.argsRun(data.p);
-        http.post(data.u, Object.assign(data.p)).then(res => {
-            Api.res(res, data);
-        });
-    }
-
-    static r_input(data: any) {
-
-        if (!data.hasOwnProperty('list')) {
-            data['list'] = [data];
-        }
-
-        let info = data['list'].shift();
-
-        let input: any = {
-            password: false,
-            placeHolder: '',  // 在输入框中显示为占位符的可选字符串，以指导用户键入内容。
-            ignoreFocusOut: true,  // 设置为true可以在焦点移到编辑器的另一部分或另一个窗口时使输入框保持打开状态。
-            valueSelection: [],  // 
-            value: '',
-            prompt: '请输入目录：'
-        };
-        input = Util.merge(true, input, info);
-
-        if (input.valueSelection.length < 1) {
-            input.valueSelection = [input.value.length, input.value.length];
-        }
-
-        vscode.window.showInputBox({
-            placeHolder: input.placeHolder,
-            value: input.value,
-            prompt: input.prompt,
-            ignoreFocusOut: input.ignoreFocusOut,
-            valueSelection: input.valueSelection,
-            password: input.password
-        }).then((name) => {
-
-            data['value'] = name;
-            if (info.hasOwnProperty('to->v')) {
-                data = Util.str_to_obj(data, info['to->v'], name);
-            }
-
-            if (data.list.length > 0) {
-                Api.r_input(data);
-
-
-            } else if (data.hasOwnProperty('run')) {
-                Api.run(data);
-            }
-        });
-
-
-    }
 
 
 

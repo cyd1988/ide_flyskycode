@@ -5,51 +5,13 @@ import { Api } from './../lib/api';
 import { Util } from '../Util';
 import e = require("express");
 
+import { sockRunToken } from './sockRunToken';
+
+
 let webSocketStatus = 0;
 
 
-/**
- * 分析返回维埃里
- * 功能列表: 
- * 1. 如果为 runTOken 的返回就不处理，添加到 MessageService.runTokens 列表
- * 2. 如果查找到就，外理下 MessageService.runTokens 的超时内容
- * 说明: 
- * #. 如果查找到就不进行后边的外理
- * @param data 返回的结果
- */
-function runToken(data: any) {
 
-  if (
-    data.hasOwnProperty('data') &&
-    typeof data.data === 'object' &&
-    data.data.hasOwnProperty('runToken') &&
-    data.data.runToken !== '') {
-
-    let new_time = (new Date()).getTime();
-    let info = data.data;
-
-    info['runTokenAddTime'] = new_time;
-
-    MessageService.runTokens[info.runToken] = info;
-
-
-    for (const key in MessageService.runTokens) {
-      if (MessageService.runTokens.hasOwnProperty(key)) {
-
-        const element = MessageService.runTokens[key];
-
-        if (new_time - element['runTokenAddTime'] > 30 * 1000) {
-          delete (MessageService.runTokens[key]);
-        }
-
-      }
-    }
-
-    return true;
-  } else {
-    return false;
-  }
-}
 
 /**
  * 快捷键-方法映射存储
@@ -82,7 +44,7 @@ function runSystemKeysListReloat() {
   let data = {
     run: 'api',
     api: {
-      u: "/init/getKeys",
+      u: "/init/getKeysFigs",
       p: {
         'empty': '',
       }
@@ -183,7 +145,7 @@ export class MessageService {
     try {
       let data = JSON.parse(res.data + '');
 
-      if (runToken(data)) { return; }
+      if (sockRunToken.runToken(data)) { return; }
 
       if (runSystemKeysList(data)) { return; }
 

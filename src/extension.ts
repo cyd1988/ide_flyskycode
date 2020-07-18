@@ -14,6 +14,9 @@ import { service as http } from './lib/httpIndex';
 import { Jsoncd_init, Jsoncd } from './com/jsonOutline';
 import { fileOpenProject } from './com/fileOpenProject';
 import { editauto } from './com/edit';
+import { apiModel } from './lib/apiModel';
+import { Config } from './configurations/config';
+
 
 let plugin = [
   fileOpenProject, hover, editauto, Jsoncd_init
@@ -138,7 +141,27 @@ export function activate(this: any, context: vscode.ExtensionContext) {
       // 测试
       if (args.p.hasOwnProperty('key') && args.p.key == 'ctrl+shift+alt+cmd+p') {
 
-        Api.r_outputChannel({
+
+        apiModel.r_getText([
+          {
+            line: 2,
+            char: 0,
+            end_line: 8,
+            end_char: 0,
+          },
+        ]
+          , {});
+
+        return;
+
+        apiModel.r_open_file({
+          file: '/Users/webS/www/mynotes/web/test/test.md',
+          line: 0,
+          KK: '陈斌',
+        });
+
+        return;
+        apiModel.r_outputChannel({
           rest_focus: 1,
           val: 'fsdfsdf',
           show: 1,
@@ -167,12 +190,9 @@ export function activate(this: any, context: vscode.ExtensionContext) {
         return;
       }
 
-      if (args.p.hasOwnProperty('key') &&
-        Object.keys(MessageService.SystemKeysList).length > 0 &&
-        MessageService.SystemKeysList[args.p.key]
-      ) {
+      if (args.p.hasOwnProperty('key') && Config.sGet(args.p.key, false)) {
         const keys = args.p.key;
-        args = JSON.parse(JSON.stringify(MessageService.SystemKeysList[args.p.key]));
+        args = JSON.parse(JSON.stringify(Config.sGet(args.p.key)));
 
         if (args.run && args[args.run].p) {
           args[args.run].p.run_keyboard = keys;

@@ -5,8 +5,9 @@
 
 // Object.defineProperty(exports, "__esModule", { value: true });
 import fs = require('fs');
-import {Util}  from '../Util';
+import { Util } from '../Util';
 
+import { MessageService } from './../lib/webSocket';
 
 
 /*
@@ -14,16 +15,16 @@ import {Util}  from '../Util';
  * Config class handles getting values from config.json.
  */
 export class Config {
-    version:number;
+    version: number;
     static _configJsonContent: any = undefined;
 
     constructor() {
         this.version = 2;
         Config.configJsonContent();
     }
-    static configJsonContent(file:string="") {
-        if( file === "" ){
-            file = Util.DIR()+'/src/config.json';
+    static configJsonContent(file: string = "") {
+        if (file === "") {
+            file = Util.DIR() + '/src/config.json';
         }
         if (this._configJsonContent === undefined) {
             this._configJsonContent = this.loadConfig(file);
@@ -31,26 +32,47 @@ export class Config {
         return this._configJsonContent;
     }
 
+    static sGet(key: string, def?: any) {
+        if (
+            Object.keys(MessageService.SystemKeysList).length > 0 &&
+            MessageService.SystemKeysList[key]
+        ) {
+            return MessageService.SystemKeysList[key];
+        } else {
+            return def;
+        }
+
+    }
+
+
+
+
     getServiceVersion() {
         return this.version;
     }
-    getSqlToolsConfigValue(configKey:string) {
+    getSqlToolsConfigValue(configKey: string) {
         let json = Config.configJsonContent;
         return json;
     }
 
     getWorkspaceConfig(key: string | number, defaultValue: any) {
-        let json:any = Config.configJsonContent;
+        let json: any = Config.configJsonContent;
         let configValue = json[key];
         if (!configValue) {
             configValue = defaultValue;
         }
         return configValue;
     }
-    static loadConfig(files:string) {
-        let configContent = fs.readFileSync(files+'', "utf-8");
+    static loadConfig(files: string) {
+        let configContent = fs.readFileSync(files + '', "utf-8");
         return JSON.parse(configContent);
     }
+
+
+
+
+
+
 }
 
 

@@ -1,9 +1,9 @@
 import axios from 'axios';
 import { Util } from '../Util';
 import * as vscode from 'vscode';
-import { outputChannel, StatusBarMessage,configUrl } from './../lib/const';
-import {MessageService } from './../lib/webSocket';
-import { Jsoncd_init,Jsoncd } from './../com/jsonOutline';
+import { outputChannel, StatusBarMessage, configUrl } from './../lib/const';
+import { MessageService } from './../lib/webSocket';
+import { Jsoncd_init, Jsoncd } from './../com/jsonOutline';
 
 
 
@@ -28,11 +28,15 @@ service.interceptors.request.use(
             config.data.file = Util.getProjectPath();
         }
 
+        config.data.languageId = vscode.window.activeTextEditor ?
+            vscode.window.activeTextEditor.document.languageId :
+            null;
+
         if (!config.data.jsondata) {
             config.data.jsondata = {};
         }
 
-        if(!config.data.notGetJsonData){
+        if (!config.data.notGetJsonData) {
             config.data.jsondata = Util.merge(true, Util.getJsonData(), config.data.jsondata);
             config.data.jsondata = Util.merge(true, Jsoncd.json.getJson(), config.data.jsondata);
         }
@@ -47,16 +51,16 @@ service.interceptors.request.use(
 
 
         MessageService.send(config);
-  
 
-        if(!config.data.notGetJsonData){
+
+        if (!config.data.notGetJsonData) {
             // StatusBarMessage.setStatusBarMessage('f-net');
         }
 
         // console.log(JSON.stringify(config));
         config.cancelToken = new axios.CancelToken(cancel => {
             cancel();
-         });
+        });
 
 
         // this.source.cancel('Operation canceled by the user.');
@@ -79,7 +83,7 @@ service.interceptors.request.use(
 service.interceptors.response.use(
     res => {
         // StatusBarMessage.delStatusBarMessage('f-net');
-        
+
         console.log('res', res);
         if (vscode.workspace.getConfiguration('flyskycode').get('netdebug')) {
             let msg = 'status:' + res.status + ', statusText:' + res.statusText;
