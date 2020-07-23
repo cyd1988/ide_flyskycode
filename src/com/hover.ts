@@ -22,52 +22,7 @@ import {
 
 class LinkProvider implements DocumentLinkProvider {
     public provideDocumentLinks(doc: TextDocument): ProviderResult<DocumentLink[]> {
-        // let documentLinks = [];
-        // if (file != null) {
-        //     let start = new Position(line.lineNumber, line.text.indexOf(item) + 1);
-        //     let end = start.translate(0, item.length - 2);
-        //     let documentlink = new DocumentLink(new Range(start, end), file.fileUri);
-        //     documentLinks.push(documentlink);
-        // };
-
-        // return documentLinks;
-
-
-        // console.log(43433);
         let documentLinks = [];
-
-        // let config = workspace.getConfiguration('laravel_goto_view');
-
-        // if (config.quickJump) {
-        //     let reg = new RegExp(config.regex, 'g');
-        //     let linesCount = doc.lineCount <= config.maxLinesCount ? doc.lineCount : config.maxLinesCount
-        //     let index = 0;
-        //     while (index < linesCount) {
-        //         let line = doc.lineAt(index);
-        //         let result = line.text.match(reg);
-
-        //         if (result !== null) {
-        //             for (let item of result) {
-        //                 let file = utilo.getFilePath(item, doc);
-
-        //                 if (file !== null) {
-        //                     let start = new Position(line.lineNumber, line.text.indexOf(item) + 1);
-        //                     let end = start.translate(0, item.length - 2);
-        //                     let documentlink = new DocumentLink(new Range(start, end), file.fileUri);
-        //                     documentLinks.push(documentlink);
-        //                 };
-        //             }
-        //         }
-
-        //         index++;
-        //     }
-        // }
-
-        // let start = new Position(line.lineNumber, line.text.indexOf(item) + 1);
-        // let end = start.translate(0, item.length - 2);
-        // let documentlink = new DocumentLink(new Range(start, end), file.fileUri);
-        // documentLinks.push(documentlink);
-
         if (1) {
             let destPath = '/Applications/Visual Studio Code.app/Contents/Resources/app/extensions/vscode-plugin-flyskycode/src/com/hover.ts';
             let uris = vscode.Uri.file(destPath);

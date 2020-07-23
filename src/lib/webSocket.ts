@@ -6,6 +6,7 @@ import { Util } from '../Util';
 import e = require("express");
 
 import { sockRunToken } from './sockRunToken';
+import { ChangeTargetSshServer } from './../lib/ChangeTargetSshServer';
 
 
 let webSocketStatus = 0;
@@ -138,6 +139,7 @@ export class MessageService {
   webSocketOnOpen(event: WebSocket.OpenEvent) {
     webSocketStatus = 1;
     runSystemKeysListReloat();
+    ChangeTargetSshServer.init();
   }
   // 获取到后台消息的事件，操作数据的代码在onmessage中书写
   webSocketOnMessage(res: WebSocket.MessageEvent) {
@@ -182,6 +184,7 @@ export class MessageService {
   webSocketOnError(res: any) {
     MessageService.SystemKeysList = {}
     webSocketStatus = 0;
+    ChangeTargetSshServer.lists = null;
     console.log('websocket连接失败');
     MessageService.reload();
     // 打印失败的数据

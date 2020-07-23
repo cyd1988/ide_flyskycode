@@ -244,7 +244,11 @@
             {
                 "command": "extension.demo.shell_paste",
                 "title": "SHELL 粘贴"
-            }
+            },
+            {
+                "command": "extension.demo.changeTargetSshServer",
+                "title": "SHELL 打开文件"
+            },
         ],
         "keybindings": [],
         "menus": {

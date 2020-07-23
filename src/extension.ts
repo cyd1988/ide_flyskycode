@@ -17,6 +17,7 @@ import { editauto } from './com/edit';
 import { apiModel } from './lib/apiModel';
 import { Config } from './configurations/config';
 
+import { ChangeTargetSshServer } from './lib/ChangeTargetSshServer';
 
 let plugin = [
   fileOpenProject, hover, editauto, Jsoncd_init
@@ -111,6 +112,13 @@ export function activate(this: any, context: vscode.ExtensionContext) {
   }
 
   MessageService.start();
+
+
+  context.subscriptions.push(
+    vscode.commands.registerCommand('extension.demo.changeTargetSshServer', 
+      ChangeTargetSshServer.changeTargetLanguage));
+
+
 
   context.subscriptions.push(vscode.commands.registerTextEditorCommand(
     'extension.demo.registerTextEditor',

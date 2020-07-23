@@ -4,7 +4,7 @@ import * as vscode from 'vscode';
 import { outputChannel, StatusBarMessage, configUrl } from './../lib/const';
 import { MessageService } from './../lib/webSocket';
 import { Jsoncd_init, Jsoncd } from './../com/jsonOutline';
-
+import { ChangeTargetSshServer } from './../lib/ChangeTargetSshServer';
 
 
 // 配置开发和生产的请求接口
@@ -13,60 +13,76 @@ export const service = axios.create({
     timeout: 10000
 });
 
+async function config_fn(config: any) {
 
+    // config.headers.Authorization = store.state.user.token
+    // config.headers['X-Requested-With'] = 'XMLHttpRequest';
+    config.headers['Content-Type'] = 'application/json';
+
+    config.url = config.url + '';
+    if (!config.data.file) {
+        config.data.file = Util.getProjectPath();
+    }
+
+    config.data.languageId = vscode.window.activeTextEditor ?
+        vscode.window.activeTextEditor.document.languageId :
+        null;
+
+    if (!config.data.jsondata) {
+        config.data.jsondata = {};
+    }
+
+    if (!config.data.notGetJsonData) {
+        config.data.jsondata = Util.merge(true, Util.getJsonData(), config.data.jsondata);
+        // config.data.jsondata = Util.merge(true, Jsoncd.json.getJson(), config.data.jsondata);
+    }
+
+    if (config.url != "/account/getSshAll") {
+
+        if (!config.data.jsondata['ssh'] || config.data.jsondata['ssh'].length < 2) {
+            ChangeTargetSshServer.getListCurrent('null');
+            let back: any = await ChangeTargetSshServer.getListCurrent();
+            config.data.jsondata['ssh'] = back.key;
+
+        } else {
+            if (config.data.jsondata['ssh']) {
+                ChangeTargetSshServer.getListCurrent(config.data.jsondata['ssh']);
+            } else {
+                ChangeTargetSshServer.getListCurrent('null');
+            }
+        }
+    }
+
+
+    const isProduction = process.env.NODE_ENV === 'production';
+
+    if (!config.url.startsWith('http:')) {
+        config.url = configUrl + config.url;
+    }
+
+
+    MessageService.send(config);
+
+
+    if (!config.data.notGetJsonData) {
+        // StatusBarMessage.setStatusBarMessage('f-net');
+    }
+
+    // console.log(JSON.stringify(config));
+    config.cancelToken = new axios.CancelToken(cancel => {
+        cancel();
+    });
+
+
+    // this.source.cancel('Operation canceled by the user.');
+    // return;
+    return config;
+
+}
 
 
 // 设置header请求头，发起请求前做的事情
-service.interceptors.request.use(
-    config => {
-        // config.headers.Authorization = store.state.user.token
-        // config.headers['X-Requested-With'] = 'XMLHttpRequest';
-        config.headers['Content-Type'] = 'application/json';
-
-        config.url = config.url + '';
-        if (!config.data.file) {
-            config.data.file = Util.getProjectPath();
-        }
-
-        config.data.languageId = vscode.window.activeTextEditor ?
-            vscode.window.activeTextEditor.document.languageId :
-            null;
-
-        if (!config.data.jsondata) {
-            config.data.jsondata = {};
-        }
-
-        if (!config.data.notGetJsonData) {
-            config.data.jsondata = Util.merge(true, Util.getJsonData(), config.data.jsondata);
-            config.data.jsondata = Util.merge(true, Jsoncd.json.getJson(), config.data.jsondata);
-        }
-
-        // config.data = JSON.stringify(config.data);
-
-        const isProduction = process.env.NODE_ENV === 'production';
-
-        if (!config.url.startsWith('http:')) {
-            config.url = configUrl + config.url;
-        }
-
-
-        MessageService.send(config);
-
-
-        if (!config.data.notGetJsonData) {
-            // StatusBarMessage.setStatusBarMessage('f-net');
-        }
-
-        // console.log(JSON.stringify(config));
-        config.cancelToken = new axios.CancelToken(cancel => {
-            cancel();
-        });
-
-
-        // this.source.cancel('Operation canceled by the user.');
-        // return;
-        return config;
-    },
+service.interceptors.request.use(config_fn,
     error => {
         let msg: string = '请求错误！';
         if (typeof error === 'string') {
