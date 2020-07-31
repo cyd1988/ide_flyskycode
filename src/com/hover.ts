@@ -233,8 +233,8 @@ export function hover(context: any) {
         provideDefinition
     }));
 
-    context.subscriptions.push(vscode.languages.registerHoverProvider('*', provideHoverAc));
-    context.subscriptions.push(vscode.languages.registerDefinitionProvider('*', provideDefinitionAc));
+    // context.subscriptions.push(vscode.languages.registerHoverProvider('*', provideHoverAc));
+    // context.subscriptions.push(vscode.languages.registerDefinitionProvider('*', provideDefinitionAc));
 
     // context.subscriptions.push(vscode.languages.registerDocumentLinkProvider('*', new LinkProvider()));
 }

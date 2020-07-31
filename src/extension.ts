@@ -148,8 +148,6 @@ export function activate(this: any, context: vscode.ExtensionContext) {
 
       // 测试
       if (args.p.hasOwnProperty('key') && args.p.key == 'ctrl+shift+alt+cmd+p') {
-
-
         apiModel.r_getText([
           {
             line: 2,
@@ -161,41 +159,15 @@ export function activate(this: any, context: vscode.ExtensionContext) {
           , {});
 
         return;
-
         apiModel.r_open_file({
           file: '/Users/webS/www/mynotes/web/test/test.md',
           line: 0,
           KK: '陈斌',
         });
+      }
 
-        return;
-        apiModel.r_outputChannel({
-          rest_focus: 1,
-          val: 'fsdfsdf',
-          show: 1,
-          clear: 0
-        });
-
-        return;
-        Util.run_terminal({
-          pwd: '//Users/webS/',
-          clear: 0,
-          rest_focus: 0,
-          val: 'll'
-        });
-
-        return;
-        let data = {
-          run: 'input',
-          input: {
-            value: "/Users/webS/www/mynotes/web/test/test.md"
-          }
-        };
-
-        console.log(data);
-        Api.run(data);
-
-        return;
+      if (args.p.hasOwnProperty('key')){
+        args.p.run_keyboard = args.p.key;
       }
 
       if (args.p.hasOwnProperty('key') && Config.sGet(args.p.key, false)) {
@@ -204,6 +176,7 @@ export function activate(this: any, context: vscode.ExtensionContext) {
 
         if (args.run && args[args.run].p) {
           args[args.run].p.run_keyboard = keys;
+          args[args.run].p.keys = keys;
         }
       }
 

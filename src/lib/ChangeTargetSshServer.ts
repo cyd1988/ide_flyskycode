@@ -32,7 +32,7 @@ export class ChangeTargetSshServer {
         });
 
         if (res) {
-            ChangeTargetSshServer.targetId = res.split('-')[0];
+            ChangeTargetSshServer.targetId = res.split('-').pop();
             ChangeTargetSshServer.setLanguageText();
         }
     }
