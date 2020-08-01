@@ -36,6 +36,9 @@ class LinkProvider implements DocumentLinkProvider {
     }
 }
 
+
+var select_word_global:any;
+
 function getWordRegs(document: vscode.TextDocument, position: vscode.Position, run_name = '') {
     // let regs = [undefined, /[^'"]+/];
     let regs = [
@@ -48,6 +51,35 @@ function getWordRegs(document: vscode.TextDocument, position: vscode.Position, r
     let line = 0;
 
     let boot_dir = Util.getBootDir();
+
+    let select_word = Util.getSelecttextLineOne();
+
+    if(select_word){
+        
+        if (select_word.trim().substr(0, 3) === '~+/' && boot_dir !== '') {
+            select_word = boot_dir + select_word.trim().substr(2);
+        }
+
+        line_tm = Util.getFileLine(select_word);
+        select_word = line_tm[0] + '';
+        line = parseInt(line_tm[1] + '');
+
+        file = Util.getWordFile(select_word, line_tm, run_name);
+
+        if (file.length > 0) {
+            select_word_global = {'value':[line, file], time:(new Date()).getTime() };
+            return [line, file];
+        }
+    }
+
+    if(select_word_global){
+        let tmp =  select_word_global;
+        select_word_global = undefined;
+
+        if( (new Date()).getTime() - tmp.time < 4000 ){
+            return [tmp.value[0], tmp.value[1]];
+        }
+    }
 
     for (let index = 0; index < regs.length; index++) {
         const reg = regs[index];
@@ -224,9 +256,9 @@ let provideHoverAc: vscode.HoverProvider = {
 
 export function hover(context: any) {
     // 注册鼠标悬停提示
-    context.subscriptions.push(vscode.languages.registerHoverProvider('*', {
-        provideHover
-    }));
+    // context.subscriptions.push(vscode.languages.registerHoverProvider('*', {
+    //     provideHover
+    // }));
 
     // 注册如何实现跳转到定义，第一个参数表示仅对json文件生效
     context.subscriptions.push(vscode.languages.registerDefinitionProvider('*', {
