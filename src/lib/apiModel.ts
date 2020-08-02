@@ -110,9 +110,10 @@ export class apiModel {
 
 
   static r_saveText(data: any, old_data: any) {
-    Util.docSave();
+    Util.docSave().then(function(){
+      sockRunToken.sendRunTokenApi({msg:'保存完成！'}, old_data);
+    });
   }
-
 
 
   static r_move_file(data: any, run?: string) {

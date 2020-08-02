@@ -40,15 +40,10 @@ export class sockRunToken {
 
     if (old_data.hasOwnProperty('ServerRunToken')) {
       run_api['p']['ServerRunToken'] = old_data['ServerRunToken'];
-    }
-
-
-    
-    console.log( 'sendRunTokenApi' );
-    console.log( run_api );
-
-    
-    apiModel.r_api(run_api);
+      // console.log( 'sendRunTokenApi' );
+      // console.log( run_api );
+      apiModel.r_api(run_api);
+    }  
   }
 
 
