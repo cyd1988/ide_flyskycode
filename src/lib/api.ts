@@ -141,6 +141,9 @@ export class Api {
         } else if (data.run === 'getText') {
             apiModel.r_getText(data[data['run']], data);
 
+        } else if (data.run === 'saveText') {
+            apiModel.r_saveText(data[data['run']], data);
+
         } else {
             console.log('没找到方法：api.run.data', data);
         }

@@ -109,6 +109,11 @@ export class apiModel {
   }
 
 
+  static r_saveText(data: any, old_data: any) {
+    Util.docSave();
+  }
+
+
 
   static r_move_file(data: any, run?: string) {
     console.log(data);
