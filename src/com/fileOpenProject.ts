@@ -1,5 +1,5 @@
 // const vscode = require('vscode');
-const util = require('../util');
+const util = require('../Util');
 const fs = require('fs');
 
 import * as  vscode from 'vscode';

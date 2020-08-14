@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 import fs = require('fs');
 import { Util } from '../Util';
-import { Api } from './../lib/Api';
+import { Api } from './../lib/api';
 import { Jsoncd } from './../com/jsonOutline';
 import { outputChannel } from './../lib/const';
 import { service as http } from './../lib/httpIndex';
@@ -12,12 +12,13 @@ export class apiModel {
 
   static r_open_file(data: any, run?: string) {
 
+
     if (fs.existsSync(data.file)) {
 
       let stat = fs.lstatSync(data.file);
-      if (stat.isFile()) {
+      let uri = vscode.Uri.file(data.file);
 
-        let uri = vscode.Uri.file(data.file);
+      if (stat.isFile()) {
 
         if (data.hasOwnProperty('line')) {
 
@@ -64,8 +65,16 @@ export class apiModel {
           }
 
         } else {
-          vscode.commands.executeCommand('vscode.openFolder', uri);
+
+          const options = {
+            selection: new vscode.Range(new vscode.Position(0, 0), new vscode.Position(0, 0)),
+            preview: false,
+          };
+          vscode.window.showTextDocument(uri, options);
         }
+      } else {
+
+        vscode.commands.executeCommand('vscode.openFolder', uri);
       }
     }
   }
@@ -74,11 +83,11 @@ export class apiModel {
 
   static r_getText(data: any, old_data: any) {
 
-    
-    console.log( '+++++++++++++++++++' );
-    console.log( data );
 
-    
+    console.log('+++++++++++++++++++');
+    console.log(data);
+
+
     let document: vscode.TextDocument | null = vscode.window.activeTextEditor ?
       vscode.window.activeTextEditor.document : null;
 
@@ -100,8 +109,8 @@ export class apiModel {
       }
     }
 
-    console.log( 'r_getText' );
-    console.log( old_data );
+    console.log('r_getText');
+    console.log(old_data);
 
 
     sockRunToken.sendRunTokenApi(data, old_data);
@@ -110,8 +119,8 @@ export class apiModel {
 
 
   static r_saveText(data: any, old_data: any) {
-    Util.docSave().then(function(){
-      sockRunToken.sendRunTokenApi({msg:'保存完成！'}, old_data);
+    Util.docSave().then(function () {
+      sockRunToken.sendRunTokenApi({ msg: '保存完成！' }, old_data);
     });
   }
 

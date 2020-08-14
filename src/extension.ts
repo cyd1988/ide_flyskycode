@@ -160,7 +160,7 @@ export function activate(this: any, context: vscode.ExtensionContext) {
 
         return;
         apiModel.r_open_file({
-          file: '/Users/webS/www/mynotes/web/test/test.md',
+          file: '/home/chenyudong/webS/www/mynotes/web/test/test.md',
           line: 0,
           KK: '陈斌',
         });

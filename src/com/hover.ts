@@ -2,8 +2,6 @@ import * as vscode from 'vscode';
 import path = require('path');
 import fs = require('fs');
 import { Util } from '../Util';
-import { Api } from '../lib/api';
-import { MessageService } from './../lib/webSocket';
 import { sockRunToken } from './../lib/sockRunToken';
 
 
@@ -16,7 +14,6 @@ import {
     Position,
     Range
 } from "vscode";
-// import * as utilo from '../utilo';
 
 
 
