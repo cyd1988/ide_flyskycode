@@ -12,13 +12,19 @@ export class apiModel {
 
   static r_open_file(data: any, run?: string) {
 
-
     if (fs.existsSync(data.file)) {
 
       let stat = fs.lstatSync(data.file);
+
+      console.log('------------------file');
+      console.log(stat);
+      console.log(stat.isFile());
+      console.log(data);
+
       let uri = vscode.Uri.file(data.file);
 
       if (stat.isFile()) {
+
 
         if (data.hasOwnProperty('line')) {
 
@@ -65,15 +71,16 @@ export class apiModel {
           }
 
         } else {
-
           const options = {
-            selection: new vscode.Range(new vscode.Position(0, 0), new vscode.Position(0, 0)),
+            selection: new vscode.Range(
+              new vscode.Position(0, 0),
+              new vscode.Position(0, 0)
+            ),
             preview: false,
           };
           vscode.window.showTextDocument(uri, options);
         }
       } else {
-
         vscode.commands.executeCommand('vscode.openFolder', uri);
       }
     }
@@ -290,6 +297,16 @@ export class apiModel {
 
   }
 
+  static r_get_clipboard(data: any, old_data: any) {
+    vscode.env.clipboard.readText().then((text) => {
+      sockRunToken.sendRunTokenApi({value:text}, old_data);
+    });
+  }
+
+  static r_set_clipboard(data: any, old_data: any) {
+    vscode.env.clipboard.writeText(data.value)
+    sockRunToken.sendRunTokenApi({'msg':'设置成功'}, old_data);
+  }
 
 
 }

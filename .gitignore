@@ -1,0 +1,6 @@
+out/*
+doc/说明.md
+src/test/vscode_zh.d.ts
+node_modules*
+
+vscode-plugin-flyskycode-*

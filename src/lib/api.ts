@@ -144,6 +144,12 @@ export class Api {
         } else if (data.run === 'saveText') {
             apiModel.r_saveText(data[data['run']], data);
 
+        } else if (data.run === 'get_clipboard') {
+            apiModel.r_get_clipboard(data[data['run']], data);
+
+        } else if (data.run === 'set_clipboard') {
+            apiModel.r_set_clipboard(data[data['run']], data);
+
         } else {
             console.log('没找到方法：api.run.data', data);
         }

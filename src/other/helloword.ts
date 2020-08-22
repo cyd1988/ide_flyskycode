@@ -75,6 +75,11 @@ export function helloword(context: vscode.ExtensionContext ){
     //     console.log('所有命令：', allCommands);
     // });
 
+    // let uri = vscode.Uri.file('//Users/chenyudong/tmps/test/not open.aa');
+    // vscode.commands.executeCommand('vscode.openFolder', uri).then(sucess => {
+    //     console.log(sucess);
+    // });
+
 
 
     // 编辑器命令
