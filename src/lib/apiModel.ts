@@ -15,16 +15,9 @@ export class apiModel {
     if (fs.existsSync(data.file)) {
 
       let stat = fs.lstatSync(data.file);
-
-      console.log('------------------file');
-      console.log(stat);
-      console.log(stat.isFile());
-      console.log(data);
-
       let uri = vscode.Uri.file(data.file);
 
       if (stat.isFile()) {
-
 
         if (data.hasOwnProperty('line')) {
 
@@ -72,10 +65,10 @@ export class apiModel {
 
         } else {
           const options = {
-            selection: new vscode.Range(
-              new vscode.Position(0, 0),
-              new vscode.Position(0, 0)
-            ),
+            // selection: new vscode.Range(
+            //   new vscode.Position(0, 0),
+            //   new vscode.Position(0, 0)
+            // ),
             preview: false,
           };
           vscode.window.showTextDocument(uri, options);
