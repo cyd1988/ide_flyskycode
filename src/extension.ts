@@ -35,7 +35,7 @@ async function runs() {
     autoregistertexteditor[parse.name] = utils;
   }
 }
-runs();
+// runs();
 
 export function activate(this: any, context: vscode.ExtensionContext) {
 
@@ -110,7 +110,7 @@ export function activate(this: any, context: vscode.ExtensionContext) {
         }));
     }
   }
-
+  
   MessageService.start();
 
 
@@ -182,20 +182,17 @@ export function activate(this: any, context: vscode.ExtensionContext) {
 
       function ruPost() {
         args.p = Api.argsRun(args.p);
-        if (!args.run) {
+        if (args.run) {
           Api.run(args);
         } else {
-          let data = {
+          let data_tm = {
             'run': 'api',
             'api': {
               'u': args.u,
               'p': args.p
             }
           };
-          
-          console.log( '----' );
-          console.log( data );
-          Api.run(data);
+          Api.run(data_tm);
         }
       }
 

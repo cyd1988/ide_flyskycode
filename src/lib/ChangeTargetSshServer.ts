@@ -58,10 +58,10 @@ export class ChangeTargetSshServer {
                 }
             };
             let tmp = await sockRunToken.apiRun(data);
-            if(tmp['list_ssh']){
+            if(tmp && tmp['list_ssh']){
                 ChangeTargetSshServer.lists = tmp['list_ssh'];
             }else{
-                
+                console.log( '3434343433----' )
                 console.log( tmp );
             }
         }

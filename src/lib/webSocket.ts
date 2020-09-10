@@ -138,9 +138,14 @@ export class MessageService {
   // 建立连接成功后的状态
   webSocketOnOpen(event: WebSocket.OpenEvent) {
     webSocketStatus = 1;
-    runSystemKeysListReloat();
-    ChangeTargetSshServer.init();
+    MessageService.webSocketOnOpen_run();
   }
+
+  static async webSocketOnOpen_run(){
+    await ChangeTargetSshServer.init();
+    await runSystemKeysListReloat();
+  }
+
   // 获取到后台消息的事件，操作数据的代码在onmessage中书写
   webSocketOnMessage(res: WebSocket.MessageEvent) {
 
