@@ -1,6 +1,5 @@
 import * as vscode from 'vscode';
 import { Util } from '../Util';
-import { service as http } from '../lib/httpIndex';
 import { outputChannel, AnyObj } from './../lib/const';
 import fs = require('fs');
 import { Api } from './../lib/api';

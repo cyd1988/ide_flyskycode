@@ -8,7 +8,7 @@ import { Api } from './lib/api';
 import { outputChannel, AnyObj } from './lib/const';
 import path = require('path');
 import fs = require('fs');
-import { service as http } from './lib/httpIndex';
+// import { service as http } from './lib/httpIndex';
 
 
 import { Jsoncd_init, Jsoncd } from './com/jsonOutline';
@@ -182,12 +182,20 @@ export function activate(this: any, context: vscode.ExtensionContext) {
 
       function ruPost() {
         args.p = Api.argsRun(args.p);
-        if (args.run) {
+        if (!args.run) {
           Api.run(args);
         } else {
-          http.post(args.u, Object.assign(args.p)).then(res => {
-            Api.res(res, args);
-          });
+          let data = {
+            'run': 'api',
+            'api': {
+              'u': args.u,
+              'p': args.p
+            }
+          };
+          
+          console.log( '----' );
+          console.log( data );
+          Api.run(data);
         }
       }
 
@@ -206,6 +214,8 @@ export function activate(this: any, context: vscode.ExtensionContext) {
       return;
     }
 
+    // var start_t = (new Date()).getTime();
+
     let data = {
       'run': 'api',
       'api': {
@@ -217,7 +227,13 @@ export function activate(this: any, context: vscode.ExtensionContext) {
       }
     };
     Api.run(data);
+
+    // var time = ((new Date()).getTime() - start_t)/1000;
+    // console.log('远行: ' + time)
+
+
   }
+
   vscode.window.onDidChangeActiveTextEditor((Event) => {
     if (Event) {
       getJsonData(Event.document, 'onDidChangeActiveTextEditor');
@@ -227,6 +243,9 @@ export function activate(this: any, context: vscode.ExtensionContext) {
   vscode.workspace.onDidSaveTextDocument((document) => {
     getJsonData(document, 'onDidSaveTextDocument');
   }, this);
+
+
+
 
 
   // vscode.workspace.onDidOpenTextDocument((document) => {

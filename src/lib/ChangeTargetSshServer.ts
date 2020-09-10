@@ -58,7 +58,12 @@ export class ChangeTargetSshServer {
                 }
             };
             let tmp = await sockRunToken.apiRun(data);
-            ChangeTargetSshServer.lists = tmp['list_ssh'];
+            if(tmp['list_ssh']){
+                ChangeTargetSshServer.lists = tmp['list_ssh'];
+            }else{
+                
+                console.log( tmp );
+            }
         }
 
         return ChangeTargetSshServer.lists;

@@ -3,10 +3,12 @@ import fs = require('fs');
 import { Util } from '../Util';
 import { Api } from './../lib/api';
 import { Jsoncd } from './../com/jsonOutline';
-import { outputChannel } from './../lib/const';
-import { service as http } from './../lib/httpIndex';
+import { outputChannel, configUrl } from './../lib/const';
 import { fun_list } from './../autoregister/lists';
 import { sockRunToken } from './../lib/sockRunToken';
+import { MessageService } from './../lib/webSocket';
+import { ChangeTargetSshServer } from './../lib/ChangeTargetSshServer';
+
 
 export class apiModel {
 
@@ -236,10 +238,74 @@ export class apiModel {
   static r_api(data: any) {
     data.p.file_dirs_s = 'VS-DIRS-SOURCE';
     data.p = Api.argsRun(data.p);
-    http.post(data.u, Object.assign(data.p)).then(res => {
-      Api.res(res, data);
-    });
+
+    this.run_aa(data);
+
+    // http.post(data.u, Object.assign(data.p)).then(res => {
+    //   Api.res(res, data);
+    // });
   }
+
+
+  static async run_aa(data: any) {
+    var config = {
+      "url": data.u,
+      "method": "post",
+      "data": data.p,
+      "headers": { "Content-Type": "" },
+    };
+
+    config.headers['Content-Type'] = 'application/json';
+
+    config.url = config.url + '';
+    if (!config.data.file) {
+      config.data.file = Util.getProjectPath();
+    }
+
+    config.data.languageId = vscode.window.activeTextEditor ?
+      vscode.window.activeTextEditor.document.languageId :
+      null;
+
+    if (!config.data.jsondata) {
+      config.data.jsondata = {};
+    }
+
+    if (!config.data.notGetJsonData) {
+      config.data.jsondata = Util.merge(true, Util.getJsonData(), config.data.jsondata);
+    }
+
+    if (config.url != "/account/getSshAll") {
+
+      if (!config.data.jsondata['ssh'] || config.data.jsondata['ssh'].length < 2) {
+        ChangeTargetSshServer.getListCurrent('null');
+        let back: any = await ChangeTargetSshServer.getListCurrent();
+        config.data.jsondata['ssh'] = back.key;
+
+      } else {
+        if (config.data.jsondata['ssh']) {
+          ChangeTargetSshServer.getListCurrent(config.data.jsondata['ssh']);
+        } else {
+          ChangeTargetSshServer.getListCurrent('null');
+        }
+      }
+    }
+
+    if (!config.url.startsWith('http:')) {
+      config.url = configUrl + config.url;
+    }
+
+    MessageService.send(config);
+
+  }
+
+
+
+
+
+
+
+
+
 
 
 
@@ -292,13 +358,13 @@ export class apiModel {
 
   static r_get_clipboard(data: any, old_data: any) {
     vscode.env.clipboard.readText().then((text) => {
-      sockRunToken.sendRunTokenApi({value:text}, old_data);
+      sockRunToken.sendRunTokenApi({ value: text }, old_data);
     });
   }
 
   static r_set_clipboard(data: any, old_data: any) {
     vscode.env.clipboard.writeText(data.value)
-    sockRunToken.sendRunTokenApi({'msg':'设置成功'}, old_data);
+    sockRunToken.sendRunTokenApi({ 'msg': '设置成功' }, old_data);
   }
 
 

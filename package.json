@@ -2,7 +2,7 @@
     "name": "vscode-plugin-flyskycode",
     "displayName": "vscode-plugin-flyskycode",
     "description": "cyd1988",
-    "version": "0.3.6",
+    "version": "0.3.7",
     "publisher": "flyskycode",
     "engines": {
         "vscode": "^1.44.0"
@@ -354,7 +354,6 @@
         "@types/mysql": "^2.15.9",
         "@types/redis": "^2.8.17",
         "@types/ws": "^6.0.4",
-        "axios": "^0.19.2",
         "jsonc-parser": "^2.2.1",
         "mysql": "^2.18.1",
         "redis": "^2.8.0",

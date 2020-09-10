@@ -2,7 +2,7 @@ import * as vscode from 'vscode';
 import * as json from 'jsonc-parser';
 import * as path from 'path';
 import { Util } from '../Util';
-import axios from 'axios';
+// import axios from 'axios';
 import { configUrl } from './../lib/const';
 
 
@@ -64,19 +64,19 @@ export class JsonOutlineProvider implements vscode.TreeDataProvider<number> {
             this.refresh();
         }else{
 
-            let data = {
-                "con": this.json.ssh,
-                "notGetJsonData": 1,
-                'getInfo': 1
-            };
-            axios.post(configUrl + '/account/decode', Object.assign(data)).then(res => {
-                if(res.status === 200 && res.data.status === 'success'){
-                    this.json.sshn = res.data.data.info.sshn;
-                    this.sshnData[this.json.ssh] = this.json.sshn;
-                    this.parseTree();
-                    this.refresh();
-                }
-            });
+            // let data = {
+            //     "con": this.json.ssh,
+            //     "notGetJsonData": 1,
+            //     'getInfo': 1
+            // };
+            // axios.post(configUrl + '/account/decode', Object.assign(data)).then(res => {
+            //     if(res.status === 200 && res.data.status === 'success'){
+            //         this.json.sshn = res.data.data.info.sshn;
+            //         this.sshnData[this.json.ssh] = this.json.sshn;
+            //         this.parseTree();
+            //         this.refresh();
+            //     }
+            // });
         }
     }
 
