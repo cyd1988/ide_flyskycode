@@ -11,7 +11,6 @@ import fs = require('fs');
 // import { service as http } from './lib/httpIndex';
 
 
-import { Jsoncd_init, Jsoncd } from './com/jsonOutline';
 import { fileOpenProject } from './com/fileOpenProject';
 import { editauto } from './com/edit';
 import { apiModel } from './lib/apiModel';
@@ -20,7 +19,7 @@ import { Config } from './configurations/config';
 import { ChangeTargetSshServer } from './lib/ChangeTargetSshServer';
 
 let plugin = [
-  fileOpenProject, hover, editauto, Jsoncd_init
+  fileOpenProject, hover, editauto
 ];
 
 
@@ -138,6 +137,7 @@ export function activate(this: any, context: vscode.ExtensionContext) {
     }));
 
 
+
   context.subscriptions.push(vscode.commands.registerCommand(
     'extension.demo.api', (args) => {
       if (!args.u) {
@@ -145,18 +145,63 @@ export function activate(this: any, context: vscode.ExtensionContext) {
         args = { 'p': tm, 'u': '/init' };
       }
 
-
       // 测试
-      if (args.p.hasOwnProperty('key') && args.p.key == 'ctrl+shift+alt+cmd+p') {
-        apiModel.r_getText([
-          {
-            line: 2,
-            char: 0,
-            end_line: 8,
-            end_char: 0,
-          },
-        ]
-          , {});
+      if (args.p.hasOwnProperty('key') && args.p.key == 'ctrl+shift+alt+p') {
+
+
+        // let bash = new vscode.ShellExecution('ps -ef');
+
+  
+        // let execution = new vscode.CustomExecution((terminalRenderer, cancellationToken, args): Thenable<number> => {
+        //         return new Promise<number>(resolve => {
+        //             // This is the custom task callback!
+        //             resolve(0);
+        //         });
+        //     });
+        // const taskName = "First custom task";
+        // let task = new vscode.Task2(kind, vscode.TaskScope.Workspace, taskName, taskType, 
+        // execution);
+
+
+        // function getTask() {
+        //     const taskDef = {
+        //         type: 'shell'
+        //     };
+        //     const execution = new vscode.ShellExecution('chdir', {
+        //         cwd: 'C:\\Windows\\System32'
+        //     }); 
+        //     return new vscode.Task(taskDef, 'print_cwd', 'myext', execution);
+        // }
+        
+        // export function activate(context) {
+        //     context.subscriptions.push(vscode.tasks.registerTaskProvider('myext', {
+        //         provideTasks: () => [getTask()],
+        //         resolveTask(_task: vscode.Task): vsocde.Task | undefined => undefined,
+        //     });
+        // }
+
+
+
+
+        // Util.exec('ps -ef',{},function(error :any, stdout: Buffer, stderr: Buffer){
+          
+        //   console.log( '----' );
+        //   console.log( stdout );
+        //   console.log( error );
+          
+        // });
+        
+        console.log( 434343 );
+
+        // apiModel.r_getText([
+        //   {
+        //     line: 2,
+        //     char: 0,
+        //     end_line: 8,
+        //     end_char: 0,
+        //   },
+        // ]
+        //   , {});
 
         return;
         apiModel.r_open_file({
@@ -227,8 +272,6 @@ export function activate(this: any, context: vscode.ExtensionContext) {
 
     // var time = ((new Date()).getTime() - start_t)/1000;
     // console.log('远行: ' + time)
-
-
   }
 
   vscode.window.onDidChangeActiveTextEditor((Event) => {

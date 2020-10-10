@@ -5,12 +5,13 @@ import readline = require('readline');
 import { once } from 'events';
 import { exec } from 'child_process';
 import * as vscode from 'vscode';
-import { outputChannel, AnyObj } from './lib/const';
-import { Jsoncd_init, Jsoncd } from './com/jsonOutline';
-import { FileSystemError, Uri, workspace } from 'vscode';
+import { AnyObj } from './lib/const';
+import { Jsoncd } from './com/jsonOutline';
+import { Uri, workspace } from 'vscode';
 
 
 export class Util {
+  static HOME_DIR: string | null;
   static ROOT_DIR: string | null;
   static DIR() {
     if (!this.ROOT_DIR) {
@@ -349,22 +350,7 @@ export class Util {
     };
     fig = Util.merge(true, fig, data);
 
-    let text = '';
-    if (fig.pwd.startsWith('/Users/chenyudong/Library/')) {
-      fig.pwd = '';
-    }
-
-    if (fig.pwd) {
-      text += 'cd "' + fig.pwd + '"' + '\n';
-    }
-
-    if (fig.clear == 1) {
-      text += 'clear' + '\n';
-    } else {
-      text += '\n\n\n';
-    }
-
-    text += fig.val + '\n';
+    let text = fig.val;
 
     vscode.commands
       .executeCommand('workbench.action.terminal.toggleTerminal')
@@ -486,7 +472,7 @@ export class Util {
           if (pos !== -1) {
             let list = content.substr(0, pos).split("\n");
             content = '';
-            item.push( list.length - 1 );
+            item.push(list.length - 1);
 
             item.push(list[list.length - 1].length);
             item.push(item[2] + line_tm[3].length);
@@ -695,7 +681,16 @@ export class Util {
       Uri.file(path), Uri.file(targetPath), { overwrite: true });
   }
 
+  static getHomeDir() {
+    if (!this.HOME_DIR) {
 
+
+      this.ROOT_DIR = path.dirname(__dirname);
+    }
+
+
+    // return data;
+  }
 
 
 

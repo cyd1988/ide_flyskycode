@@ -161,10 +161,42 @@
                     "type": "boolean",
                     "default": true,
                     "description": "启动时显示自定义欢迎页"
+                },
+                "flyskycodeData.autorefresh": {
+                    "type": "boolean",
+                    "default": false
                 }
             }
         },
+        "views": {
+            "explorer": [
+                {
+                    "id": "flyskycodeData",
+                    "name": "flyskycode Data"
+                }
+            ]
+        },
         "commands": [
+            {
+                "command": "flyskycodeData.refresh",
+                "title": "Refresh",
+                "icon": {
+                    "light": "resources/light/refresh.svg",
+                    "dark": "resources/dark/refresh.svg"
+                }
+            },
+            {
+                "command": "flyskycodeData.refreshNode",
+                "title": "Refresh",
+                "icon": {
+                    "light": "resources/light/refresh.svg",
+                    "dark": "resources/dark/refresh.svg"
+                }
+            },
+            {
+                "command": "flyskycodeData.renameNode",
+                "title": "Rename"
+            },
             {
                 "command": "extension.demo.testMenuShow",
                 "title": "这个菜单仅在JS文件中出现",
@@ -220,6 +252,24 @@
         ],
         "keybindings": [],
         "menus": {
+            "view/title": [
+                {
+                    "command": "flyskycodeData.refresh",
+                    "when": "view == flyskycodeData",
+                    "group": "navigation"
+                }
+            ],
+            "view/item/context": [
+                {
+                    "command": "flyskycodeData.renameNode",
+                    "when": "view == flyskycodeData"
+                },
+                {
+                    "command": "flyskycodeData.refreshNode",
+                    "when": "view == flyskycodeData",
+                    "group": "inline"
+                }
+            ],
             "editor/context": [
                 {
                     "when": "editorFocus && resourceLangId == javascript",
