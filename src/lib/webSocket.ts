@@ -28,6 +28,7 @@ function runSystemKeysList(data: any) {
     data.data.hasOwnProperty('SystemKeysList')) {
 
     MessageService.SystemKeysList = data.data['SystemKeysList'];
+    MessageService.SystemConst = data.data['SystemConst'];
 
     back = true;
   }
@@ -67,6 +68,7 @@ export class MessageService {
   static arr: any[] = [];
   static runTokens: any = {};
   static SystemKeysList: any = {};
+  static SystemConst: any = {};
   static reload_time: Date = new Date(-3);
 
 
@@ -141,7 +143,7 @@ export class MessageService {
     MessageService.webSocketOnOpen_run();
   }
 
-  static async webSocketOnOpen_run(){
+  static async webSocketOnOpen_run() {
     await ChangeTargetSshServer.init();
     await runSystemKeysListReloat();
   }

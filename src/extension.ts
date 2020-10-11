@@ -109,12 +109,12 @@ export function activate(this: any, context: vscode.ExtensionContext) {
         }));
     }
   }
-  
+
   MessageService.start();
 
 
   context.subscriptions.push(
-    vscode.commands.registerCommand('extension.demo.changeTargetSshServer', 
+    vscode.commands.registerCommand('extension.demo.changeTargetSshServer',
       ChangeTargetSshServer.changeTargetLanguage));
 
 
@@ -151,7 +151,7 @@ export function activate(this: any, context: vscode.ExtensionContext) {
 
         // let bash = new vscode.ShellExecution('ps -ef');
 
-  
+
         // let execution = new vscode.CustomExecution((terminalRenderer, cancellationToken, args): Thenable<number> => {
         //         return new Promise<number>(resolve => {
         //             // This is the custom task callback!
@@ -172,7 +172,7 @@ export function activate(this: any, context: vscode.ExtensionContext) {
         //     }); 
         //     return new vscode.Task(taskDef, 'print_cwd', 'myext', execution);
         // }
-        
+
         // export function activate(context) {
         //     context.subscriptions.push(vscode.tasks.registerTaskProvider('myext', {
         //         provideTasks: () => [getTask()],
@@ -184,14 +184,33 @@ export function activate(this: any, context: vscode.ExtensionContext) {
 
 
         // Util.exec('ps -ef',{},function(error :any, stdout: Buffer, stderr: Buffer){
-          
+
         //   console.log( '----' );
         //   console.log( stdout );
         //   console.log( error );
-          
+
         // });
-        
-        console.log( 434343 );
+
+        console.log(434343);
+
+
+        let data_tm = {
+          'run': 'run_exec',
+          'run_exec': {
+            // 'bash': 'pwd',
+            'bash': 'zeal "dash-plugin://query=getenv&keys=php,wordpress,drupal,zend,laravel,yii,joomla,ee,codeigniter,cakephp,phpunit,symfony,typo3,twig,smarty,craft,phpp,html,statamic,mysql,sqlite,mongodb,psql,redis"',
+            'opts': {
+              'cwd': '/Users/'
+            }
+            // 'p': args.p
+          }
+        };
+        Api.run(data_tm);
+
+        return;
+
+
+        // console.log( 434343 );
 
         // apiModel.r_getText([
         //   {
@@ -203,7 +222,9 @@ export function activate(this: any, context: vscode.ExtensionContext) {
         // ]
         //   , {});
 
-        return;
+        // return;
+
+
         apiModel.r_open_file({
           file: '/Users/webS/www/mynotes/web/test/test.md',
           line: 0,
@@ -211,7 +232,7 @@ export function activate(this: any, context: vscode.ExtensionContext) {
         });
       }
 
-      if (args.p.hasOwnProperty('key')){
+      if (args.p.hasOwnProperty('key')) {
         args.p.run_keyboard = args.p.key;
       }
 

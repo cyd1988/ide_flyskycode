@@ -8,6 +8,7 @@ import * as vscode from 'vscode';
 import { AnyObj } from './lib/const';
 import { Jsoncd } from './com/jsonOutline';
 import { Uri, workspace } from 'vscode';
+import { MessageService } from './lib/webSocket';
 
 
 export class Util {
@@ -128,7 +129,7 @@ export class Util {
       for (const key in tm) {
         data[key] = tm[key];
       }
-      Jsoncd.json.setJson(data);
+      // Jsoncd.json.setJson(data);
     }
 
     return data;
@@ -681,15 +682,35 @@ export class Util {
       Uri.file(path), Uri.file(targetPath), { overwrite: true });
   }
 
-  static getHomeDir() {
-    if (!this.HOME_DIR) {
+  static str_replace(strs: string) {
 
-
-      this.ROOT_DIR = path.dirname(__dirname);
+    if (!MessageService.SystemConst || !MessageService.SystemConst.StrReplace) {
+      return strs;
     }
 
 
-    // return data;
+    let obj = MessageService.SystemConst.StrReplace
+
+    for (const key in obj) {
+
+      const element = obj[key];
+
+      if (element.type == 'ltrim') {
+        if (strs.trim().substr(0, key.length) === key && element.value !== '') {
+          strs = element.value + strs.trim().substr(key.length);
+        }
+      } else if (element.type == 'rtrim') {
+
+        // if (strs.trim().substr(0, key.length) === key && element.value !== '') {
+        //   strs = element.value + strs.trim().substr(key.length);
+        // }
+
+      } else if (element.type == 'replace') {
+        strs = strs.replace(key, element.value);
+      }
+    }
+
+    return strs;
   }
 
 

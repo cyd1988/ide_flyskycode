@@ -1,5 +1,6 @@
 import * as vscode from 'vscode';
 import fs = require('fs');
+import path = require('path');
 import { Util } from '../Util';
 import { Api } from './../lib/api';
 import { Jsoncd } from './../com/jsonOutline';
@@ -146,12 +147,11 @@ export class apiModel {
 
 
   static r_diff(data: any, run?: string) {
-
-    // vscode.commands.executeCommand("vscode.diff", 
-    // vscode.Uri.file(backupFilePath), 
-    // vscode.Uri.file(file), "Fix " + path.basename(file) + "", opts)
-
-    // vscode.commands.executeCommand('extension.demo.edit', data);
+    let obj = { "opts": {} };
+    data = Util.merge(true, obj, data);
+    vscode.commands.executeCommand("vscode.diff",
+      vscode.Uri.file(data.file1),
+      vscode.Uri.file(data.file2), "Fix " + path.basename(data.file1) + "", data.opts)
   }
 
 
@@ -367,5 +367,28 @@ export class apiModel {
     sockRunToken.sendRunTokenApi({ 'msg': '设置成功' }, old_data);
   }
 
+
+  static async r_run_exec(data: any, old_data: any) {
+
+    let obj = { "opts": {} };
+    data = Util.merge(true, obj, data);
+   
+    Util.exec(data.bash, data.opts,  (error:any, stdout:any, stderr:any) => {
+
+      if (error) {
+        console.error(`执行的错误: ${error}`);
+        // return;
+      }
+      // console.log(`stdout: ${stdout}`);
+      // console.error(`stderr: ${stderr}`);
+
+      sockRunToken.sendRunTokenApi({ value: stdout, error:error, stderr:stderr  }, old_data);
+
+
+
+      // console.log( { value: stdout } );
+
+    });
+  }
 
 }

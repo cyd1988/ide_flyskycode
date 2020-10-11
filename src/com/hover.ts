@@ -53,14 +53,8 @@ function getWordRegs(document: vscode.TextDocument, position: vscode.Position, r
     let USER_HOME = process.env.HOME || process.env.USERPROFILE
 
     if(select_word){
-        
-        if (select_word.trim().substr(0, 3) === '~+/' && boot_dir !== '') {
-            select_word = boot_dir + select_word.trim().substr(2);
-        }
 
-        if (select_word.trim().substr(0, 2) === '~/' && USER_HOME !== '') {
-            select_word = USER_HOME + select_word.trim().substr(1);
-        }
+        select_word = Util.str_replace(select_word);
 
         line_tm = Util.getFileLine(select_word);
         select_word = line_tm[0] + '';
@@ -90,14 +84,7 @@ function getWordRegs(document: vscode.TextDocument, position: vscode.Position, r
         if (word.length < 1) {
             continue;
         }
-
-        if (word.trim().substr(0, 3) === '~+/' && boot_dir !== '') {
-            word = boot_dir + word.trim().substr(2);
-        }
-
-        if (word.trim().substr(0, 2) === '~/' && USER_HOME !== '') {
-            word = USER_HOME + word.trim().substr(1);
-        }
+        word = Util.str_replace(word);
 
         line_tm = Util.getFileLine(word);
         word = line_tm[0] + '';

@@ -35,15 +35,15 @@ export class sockRunToken {
   // 返回结果
   static sendRunTokenApi(data: any, old_data: any) {
     let run_api = this.getRunTokenApi();
-    
-    run_api['p'] = {'source':data, 'ServerRunToken':''};
+
+    run_api['p'] = { 'source': data, 'ServerRunToken': '' };
 
     if (old_data.hasOwnProperty('ServerRunToken')) {
       run_api['p']['ServerRunToken'] = old_data['ServerRunToken'];
       // console.log( 'sendRunTokenApi' );
       // console.log( run_api );
       apiModel.r_api(run_api);
-    }  
+    }
   }
 
 
