@@ -6,7 +6,6 @@ import { once } from 'events';
 import { exec } from 'child_process';
 import * as vscode from 'vscode';
 import { AnyObj } from './lib/const';
-import { Jsoncd } from './com/jsonOutline';
 import { Uri, workspace } from 'vscode';
 import { MessageService } from './lib/webSocket';
 

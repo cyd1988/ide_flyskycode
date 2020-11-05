@@ -19,7 +19,7 @@ export async function fun_list(lists: AnyObj, call_list?: (...args: any[]) => an
 
   if (lists.hasOwnProperty('list')) {
     fig = Util.merge(true, fig, lists);
-    delete (fig['list']);
+    // delete (fig['list']);
     lists = lists['list'];
   }
 

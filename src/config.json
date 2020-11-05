@@ -16,17 +16,99 @@
     },
     "altnum": {
         "notes": "alt+数字 快速打开文件",
-        "alt1": { "file": "/Users/webS/www/mynotes/web/test/test.md" },
-        "alt2": { "file": "/Users/webS/www/mynotes/web/test/keyword/keyword2.md" },
-        "alt3": { "file": "/Users/webS/www/mynotes/web/test/keyword/keyword3.md" },
-        "alt4": { "file": "/Users/webS/www/mynotes/web/test/keyword/keyword4.php" },
-        "alt5": { "file": "/Users/webS/www/mynotes/web/test/keyword/keyword5.php" },
-        "alt6": { "file": "/Users/webS/www/mynotes/web/test/keyword/keyword6.php" },
-        "alt7": { "file": "/Users/webS/www/mynotes/web/test/keyword/keyword7.php" },
-        "alt8": { "file": "/Users/webS/www/mynotes/web/test/keyword/keyword8.php" },
-        "alt9": { "file": "/Users/webS/www/mynotes/web/test/keyword/keyword9.php" },
-        "alt0": { "file": "/Users/chenyudong/Library/Application Support/Sublime Text 3/Packages/SubPhp/file/alt0.sh" },
-        "alt-": { "file": "/Users/chenyudong/Library/Application Support/Sublime Text 3/Packages/SubPhp/file/s-.sh" },
-        "alt=": { "file": "/Users/chenyudong/Library/Application Support/Sublime Text 3/Packages/SubPhp/file/=.sh" }
-    }
+        "alt1": {
+            "file": "/Users/webS/www/mynotes/web/test/test.md"
+        },
+        "alt2": {
+            "file": "/Users/webS/www/mynotes/web/test/keyword/keyword2.md"
+        },
+        "alt3": {
+            "file": "/Users/webS/www/mynotes/web/test/keyword/keyword3.md"
+        },
+        "alt4": {
+            "file": "/Users/webS/www/mynotes/web/test/keyword/keyword4.php"
+        },
+        "alt5": {
+            "file": "/Users/webS/www/mynotes/web/test/keyword/keyword5.php"
+        },
+        "alt6": {
+            "file": "/Users/webS/www/mynotes/web/test/keyword/keyword6.php"
+        },
+        "alt7": {
+            "file": "/Users/webS/www/mynotes/web/test/keyword/keyword7.php"
+        },
+        "alt8": {
+            "file": "/Users/webS/www/mynotes/web/test/keyword/keyword8.php"
+        },
+        "alt9": {
+            "file": "/Users/webS/www/mynotes/web/test/keyword/keyword9.php"
+        },
+        "alt0": {
+            "file": "/Users/chenyudong/Library/Application Support/Sublime Text 3/Packages/SubPhp/file/alt0.sh"
+        },
+        "alt-": {
+            "file": "/Users/chenyudong/Library/Application Support/Sublime Text 3/Packages/SubPhp/file/s-.sh"
+        },
+        "alt=": {
+            "file": "/Users/chenyudong/Library/Application Support/Sublime Text 3/Packages/SubPhp/file/=.sh"
+        }
+    },
+    "commands": [
+        {
+            "name": "extension.demo.paste_link",
+            "names": "粘贴-软链接",
+            "to->v": "fsPath|p.api.p.dir",
+            "p": {
+                "run": "api",
+                "api": {
+                    "u": "/files/paste_link",
+                    "p": {
+                        "dir": ""
+                    }
+                }
+            }
+        },
+        {
+            "name": "extension.demo.shell_open",
+            "names": "SHELL 打开文件",
+            "to->v": "fsPath|p.api.p.file_name",
+            "p": {
+                "run": "api",
+                "api": {
+                    "u": "/files/shell_open",
+                    "p": {
+                        "file_name": ""
+                    }
+                }
+            }
+        },
+        {
+            "name": "extension.demo.shell_paste",
+            "names": "SHELL 粘贴",
+            "to->v": "fsPath|p.api.p.path",
+            "p": {
+                "run": "api",
+                "api": {
+                    "u": "/files/shell_paste",
+                    "p": {
+                        "path": ""
+                    }
+                }
+            }
+        },
+        {
+            "name": "extension.demo.sublime_list",
+            "names": "右键列表",
+            "to->v": "fsPath|p.api.p.SUBLIME_LIST_PATH",
+            "p": {
+                "run": "api",
+                "api": {
+                    "u": "/files/sublime_list",
+                    "p": {
+                        "SUBLIME_LIST_PATH": ""
+                    }
+                }
+            }
+        }
+    ]
 }

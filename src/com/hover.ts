@@ -10,7 +10,6 @@ import {
     TextDocument,
     ProviderResult,
     DocumentLink,
-    workspace,
     Position,
     Range
 } from "vscode";

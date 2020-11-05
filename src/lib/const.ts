@@ -11,10 +11,6 @@ export interface AnyObj {
 
 
 
-
-
-
-
 export class StatusBarMessage {
   static nIntervId: AnyObj = {};
   static data: AnyObj = {};

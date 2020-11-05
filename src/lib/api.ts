@@ -1,7 +1,6 @@
-import * as vscode from 'vscode';
 import { Util } from '../Util';
-import { MessageService } from './../lib/webSocket';
 import { apiModel } from './../lib/apiModel';
+import { Config } from './../configurations/config';
 
 
 export class Api {
@@ -168,9 +167,133 @@ export class Api {
 
 
 
+}
 
 
 
 
 
+
+export function ApiRun(args: any) {
+
+	if (!args.u) {
+		let tm = args;
+		args = { 'p': tm, 'u': '/init' };
+	}
+
+	// 测试
+	if (args.p.hasOwnProperty('key') && args.p.key == 'ctrl+shift+alt+p') {
+
+
+		// let execution = new vscode.CustomExecution((terminalRenderer, cancellationToken, args): Thenable<number> => {
+		//         return new Promise<number>(resolve => {
+		//             // This is the custom task callback!
+		//             resolve(0);
+		//         });
+		//     });
+		// const taskName = "First custom task";
+		// let task = new vscode.Task2(kind, vscode.TaskScope.Workspace, taskName, taskType, 
+		// execution);
+
+
+		// function getTask() {
+		//     const taskDef = {
+		//         type: 'shell'
+		//     };
+		//     const execution = new vscode.ShellExecution('chdir', {
+		//         cwd: 'C:\\Windows\\System32'
+		//     }); 
+		//     return new vscode.Task(taskDef, 'print_cwd', 'myext', execution);
+		// }
+
+
+		// export function activate(context) {
+		//     context.subscriptions.push(vscode.tasks.registerTaskProvider('myext', {
+		//         provideTasks: () => [getTask()],
+		//         resolveTask(_task: vscode.Task): vsocde.Task | undefined => undefined,
+		//     });
+		// }
+
+		// Util.exec('ps -ef',{},function(error :any, stdout: Buffer, stderr: Buffer){
+		//   console.log( '----' );
+		//   console.log( stdout );
+		//   console.log( error );
+		// });
+
+		console.log(434343);
+
+
+		let data_tm = {
+			'run': 'run_exec',
+			'run_exec': {
+				// 'bash': 'pwd',
+				'bash': 'zeal "dash-plugin://query=getenv&keys=php,wordpress,drupal,zend,laravel,yii,joomla,ee,codeigniter,cakephp,phpunit,symfony,typo3,twig,smarty,craft,phpp,html,statamic,mysql,sqlite,mongodb,psql,redis"',
+				'opts': {
+					'cwd': '/Users/'
+				}
+				// 'p': args.p
+			}
+		};
+		Api.run(data_tm);
+
+		return;
+
+
+		// console.log( 434343 );
+
+		// apiModel.r_getText([
+		//   {
+		//     line: 2,
+		//     char: 0,
+		//     end_line: 8,
+		//     end_char: 0,
+		//   },
+		// ]
+		//   , {});
+
+		// return;
+
+
+		apiModel.r_open_file({
+			file: '/Users/webS/www/mynotes/web/test/test.md',
+			line: 0,
+			KK: '陈斌',
+		});
+	}
+
+	if (args.p.hasOwnProperty('key')) {
+		args.p.run_keyboard = args.p.key;
+	}
+
+	if (args.p.hasOwnProperty('key') && Config.sGet(args.p.key, false)) {
+		const keys = args.p.key;
+		args = JSON.parse(JSON.stringify(Config.sGet(args.p.key)));
+
+		if (args.run && args[args.run].p) {
+			args[args.run].p.run_keyboard = keys;
+			args[args.run].p.keys = keys;
+		}
+	}
+
+	function ruPost() {
+		args.p = Api.argsRun(args.p);
+		if (args.run) {
+			Api.run(args);
+		} else {
+			let data_tm = {
+				'run': 'api',
+				'api': {
+					'u': args.u,
+					'p': args.p
+				}
+			};
+			Api.run(data_tm);
+		}
+	}
+
+	if (args.save) {
+		Util.docSave().then(ruPost);
+	} else {
+		ruPost();
+	}
 }
