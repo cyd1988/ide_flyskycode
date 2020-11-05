@@ -47,10 +47,7 @@ function getWordRegs(document: vscode.TextDocument, position: vscode.Position, r
     let line_tm: any = [];
     let line = 0;
 
-    let boot_dir = Util.getBootDir();
-
     let select_word = Util.getSelecttextLineOne();
-    let USER_HOME = process.env.HOME || process.env.USERPROFILE
 
     if(select_word){
 
