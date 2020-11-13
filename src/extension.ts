@@ -29,8 +29,9 @@ outputChannel.appendLine('flskycode-init..');
 export function activate(this: any, context: vscode.ExtensionContext) {
 
   plugin.map(fun => { fun(context); });
+  let data_fig = Config.configJsonContent();
+  let commands: AnyObj[] = data_fig['commands']
 
-  let commands: AnyObj[] = Config.sGet("commands", [])
   for (const key in commands) {
     let info = commands[key];
     context.subscriptions.push(vscode.commands.registerCommand(info.name, (args) => {
