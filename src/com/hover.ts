@@ -38,6 +38,7 @@ var select_word_global:any;
 function getWordRegs(document: vscode.TextDocument, position: vscode.Position, run_name = '') {
     // let regs = [undefined, /[^'"]+/];
     let regs = [
+        /[^\n]+/,
         /[^'"]+/,
         /[^ '"]+/,
         undefined

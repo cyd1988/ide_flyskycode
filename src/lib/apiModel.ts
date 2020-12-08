@@ -85,12 +85,6 @@ export class apiModel {
 
 
   static r_getText(data: any, old_data: any) {
-
-
-    console.log('+++++++++++++++++++');
-    console.log(data);
-
-
     let document: vscode.TextDocument | null = vscode.window.activeTextEditor ?
       vscode.window.activeTextEditor.document : null;
 
@@ -111,13 +105,7 @@ export class apiModel {
         data[index]['con'] = document.getText(Range_ins);
       }
     }
-
-    console.log('r_getText');
-    console.log(old_data);
-
-
     sockRunToken.sendRunTokenApi(data, old_data);
-
   }
 
 
@@ -347,13 +335,10 @@ export class apiModel {
 
       if (data.list.length > 0) {
         this.r_input(data);
-
-
       } else if (data.hasOwnProperty('run')) {
         Api.run(data);
       }
     });
-
   }
 
   static r_get_clipboard(data: any, old_data: any) {
@@ -368,26 +353,14 @@ export class apiModel {
   }
 
 
-  static async r_run_exec(data: any, old_data: any) {
-
+  static async r_run_ide_exec(data: any, old_data: any) {
     let obj = { "opts": {} };
     data = Util.merge(true, obj, data);
-   
-    Util.exec(data.bash, data.opts,  (error:any, stdout:any, stderr:any) => {
-
+    Util.exec(data.bash, data.opts, (error: any, stdout: any, stderr: any) => {
       if (error) {
         console.error(`执行的错误: ${error}`);
-        // return;
       }
-      // console.log(`stdout: ${stdout}`);
-      // console.error(`stderr: ${stderr}`);
-
-      sockRunToken.sendRunTokenApi({ value: stdout, error:error, stderr:stderr  }, old_data);
-
-
-
-      // console.log( { value: stdout } );
-
+      sockRunToken.sendRunTokenApi({ value: stdout, error: error, stderr: stderr }, old_data);
     });
   }
 

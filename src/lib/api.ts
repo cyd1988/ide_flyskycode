@@ -150,7 +150,7 @@ export class Api {
 			apiModel.r_set_clipboard(data[data['run']], data);
 
 		} else if (data.run === 'run_exec') {
-			apiModel.r_run_exec(data[data['run']], data);
+			apiModel.r_run_ide_exec(data[data['run']], data);
 
 		} else {
 			console.log('没找到方法：api.run.data', data);

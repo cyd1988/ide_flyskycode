@@ -13,7 +13,7 @@ export class ChangeTargetSshServer {
 
 
     public static async init() {
-        if(!ChangeTargetSshServer.statusBar){
+        if (!ChangeTargetSshServer.statusBar) {
             ChangeTargetSshServer.statusBar = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left);
             ChangeTargetSshServer.statusBar.command = 'extension.demo.changeTargetSshServer';
             ChangeTargetSshServer.statusBar.tooltip = '选择要使用的SSH账号！';
@@ -58,11 +58,11 @@ export class ChangeTargetSshServer {
                 }
             };
             let tmp = await sockRunToken.apiRun(data);
-            if(tmp && tmp['list_ssh']){
+            if (tmp && tmp['list_ssh']) {
                 ChangeTargetSshServer.lists = tmp['list_ssh'];
-            }else{
-                console.log( '3434343433----' )
-                console.log( tmp );
+            } else {
+                console.log('3434343433----')
+                console.log(tmp);
             }
         }
 
@@ -70,14 +70,19 @@ export class ChangeTargetSshServer {
     }
 
 
-    static async getListCurrent(keys?:string) {
+    static async getListCurrent(keys?: string) {
         let lists = await ChangeTargetSshServer.getListSsh();
-        if(keys){
-
+        if (keys) {
             let info = await ChangeTargetSshServer.getListCurrent();
-            if(keys=='null'){
+            if (keys == 'null') {
                 ChangeTargetSshServer.statusBar.text = '$(project) ' + info.value;
-            }else{
+            } else if (typeof keys == "object") {
+                if (keys['name']) {
+                    ChangeTargetSshServer.statusBar.text = '$(project) ' + info.value + '   ' + keys['name'];
+                } else {
+                    ChangeTargetSshServer.statusBar.text = '$(project) ' + info.value + '   ' + keys['user'] + '-' + keys['ip'];
+                }
+            } else {
 
                 for (let index = 0; index < lists.length; index++) {
                     const element = lists[index];
@@ -86,11 +91,10 @@ export class ChangeTargetSshServer {
                         break;
                     }
                 }
-
-                ChangeTargetSshServer.statusBar.text = '$(project) ' + info.value+'   '+keys;
+                ChangeTargetSshServer.statusBar.text = '$(project) ' + info.value + '   ' + keys;
             }
 
-        }else{
+        } else {
 
             let info = lists[0];
             for (let index = 0; index < lists.length; index++) {

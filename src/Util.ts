@@ -1,14 +1,13 @@
-import fs = require('fs');
-import os = require('os');
-import path = require('path');
-import readline = require('readline');
-import { once } from 'events';
-import { exec } from 'child_process';
-import * as vscode from 'vscode';
-import { AnyObj } from './lib/const';
-import { Uri, workspace } from 'vscode';
-import { MessageService } from './lib/webSocket';
-
+import fs = require("fs");
+import os = require("os");
+import path = require("path");
+import readline = require("readline");
+import { once } from "events";
+import { exec } from "child_process";
+import * as vscode from "vscode";
+import { AnyObj } from "./lib/const";
+import { Uri, workspace } from "vscode";
+import { MessageService } from "./lib/webSocket";
 
 export class Util {
   static HOME_DIR: string | null;
@@ -20,21 +19,22 @@ export class Util {
     return this.ROOT_DIR;
   }
 
-
   /**
    * 获取当前所在工程根目录，有3种使用方法：<br>
    * getProjectPath(uri) uri 表示工程内某个文件的路径<br>
    * getProjectPath(document) document 表示当前被打开的文件document对象<br>
    * getProjectPath() 会自动从 activeTextEditor 拿document对象，如果没有拿到则报错
-   * @param {*} document 
+   * @param {*} document
    */
   static getProjectPathP(document: any) {
     if (!document) {
-      document = vscode.window.activeTextEditor ? vscode.window.activeTextEditor.document : null;
+      document = vscode.window.activeTextEditor
+        ? vscode.window.activeTextEditor.document
+        : null;
     }
     if (!document) {
       // this.showError('当前激活的编辑器不是文件或者没有文件被打开！');
-      return '';
+      return "";
     }
     const currentFile = (document.uri ? document.uri : document).fsPath;
     let projectPath = null;
@@ -42,38 +42,43 @@ export class Util {
     let list = vscode.workspace.workspaceFolders;
     let workspaceFolders: any[] = [];
     if (list) {
-      workspaceFolders = list.map(item => item.uri.path);
+      workspaceFolders = list.map((item) => item.uri.path);
     }
     // 由于存在Multi-root工作区，暂时没有特别好的判断方法，先这样粗暴判断
     // 如果发现只有一个根文件夹，读取其子文件夹作为 workspaceFolders
-    if (workspaceFolders.length === 1 && workspaceFolders[0] === vscode.workspace.rootPath) {
+    if (
+      workspaceFolders.length === 1 &&
+      workspaceFolders[0] === vscode.workspace.rootPath
+    ) {
       const rootPath = workspaceFolders[0];
       var files = fs.readdirSync(rootPath);
-      workspaceFolders = files.filter(name => !/^\./g.test(name)).map(name => path.resolve(rootPath, name));
+      workspaceFolders = files
+        .filter((name) => !/^\./g.test(name))
+        .map((name) => path.resolve(rootPath, name));
       // vscode.workspace.rootPath 会不准确，且已过时
       // return vscode.workspace.rootPath + '/' + this._getProjectName(vscode, document);
     }
-    workspaceFolders.forEach(folder => {
+    workspaceFolders.forEach((folder) => {
       if (currentFile.indexOf(folder) === 0) {
         projectPath = folder;
       }
     });
     if (!projectPath) {
-      this.showError('获取工程根路径异常！');
-      return '';
+      this.showError("获取工程根路径异常！");
+      return "";
     }
     return projectPath;
   }
 
   static getProjectPath(document: vscode.TextDocument | any = null) {
     if (!document) {
-      document = vscode.window.activeTextEditor ?
-        vscode.window.activeTextEditor.document :
-        null;
+      document = vscode.window.activeTextEditor
+        ? vscode.window.activeTextEditor.document
+        : null;
     }
     if (!document) {
       // this.showError('当前激活的编辑器不是文件或者没有文件被打开！');
-      return '';
+      return "";
     }
     const currentFile = document.uri.fsPath;
     return currentFile;
@@ -88,30 +93,30 @@ export class Util {
     return totalSize;
   }
 
-
   static getFilePath(document: vscode.TextDocument | any = null) {
     if (!document) {
-      document = vscode.window.activeTextEditor ?
-        vscode.window.activeTextEditor.document :
-        null;
+      document = vscode.window.activeTextEditor
+        ? vscode.window.activeTextEditor.document
+        : null;
     }
     const projectPath = document.uri.fsPath;
     if (!projectPath) {
-      this.showError('获取工程根路径异常！');
-      return '';
+      this.showError("获取工程根路径异常！");
+      return "";
     }
     return projectPath;
   }
 
   static getJsonData(
-    document: vscode.TextDocument | null = null, content: string | null = null) {
-
+    document: vscode.TextDocument | null = null,
+    content: string | null = null
+  ) {
     let data: AnyObj = {};
 
     if (!document) {
-      document = vscode.window.activeTextEditor ?
-        vscode.window.activeTextEditor.document :
-        null;
+      document = vscode.window.activeTextEditor
+        ? vscode.window.activeTextEditor.document
+        : null;
     }
     if (!content && document) {
       content = document.getText();
@@ -121,7 +126,7 @@ export class Util {
     }
 
     let regEx = /json:\{"[^\n]+/;
-    let match = regEx.exec(content + '');
+    let match = regEx.exec(content + "");
 
     if (match) {
       let tm = JSON.parse(match[0].substr(5));
@@ -138,26 +143,29 @@ export class Util {
    * 获取当前第一个选中内容，或当前第一个选区的整行内容
    * @param editor
    */
-  static getSelecttextLineOne(editor: vscode.TextEditor | undefined = undefined) {
+  static getSelecttextLineOne(
+    editor: vscode.TextEditor | undefined = undefined
+  ) {
     let files: string;
     // 获取当前编辑器对象
     if (!editor) {
       editor = vscode.window.activeTextEditor;
     }
     if (!editor) {
-      return '';
+      return "";
     }
 
-    if (editor.selections[0].start.character ===
+    if (
+      editor.selections[0].start.character ===
       editor.selections[0].end.character &&
-      editor.selections[0].start.line === editor.selections[0].end.line) {
-      files = '';
+      editor.selections[0].start.line === editor.selections[0].end.line
+    ) {
+      files = "";
     } else {
       files = editor.document.getText(editor.selections[0]);
     }
     return files;
   }
-
 
   /**
    * 获取当前第一个选中内容，或当前第一个选区的整行内容
@@ -170,12 +178,14 @@ export class Util {
       editor = vscode.window.activeTextEditor;
     }
     if (!editor) {
-      return '';
+      return "";
     }
 
-    if (editor.selections[0].start.character ===
+    if (
+      editor.selections[0].start.character ===
       editor.selections[0].end.character &&
-      editor.selections[0].start.line === editor.selections[0].end.line) {
+      editor.selections[0].start.line === editor.selections[0].end.line
+    ) {
       files = editor.document.lineAt(editor.selections[0].start.line).text;
     } else {
       files = editor.document.getText(editor.selections[0]);
@@ -183,26 +193,24 @@ export class Util {
     return files;
   }
 
-
-
   static getStringPath(files: string, word_dir: string, data: any) {
     let file_str = files;
     var stat = fs.lstatSync(word_dir);
     if (stat.isFile()) {
       word_dir = this.getDirname(word_dir);
     }
-    if (data['pwd']) {
-      word_dir = data['pwd'];
+    if (data["pwd"]) {
+      word_dir = data["pwd"];
     }
 
-    if (word_dir.substr(-1) !== '/') {
-      word_dir += '/';
+    if (word_dir.substr(-1) !== "/") {
+      word_dir += "/";
     }
 
-    if (file_str.substr(0, 1) !== '/') {
-      if (file_str.substr(0, 2) === './') {
+    if (file_str.substr(0, 1) !== "/") {
+      if (file_str.substr(0, 2) === "./") {
         file_str = word_dir + file_str.substr(2);
-      } else if (file_str.substr(0, 2) === '../') {
+      } else if (file_str.substr(0, 2) === "../") {
         file_str = word_dir + file_str;
       }
     }
@@ -212,7 +220,7 @@ export class Util {
       if (!stat.isFile()) {
       }
     } else {
-      file_str = '';
+      file_str = "";
     }
     return file_str;
   }
@@ -227,24 +235,21 @@ export class Util {
     return false;
   }
 
-
   static createFileDir(files: string) {
     let create_file = false;
 
-    let first: string = '/' + files.split('/')[0];
-    if (!fs.existsSync(first) || first === '/') {
+    let first: string = "/" + files.split("/")[0];
+    if (!fs.existsSync(first) || first === "/") {
       return false;
     }
 
-    if (files.substr(-1) !== '/') {
-
+    if (files.substr(-1) !== "/") {
       let dirs = this.getDirname(files);
       if (dirs) {
         fs.mkdirSync(dirs, { recursive: true });
-        fs.open(files, 'w', a => { });
+        fs.open(files, "w", (a) => { });
         create_file = true;
       }
-
     } else {
       fs.mkdirSync(files, { recursive: true });
     }
@@ -252,10 +257,8 @@ export class Util {
     return create_file;
   }
   static repeat(src: string, n: number) {
-    return (new Array(n + 1)).join(src);
+    return new Array(n + 1).join(src);
   }
-
-
 
   static getProjectName(projectPath: string) {
     return path.basename(projectPath);
@@ -268,60 +271,60 @@ export class Util {
   static getPluginPath() { }
 
   static async sublime_file_list(files: string) {
-    let lm_strat: string = 'sublime_list_start:';
-    let lm_end: string = 'sublime_list_end:';
+    let lm_strat: string = "sublime_list_start:";
+    let lm_end: string = "sublime_list_end:";
     let data = Array();
 
     try {
-      const rl = readline.createInterface(
-        { input: fs.createReadStream(files), crlfDelay: Infinity });
+      const rl = readline.createInterface({
+        input: fs.createReadStream(files),
+        crlfDelay: Infinity,
+      });
 
       //   let status = 'start';
       let tmp = {
-        'name': '',
-        'list': Array(),
-        'status': '',
-        'num': 0,
-        'val': ['', '']
+        name: "",
+        list: Array(),
+        status: "",
+        num: 0,
+        val: ["", ""],
       };
-      rl.on('line', (line) => {
+      rl.on("line", (line) => {
         let strs = line.trim();
-        if (tmp['status'] === '') {
+        if (tmp["status"] === "") {
           if (strs.startsWith(lm_strat)) {
-            tmp['name'] = strs.substr(lm_strat.length);
-            tmp['status'] = 'start';
-            tmp['num'] = 0;
+            tmp["name"] = strs.substr(lm_strat.length);
+            tmp["status"] = "start";
+            tmp["num"] = 0;
           }
-        } else if (tmp['status'] === 'start') {
+        } else if (tmp["status"] === "start") {
           if (strs.startsWith(lm_end)) {
-            data.push([tmp['name'], tmp['list']]);
-            tmp['status'] = '';
-            tmp['list'] = Array();
-            tmp['num'] = 0;
-
+            data.push([tmp["name"], tmp["list"]]);
+            tmp["status"] = "";
+            tmp["list"] = Array();
+            tmp["num"] = 0;
           } else {
-            if (tmp['num'] % 2 === 0) {
-              tmp['val'][0] = strs;
+            if (tmp["num"] % 2 === 0) {
+              tmp["val"][0] = strs;
             } else {
-              tmp['val'][1] = strs;
-              if (tmp['val'][0].length < 1) {
-                tmp['val'][0] = path.basename(strs);
+              tmp["val"][1] = strs;
+              if (tmp["val"][0].length < 1) {
+                tmp["val"][0] = path.basename(strs);
               }
 
-              tmp['list'].push([tmp['val'][0], tmp['val'][1]]);
+              tmp["list"].push([tmp["val"][0], tmp["val"][1]]);
             }
-            ++tmp['num'];
+            ++tmp["num"];
           }
         }
       });
 
-      await once(rl, 'close');
+      await once(rl, "close");
     } catch (err) {
       console.error(err);
     }
     return data;
   }
-
 
   /**
    *  bash
@@ -329,13 +332,12 @@ export class Util {
    */
   static exec(bash: string, data: any, func: any) {
     let new_env = process.env;
-    new_env['MEGAVARIABLE'] = 'MEGAVALUE';
-    new_env['LC_CTYPE'] = 'UTF-8';
-    new_env['LANG'] = 'en_US.UTF-8';
-    data['env'] = new_env;
+    new_env["MEGAVARIABLE"] = "MEGAVALUE";
+    new_env["LC_CTYPE"] = "UTF-8";
+    new_env["LANG"] = "en_US.UTF-8";
+    data["env"] = new_env;
     exec(bash, data, func);
   }
-
 
   /**
    *  文字到编辑器 terminal 运行
@@ -343,31 +345,34 @@ export class Util {
    */
   static run_terminal(data: any) {
     let fig: any = {
-      pwd: '',      // 当前路径
-      clear: 1,     // 清除之前内容
-      val: '',      // 要执行的命令
-      rest_focus: 0 // 焦点回到编辑器
+      pwd: "", // 当前路径
+      clear: 1, // 清除之前内容
+      val: "", // 要执行的命令
+      rest_focus: 0, // 焦点回到编辑器
     };
     fig = Util.merge(true, fig, data);
 
     let text = fig.val;
 
     vscode.commands
-      .executeCommand('workbench.action.terminal.toggleTerminal')
-      .then(sucess => {
-
+      .executeCommand("workbench.action.terminal.toggleTerminal")
+      .then((sucess) => {
         if (fig.clear == 1) {
-          vscode.commands.executeCommand('workbench.action.terminal.clear');  // 清除控制台
+          vscode.commands.executeCommand("workbench.action.terminal.clear"); // 清除控制台
         }
 
-        vscode.commands.executeCommand('workbench.action.terminal.sendSequence', { 'text': text })
-          .then(sucess => {
+        vscode.commands
+          .executeCommand("workbench.action.terminal.sendSequence", {
+            text: text,
+          })
+          .then((sucess) => {
             // 回到焦点
             if (fig.rest_focus == 1 && vscode.window.activeTextEditor) {
-              vscode.window.showTextDocument(vscode.window.activeTextEditor.document.uri);
+              vscode.window.showTextDocument(
+                vscode.window.activeTextEditor.document.uri
+              );
             }
           });
-
       });
   }
   static async ctrls(document: vscode.TextDocument, is_await = 1) {
@@ -379,26 +384,26 @@ export class Util {
   }
 
   static async docSave(is_await = 1) {
-    let document: vscode.TextDocument | null = vscode.window.activeTextEditor ?
-      vscode.window.activeTextEditor.document :
-      null;
+    let document: vscode.TextDocument | null = vscode.window.activeTextEditor
+      ? vscode.window.activeTextEditor.document
+      : null;
     if (document && document.isDirty) {
       await this.ctrls(document, is_await);
     }
 
-    return Promise.resolve('运行结束');
+    return Promise.resolve("运行结束");
   }
 
   static getBootDir() {
     let dirs = this.getWorkspaceFolders(0);
-    let boot_dir = '';
+    let boot_dir = "";
     for (let index = 0; index < dirs.length; index++) {
       const path = dirs[index];
       if (
-        fs.existsSync(path + '/.env') ||
-        fs.existsSync(path + '/package.json') ||
-        fs.existsSync(path + '/composer.json') ||
-        fs.existsSync(path + '/node_modules')
+        fs.existsSync(path + "/.env") ||
+        fs.existsSync(path + "/package.json") ||
+        fs.existsSync(path + "/composer.json") ||
+        fs.existsSync(path + "/node_modules")
       ) {
         boot_dir = path;
         break;
@@ -412,19 +417,19 @@ export class Util {
     let workspaceFolders: string[] = [];
     if (source) {
       if (list) {
-        list.forEach(folder => {
+        list.forEach((folder) => {
           workspaceFolders.push(folder.uri.path);
         });
       }
     } else {
       if (list) {
-        list.forEach(folder => {
+        list.forEach((folder) => {
           const pathp: any = Util.getDirname(folder.uri.path);
-          if (!workspaceFolders.find(v => v === pathp)) {
+          if (!workspaceFolders.find((v) => v === pathp)) {
             workspaceFolders.push(pathp);
           }
         });
-        list.forEach(folder => {
+        list.forEach((folder) => {
           workspaceFolders.push(folder.uri.path);
         });
       }
@@ -437,41 +442,42 @@ export class Util {
   }
 
   static getWordFile(word: string, line_tm: string, run_name: string) {
-
     function check(workDir: string, word: string) {
-      let file = '';
+      let file = "";
       if (!file && Util.isfile(word)) {
         file = word;
       }
-      if (!file && Util.isfile(workDir + '/' + word)) {
-        file = workDir + '/' + word;
+      if (!file && Util.isfile(workDir + "/" + word)) {
+        file = workDir + "/" + word;
       }
-      if (!file && Util.isfile(workDir + '/' + word + ".js")) {
-        file = workDir + '/' + word + ".js";
+      if (!file && Util.isfile(workDir + "/" + word + ".js")) {
+        file = workDir + "/" + word + ".js";
       }
-      if (!file && Util.isfile(workDir + '/' + word + ".ts")) {
-        file = workDir + '/' + word + ".ts";
+      if (!file && Util.isfile(workDir + "/" + word + ".ts")) {
+        file = workDir + "/" + word + ".ts";
       }
-      if (!file && Util.isfile(workDir + '/' + word + ".php")) {
-        file = workDir + '/' + word + ".php";
+      if (!file && Util.isfile(workDir + "/" + word + ".php")) {
+        file = workDir + "/" + word + ".php";
       }
       return file;
     }
     let list = this.getWorkspaceFolders();
     let file: string[] = [];
-    list.forEach(val => {
-      const tm = check(val, word);
-      if (tm && !file.find(v => v[0] === tm)) {
-
+    list.forEach((val) => {
+      const tm = check(val.trim(), word.trim());
+      if (tm && !file.find((v) => v[0] === tm)) {
         let item: any = [tm];
-        if (run_name == 'provideDefinition' && line_tm.length === 4 && line_tm[2] == '::KK') {
-
-          let content = fs.readFileSync(tm + '', "utf-8");
+        if (
+          run_name == "provideDefinition" &&
+          line_tm.length === 4 &&
+          line_tm[2] == "::KK"
+        ) {
+          let content = fs.readFileSync(tm + "", "utf-8");
           let pos = content.indexOf(line_tm[3]);
 
           if (pos !== -1) {
             let list = content.substr(0, pos).split("\n");
-            content = '';
+            content = "";
             item.push(list.length - 1);
 
             item.push(list[list.length - 1].length);
@@ -488,16 +494,13 @@ export class Util {
     let tm;
     let data: any = [word, 0];
 
-    if (tm = word.match(/(.*)::R(\d+)$/)) {
+    if ((tm = word.match(/(.*)::R(\d+)$/))) {
       data[0] = tm[1];
       data[1] = parseInt(tm[2]);
-
-    } else if (tm = word.match(/(.*) +::KK +(.+)$/)) {
+    } else if ((tm = word.match(/(.*) +::KK +(.+)$/))) {
       data[0] = tm[1];
-      data.push('::KK', tm[2]);
-
+      data.push("::KK", tm[2]);
     } else {
-
       tm = word.match(/(.*):(\d+)$/);
       if (tm) {
         data[0] = tm[1];
@@ -513,7 +516,7 @@ export class Util {
   }
 
   static str_to_obj(data: any, strs: string, val: any) {
-    let va = strs.split('.');
+    let va = strs.split(".");
     let tm: any = data;
     let is_right = 1;
     va.forEach((v1: any) => {
@@ -524,11 +527,11 @@ export class Util {
       }
     });
     if (is_right === 1) {
-      let evals = 'data';
+      let evals = "data";
       va.forEach((v: string) => {
         evals += '["' + v + '"]';
       });
-      evals += '=val;';
+      evals += "=val;";
       // evals += '="'+val+'"';
       eval(evals);
     }
@@ -536,10 +539,10 @@ export class Util {
   }
 
   static to_v(data: any, search_data: any) {
-    if (data.hasOwnProperty('to->v')) {
-      let tm = data['to->v'].split('|');
+    if (data.hasOwnProperty("to->v")) {
+      let tm = data["to->v"].split("|");
       let source_val = search_data;
-      tm[0].split('.').forEach((key: string) => {
+      tm[0].split(".").forEach((key: string) => {
         if (source_val[key]) {
           // if (source_val.hasOwnProperty(key)) {
           source_val = source_val[key];
@@ -550,24 +553,22 @@ export class Util {
     return data;
   }
 
-
-
   /**
    * 自定义深度的数组合并
    * @param args 数组
    */
   static merge(...args: any[]): any {
     let deel = 2;
-    if (typeof args[0] === 'number') {
+    if (typeof args[0] === "number") {
       deel = args[0];
       args = args.slice(1);
-    } else if (typeof args[0] === 'boolean') {
+    } else if (typeof args[0] === "boolean") {
       deel = -1;
       args = args.slice(1);
     }
     let tm = [];
     for (const key in args) {
-      if (typeof args[key] === 'object') {
+      if (typeof args[key] === "object") {
         tm.push(args[key]);
       }
     }
@@ -582,23 +583,17 @@ export class Util {
     for (const k in args[1]) {
       if (data.hasOwnProperty(k)) {
         if (typeof data[k] !== typeof args[1][k]) {
-
           data[k] = args[1][k];
-
-        } else if (typeof data[k] === 'string') {
-
+        } else if (typeof data[k] === "string") {
           if (args[1][k].length !== 0) {
             data[k] = args[1][k];
           }
-
-        } else if (typeof data[k] === 'object') {
-
+        } else if (typeof data[k] === "object") {
           if (deel > 1 || deel < 0) {
             data[k] = this.merge(--deel, data[k], args[1][k]);
           } else {
             data[k] = args[1][k];
           }
-
         } else {
           data[k] = args[1][k];
         }
@@ -616,7 +611,6 @@ export class Util {
     }
   }
 
-
   static SELECT_LINES(max_len = 0) {
     let selec: any[] = [];
     let editor: vscode.TextEditor | undefined = vscode.window.activeTextEditor;
@@ -632,7 +626,7 @@ export class Util {
         editor.document.getText(range),
         editor.document.lineAt(range.start.line).text,
         range.end.line,
-        range.end.character
+        range.end.character,
       ]);
     }
 
@@ -650,20 +644,20 @@ export class Util {
   }
 
   static getLanguageId() {
-    let document: vscode.TextDocument | null = vscode.window.activeTextEditor ?
-      vscode.window.activeTextEditor.document :
-      null;
+    let document: vscode.TextDocument | null = vscode.window.activeTextEditor
+      ? vscode.window.activeTextEditor.document
+      : null;
     if (document) {
-      return document.languageId + '';
+      return document.languageId + "";
     } else {
-      return '';
+      return "";
     }
   }
   static getSelectedText() {
     let editor: vscode.TextEditor | undefined = vscode.window.activeTextEditor;
 
     if (!editor) {
-      return '';
+      return "";
     }
 
     const selection = editor.selection;
@@ -677,48 +671,55 @@ export class Util {
   }
 
   public static async move(path: string, targetPath: string) {
-    await workspace.fs.rename(
-      Uri.file(path), Uri.file(targetPath), { overwrite: true });
+    await workspace.fs.rename(Uri.file(path), Uri.file(targetPath), {
+      overwrite: true,
+    });
   }
 
   static str_replace(strs: string) {
-
     if (!MessageService.SystemConst || !MessageService.SystemConst.StrReplace) {
       return strs;
     }
 
-
-    let obj = MessageService.SystemConst.StrReplace
+    let obj = MessageService.SystemConst.StrReplace;
 
     for (const key in obj) {
-
       const element = obj[key];
 
-      if (element.type == 'ltrim') {
-        if (strs.trim().substr(0, key.length) === key && element.value !== '') {
-          strs = element.value + strs.trim().substr(key.length);
+      for (let index = 0; index < 5000; index++) {
+        if (element.type == "ltrim") {
+          if (strs.trim().substr(0, key.length) === key) {
+            strs = element.value + strs.trim().substr(key.length);
+          } else {
+            break;
+          }
+        } else if (element.type == "rtrim") {
+
+          if (strs.trim().substr(-key.length) === key) {
+            strs = strs.trim().substr(0, strs.trim().length - key.length) + element.value;
+          } else {
+            break;
+          }
+        } else if (element.type == "replace") {
+          const pos = strs.indexOf(key);
+          if (pos != -1) {
+            strs = strs.replace(key, element.value);
+          } else {
+            break;
+          }
+
+        } else {
+          break;
         }
-      } else if (element.type == 'rtrim') {
 
-        // if (strs.trim().substr(0, key.length) === key && element.value !== '') {
-        //   strs = element.value + strs.trim().substr(key.length);
-        // }
-
-      } else if (element.type == 'replace') {
-        strs = strs.replace(key, element.value);
+        if (!element.loop) {
+          break;
+        }
       }
     }
 
     return strs;
   }
-
-
-
-
-
-
-
-
 
   /**
    *
@@ -762,13 +763,12 @@ export class Util {
    *
    */
 
-
   /**
    * 将一个单词首字母大写并返回
    * @param {*} word 某个字符串
    */
   static upperFirstLetter(word: any) {
-    return (word || '').replace(/^\w/, (m: string) => m.toUpperCase());
+    return (word || "").replace(/^\w/, (m: string) => m.toUpperCase());
   }
 
   /**
@@ -776,7 +776,7 @@ export class Util {
    * @param {*} word 某个字符串
    */
   static lowerFirstLeter(word: any) {
-    return (word || '').replace(/^\w/, (m: string) => m.toLowerCase());
+    return (word || "").replace(/^\w/, (m: string) => m.toLowerCase());
   }
 
   /**
@@ -797,13 +797,13 @@ export class Util {
    * 弹出错误信息
    */
   static showError(...args: any) {
-    let text = '';
+    let text = "";
     for (const key in args) {
       if (args.hasOwnProperty(key)) {
         const element = args[key];
-        if (typeof element === 'object') {
+        if (typeof element === "object") {
           text += JSON.stringify(element);
-        } else if (typeof element === 'string') {
+        } else if (typeof element === "string") {
           text += element;
         } else {
           text += element.toString;
@@ -817,13 +817,13 @@ export class Util {
    * 弹出提示信息
    */
   static showInfo(...args: any) {
-    let text = '';
+    let text = "";
     for (const key in args) {
       if (args.hasOwnProperty(key)) {
         const element = args[key];
-        if (typeof element === 'object') {
+        if (typeof element === "object") {
           text += JSON.stringify(element);
-        } else if (typeof element === 'string') {
+        } else if (typeof element === "string") {
           text += element;
         } else {
           text += element.toString;
@@ -841,8 +841,8 @@ export class Util {
    * @param reg 正则对象，最好不要带g，也可以是字符串
    */
   static findStrInFile(filePath: any, reg: string | RegExp) {
-    const content = fs.readFileSync(filePath, 'utf-8');
-    reg = typeof reg === 'string' ? new RegExp(reg, 'm') : reg;
+    const content = fs.readFileSync(filePath, "utf-8");
+    reg = typeof reg === "string" ? new RegExp(reg, "m") : reg;
     // 没找到直接返回
     if (content.search(reg) < 0) {
       return { row: 0, col: 0 };
@@ -865,15 +865,16 @@ export class Util {
     var pos = this.findStrInFile(filePath, str);
     return new vscode.Range(
       new vscode.Position(pos.row, pos.col),
-      new vscode.Position(pos.row, pos.col + str.length));
+      new vscode.Position(pos.row, pos.col + str.length)
+    );
   }
 
   /**
    * 简单的检测版本大小
    */
   static checkVersion(version1: string, version2: string) {
-    let val1 = parseInt(version1.replace(/\./g, ''));
-    let val2 = parseInt(version2.replace(/\./g, ''));
+    let val1 = parseInt(version1.replace(/\./g, ""));
+    let val2 = parseInt(version2.replace(/\./g, ""));
     return val1 > val2;
   }
 
@@ -883,7 +884,9 @@ export class Util {
    * @param relativePath 扩展中某个文件相对于根目录的路径，如 images/test.jpg
    */
   static getExtensionFileAbsolutePath(
-    context: { extensionPath: any; }, relativePath: any) {
+    context: { extensionPath: any },
+    relativePath: any
+  ) {
     return path.join(context.extensionPath, relativePath);
   }
 
@@ -894,10 +897,13 @@ export class Util {
    * @param relativePath 扩展中某个文件相对于根目录的路径，如 images/test.jpg
    */
   static getExtensionFileVscodeResource(
-    context: { extensionPath: any; }, relativePath: any) {
-    const diskPath =
-      vscode.Uri.file(path.join(context.extensionPath, relativePath));
-    return diskPath.with({ scheme: 'vscode-resource' }).toString();
+    context: { extensionPath: any },
+    relativePath: any
+  ) {
+    const diskPath = vscode.Uri.file(
+      path.join(context.extensionPath, relativePath)
+    );
+    return diskPath.with({ scheme: "vscode-resource" }).toString();
   }
 
   /**
@@ -905,7 +911,7 @@ export class Util {
    */
   static openFileInFinder(filePath: string) {
     if (!fs.existsSync(filePath)) {
-      this.showError('文件不存在：' + filePath);
+      this.showError("文件不存在：" + filePath);
     }
     // 如果是目录，直接打开就好
     if (fs.statSync(filePath).isDirectory()) {
@@ -938,19 +944,21 @@ export class Util {
    */
   static openJarByJdGui(jarPath: string) {
     // 如何选中文件有待完善
-    const jdGuiPath =
-      vscode.workspace.getConfiguration().get('eggHelper.jdGuiPath');
+    const jdGuiPath = vscode.workspace
+      .getConfiguration()
+      .get("eggHelper.jdGuiPath");
     if (!jdGuiPath) {
-      this.showError('JD-GUI路径不能为空！');
+      this.showError("JD-GUI路径不能为空！");
       return;
     }
-    if (!fs.existsSync(jdGuiPath + '')) {
+    if (!fs.existsSync(jdGuiPath + "")) {
       this.showError(
-        '您还没有安装JD-GUI，请安装完后到vscode设置里面找到HSF助手并进行路径配置。');
+        "您还没有安装JD-GUI，请安装完后到vscode设置里面找到HSF助手并进行路径配置。"
+      );
       return;
     }
     if (!fs.existsSync(jarPath)) {
-      this.showError('jar包未找到：' + jarPath);
+      this.showError("jar包未找到：" + jarPath);
       return;
     }
     exec(`open ${jarPath} -a ${jdGuiPath}`);
@@ -974,7 +982,7 @@ export class Util {
     }
     if (root.children) {
       // 如果有子依赖项，先清空依赖项的缓存
-      root.children.forEach(item => {
+      root.children.forEach((item) => {
         this.clearRequireCache(item.id);
       });
     }
