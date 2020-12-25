@@ -144,8 +144,8 @@ export class MessageService {
   }
 
   static async webSocketOnOpen_run() {
-    await ChangeTargetSshServer.init();
     await runSystemKeysListReloat();
+    await ChangeTargetSshServer.init();
   }
 
   // 获取到后台消息的事件，操作数据的代码在onmessage中书写

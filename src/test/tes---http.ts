@@ -4,7 +4,7 @@
 // import {service} from '../lib/httpIndex';
 
 
-// // http://note.flyskycode.cn/test/test_show.php
+// // http://notes.flyskycode.cn/test/test_show.php
 // let param = {"type":"websock", "run":"refresh_page"};
 
 // var da1:any = new Date();

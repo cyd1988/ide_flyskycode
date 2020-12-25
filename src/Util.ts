@@ -384,13 +384,7 @@ export class Util {
   }
 
   static async docSave(is_await = 1) {
-    let document: vscode.TextDocument | null = vscode.window.activeTextEditor
-      ? vscode.window.activeTextEditor.document
-      : null;
-    if (document && document.isDirty) {
-      await this.ctrls(document, is_await);
-    }
-
+    await vscode.commands.executeCommand("workbench.action.files.save");
     return Promise.resolve("运行结束");
   }
 
