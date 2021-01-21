@@ -223,7 +223,37 @@ export function ApiRun(args: any) {
 		console.log(434343);
 
 
+		const bash = 'bash /Users/webS/www/mynotes/web/test/test.sh';
+
+		let date_str = Util.formatDate();
+		date_str = date_str + "--pid:{#id} ---- " + bash;
+		console.log(date_str);
+		let stll = "-------------------------\n-------------------------";
 		let data_tm = {
+			'run': 'run_exec',
+			'run_exec': {
+				'bash': bash,
+				'opts': {
+					'cwd': '/Users/',
+					'outputChannel': {
+						show: 1,
+						clear: 0,
+						rest_focus: 1,
+						show_msg_start: "\n\n\n" + stll + "\n" + date_str,
+						show_msg_end: date_str + "\n" + stll + "\n\n\n"
+					}
+				}
+			}
+		};
+		Api.run(data_tm);
+
+
+
+		console.log(4343);
+		return
+
+
+		let data_tma = {
 			'run': 'run_exec',
 			'run_exec': {
 				// 'bash': 'pwd',
@@ -234,7 +264,7 @@ export function ApiRun(args: any) {
 				// 'p': args.p
 			}
 		};
-		Api.run(data_tm);
+		Api.run(data_tma);
 
 		return;
 

@@ -8,6 +8,7 @@ import * as vscode from "vscode";
 import { AnyObj } from "./lib/const";
 import { Uri, workspace } from "vscode";
 import { MessageService } from "./lib/webSocket";
+import { outputChannel, configUrl } from './lib/const';
 
 export class Util {
   static HOME_DIR: string | null;
@@ -326,17 +327,86 @@ export class Util {
     return data;
   }
 
+
+  static formatDate(format?: string, date?: Date): string {
+    if (!date) date = new Date();
+    var paddNum = function (num: any) {
+      return num > 9 ? num : '0' + num;
+    };
+    //指定格式字符
+    var cfg: any = {
+      yyyy: date.getFullYear(), //年 : 4位
+      yy: date.getFullYear().toString().substring(2),//年 : 2位
+      M: date.getMonth() + 1,  //月 : 如果1位的时候不补0
+      MM: paddNum(date.getMonth() + 1), //月 : 如果1位的时候补0
+      d: date.getDate(),   //日 : 如果1位的时候不补0
+      dd: paddNum(date.getDate()),//日 : 如果1位的时候补0
+      hh: date.getHours(),  //时
+      mm: date.getMinutes(), //分
+      ss: date.getSeconds(), //秒
+    };
+    if (!format) format = "yyyy-MM-dd hh:mm:ss";
+    return format.replace(/([a-z])(\1)*/ig,
+      function (m) { return cfg[m]; }
+    );
+  }
+
   /**
    *  bash
    *
    */
   static exec(bash: string, data: any, func: any) {
+
     let new_env = process.env;
     new_env["MEGAVARIABLE"] = "MEGAVALUE";
     new_env["LC_CTYPE"] = "UTF-8";
     new_env["LANG"] = "en_US.UTF-8";
     data["env"] = new_env;
-    exec(bash, data, func);
+    const handle = exec(bash, data, func);
+
+    if (data.outputChannel) {
+
+      let op: any = { show: 1, clear: 0, rest_focus: 1, show_msg: '', pid: handle.pid + '' };
+      op = Util.merge(true, op, data.outputChannel);
+
+      if (op.show) {
+        let preserveFocus = op.rest_focus == 1 ? true : false;
+        outputChannel.show(preserveFocus);
+      }
+
+      if (op.clear) {
+        outputChannel.clear();
+      }
+
+      if (op.show_msg_start) {
+        op.show_msg_start = op.show_msg_start.replace('{#id}', op.pid);
+        outputChannel.appendLine(op.show_msg_start);
+      }
+
+
+      handle.stdout?.on('data', (data) => {
+        outputChannel.appendLine( data);
+      });
+
+      handle.stderr?.on('data', (data) => {
+        outputChannel.appendLine('stderr: ' + data);
+      });
+
+      handle.on('error', (code) => {
+        outputChannel.appendLine('error: ' + code);
+      });
+
+      handle.on('close', (code) => {
+        outputChannel.appendLine('close: ' + code);
+
+        if (op.show_msg_end) {
+          op.show_msg_end = op.show_msg_end.replace('{#id}', op.pid);
+          outputChannel.appendLine(op.show_msg_end);
+        }
+
+      });
+
+    }
   }
 
   /**
