@@ -26,6 +26,9 @@ let autoregistertexteditor: AnyObj = {};
 outputChannel.show();
 outputChannel.appendLine('flskycode-init..');
 
+
+console.log( 'ide: start' );
+
 export function activate(this: any, context: vscode.ExtensionContext) {
 
   plugin.map(fun => { fun(context); });

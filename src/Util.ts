@@ -365,6 +365,8 @@ export class Util {
     const handle = exec(bash, data, func);
 
     if (data.outputChannel) {
+      //####  计算运行的时间
+      var start_t = (new Date()).getTime();
 
       let op: any = { show: 1, clear: 0, rest_focus: 1, show_msg: '', pid: handle.pid + '' };
       op = Util.merge(true, op, data.outputChannel);
@@ -385,7 +387,7 @@ export class Util {
 
 
       handle.stdout?.on('data', (data) => {
-        outputChannel.appendLine( data);
+        outputChannel.appendLine(data);
       });
 
       handle.stderr?.on('data', (data) => {
@@ -400,7 +402,9 @@ export class Util {
         outputChannel.appendLine('close: ' + code);
 
         if (op.show_msg_end) {
+          var runTime = ((new Date()).getTime() - start_t) / 1000;
           op.show_msg_end = op.show_msg_end.replace('{#id}', op.pid);
+          op.show_msg_end = op.show_msg_end.replace('{#runTime}', runTime);
           outputChannel.appendLine(op.show_msg_end);
         }
 
@@ -740,12 +744,49 @@ export class Util {
     });
   }
 
+
+  public static file_ar() {
+    let ar = {
+      file_path: this.getProjectPath(),
+      file_dir: "",
+      file_ext: "",
+      file_ba_name: "",
+      file_name: "",
+    };
+
+    if (ar.file_path === '') {
+      Util.showError('获取不到文件路径！');
+    } else {
+      ar.file_dir = path.dirname(ar.file_path) + '/';
+      ar.file_ext = path.extname(ar.file_path);
+      ar.file_ba_name = path.basename(ar.file_path);
+      ar.file_name = ar.file_ba_name.replace(ar.file_ba_name, ar.file_ext)
+    }
+    return ar;
+  }
+
   static str_replace(strs: string) {
     if (!MessageService.SystemConst || !MessageService.SystemConst.StrReplace) {
       return strs;
     }
 
-    let obj = MessageService.SystemConst.StrReplace;
+    let file_ar = this.file_ar();
+    let replace_ar = [
+      // { 'v1': "{#DbName}", 'v2': file_ar },
+      { 'v1': "{#FiDir}", 'v2': file_ar.file_dir },
+      { 'v1': "{#FiExt}", 'v2': file_ar.file_ext },
+      { 'v1': "{#FiBaName}", 'v2': file_ar.file_ba_name },
+      { 'v1': "{#FiName}", 'v2': file_ar.file_name },
+    ];
+
+    let obj = JSON.parse(JSON.stringify(MessageService.SystemConst.StrReplace));
+
+    for (const key in obj) {
+      for (let index = 0; index < replace_ar.length; index++) {
+        const v = replace_ar[index];
+        obj[key].value = obj[key].value.replace(v.v1, v.v2);
+      }
+    }
 
     for (const key in obj) {
       const element = obj[key];

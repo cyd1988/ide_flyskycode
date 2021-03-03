@@ -1,6 +1,7 @@
 import { Util } from '../Util';
 import { apiModel } from './../lib/apiModel';
 import { Config } from './../configurations/config';
+import path = require("path");
 
 
 export class Api {
@@ -25,6 +26,7 @@ export class Api {
 	}
 
 	static argsRun(args: any) {
+		let file_ar = Util.file_ar();
 		for (const key in args) {
 			if (args.hasOwnProperty(key)) {
 				let val = args[key] + '';
@@ -35,16 +37,10 @@ export class Api {
 					args[key] = Util.getSelecttextLineOne().trim();
 
 				} else if (val === 'VS-FILE_DIR') {
-					args[key] = Util.getDirname(Util.getProjectPath()) + '/';
-					if (args[key] === '/') {
-						Util.showError('获取不到文件目录！');
-					}
+					args[key] = file_ar.file_dir;
 
 				} else if (val === 'VS-FILE_PATH') {
-					args[key] = Util.getProjectPath();
-					if (args[key] === '') {
-						Util.showError('获取不到文件路径！');
-					}
+					args[key] = file_ar.file_path;
 
 				} else if (val === 'VS-DIRS') {
 					args[key] = Util.getWorkspaceFolders();
@@ -184,6 +180,12 @@ export function ApiRun(args: any) {
 	// 测试
 	if (args.p.hasOwnProperty('key') && args.p.key == 'ctrl+shift+alt+p') {
 
+		let ar = 'll @FiName @FiDir @FiBaName @FiExt';
+		console.log(ar);
+
+		ar = Util.str_replace(ar);
+
+		return
 
 		// let execution = new vscode.CustomExecution((terminalRenderer, cancellationToken, args): Thenable<number> => {
 		//         return new Promise<number>(resolve => {
