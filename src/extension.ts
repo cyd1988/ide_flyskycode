@@ -27,7 +27,7 @@ outputChannel.show();
 outputChannel.appendLine('flskycode-init..');
 
 
-console.log( 'ide: start' );
+console.log( 'ide: start 1' );
 
 export function activate(this: any, context: vscode.ExtensionContext) {
 
