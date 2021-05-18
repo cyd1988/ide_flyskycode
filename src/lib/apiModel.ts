@@ -262,7 +262,7 @@ export class apiModel {
       config.data.jsondata = Util.merge(true, Util.getJsonData(), config.data.jsondata);
     }
 
-    if (config.url != "/account/getSshAll") {
+    if (config.url != "/account/getSshAll" && ChangeTargetSshServer.lists) {
 
       if (!config.data.jsondata['ssh'] || config.data.jsondata['ssh'].length < 2) {
         ChangeTargetSshServer.getListCurrent('null');

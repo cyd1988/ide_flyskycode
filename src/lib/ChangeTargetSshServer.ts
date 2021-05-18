@@ -39,8 +39,7 @@ export class ChangeTargetSshServer {
 
 
     static async setLanguageText() {
-        await ChangeTargetSshServer.getListSsh();
-        let info = await ChangeTargetSshServer.getListCurrent();
+        let info = await ChangeTargetSshServer.getListCurrentOne();
         ChangeTargetSshServer.statusBar.text = '$(project) ' + info.value;
     }
 
@@ -71,9 +70,9 @@ export class ChangeTargetSshServer {
 
 
     static async getListCurrent(keys?: string) {
-        let lists = await ChangeTargetSshServer.getListSsh();
+        let info = await ChangeTargetSshServer.getListCurrentOne();
         if (keys) {
-            let info = await ChangeTargetSshServer.getListCurrent();
+
             if (keys == 'null') {
                 ChangeTargetSshServer.statusBar.text = '$(project) ' + info.value;
             } else if (typeof keys == "object") {
@@ -84,6 +83,7 @@ export class ChangeTargetSshServer {
                 }
             } else {
 
+                let lists = await ChangeTargetSshServer.getListSsh();
                 for (let index = 0; index < lists.length; index++) {
                     const element = lists[index];
                     if (element.key == keys) {
@@ -95,17 +95,23 @@ export class ChangeTargetSshServer {
             }
 
         } else {
-
-            let info = lists[0];
-            for (let index = 0; index < lists.length; index++) {
-                const element = lists[index];
-                if (element.id == ChangeTargetSshServer.targetId) {
-                    info = element;
-                    break;
-                }
-            }
             return info;
         }
     }
+
+
+    static async getListCurrentOne() {
+        let lists = await ChangeTargetSshServer.getListSsh();
+        let info = lists[0];
+        for (let index = 0; index < lists.length; index++) {
+            const element = lists[index];
+            if (element.id == ChangeTargetSshServer.targetId) {
+                info = element;
+                break;
+            }
+        }
+        return info;
+    }
+
 
 }

@@ -757,7 +757,7 @@ export class Util {
     if (ar.file_path === '') {
       Util.showError('获取不到文件路径！');
     } else {
-      ar.file_dir = path.dirname(ar.file_path) + '/';
+      ar.file_dir = path.dirname(ar.file_path);
       ar.file_ext = path.extname(ar.file_path);
       ar.file_ba_name = path.basename(ar.file_path);
       ar.file_name = ar.file_ba_name.replace(ar.file_ba_name, ar.file_ext)
