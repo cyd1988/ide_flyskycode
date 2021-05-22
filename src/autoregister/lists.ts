@@ -3,7 +3,7 @@ import { Util } from '../Util';
 import { outputChannel, AnyObj } from './../lib/const';
 import fs = require('fs');
 import { Api } from './../lib/api';
-
+import { apiModel } from './../lib/apiModel';
 
 
 export async function fun_list(lists: AnyObj, call_list?: (...args: any[]) => any) {
@@ -61,13 +61,13 @@ export async function fun_list(lists: AnyObj, call_list?: (...args: any[]) => an
 
       if (value.hasOwnProperty('run')) {
         Api.run(value);
-      } else {
+      } else if (value.hasOwnProperty('path')) {
         let source_val = value.path + '';
         let val: string = source_val.trim();
 
         if (fs.existsSync(val)) {
-          let uri = vscode.Uri.file(val);
-          vscode.commands.executeCommand('vscode.openFolder', uri);
+          apiModel.r_open_file({ 'file': val });
+
         } else {
           let editor = vscode.window.activeTextEditor;
           if (editor && editor.selections.length > 0) {
@@ -80,6 +80,8 @@ export async function fun_list(lists: AnyObj, call_list?: (...args: any[]) => an
             outputChannel.appendLine(val);
           }
         }
+      } else {
+        console.log('showQuickPick_value_else_error_not path', value);
       }
     });
 }

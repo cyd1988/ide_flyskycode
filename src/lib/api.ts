@@ -180,6 +180,21 @@ export function ApiRun(args: any) {
 	// 测试
 	if (args.p.hasOwnProperty('key') && args.p.key == 'ctrl+shift+alt+p') {
 
+
+		console.log( 33333333333333322222222222 );
+
+		let stll = "-------------------------\n-------------------------";
+		let data_tm = {
+			'run': 'open_file',
+			'open_file': {
+				'file': '/Users/webS/www/mynotes/web/test/test.md',
+			}
+		};
+		Api.run(data_tm);
+
+		return 
+
+
 		let ar = 'll @FiName @FiDir @FiBaName @FiExt';
 		console.log(ar);
 
@@ -222,32 +237,32 @@ export function ApiRun(args: any) {
 		//   console.log( error );
 		// });
 
-		console.log(434343);
+		// console.log(434343);
 
 
-		const bash = 'bash /Users/webS/www/mynotes/web/test/test.sh';
+		// const bash = 'bash /Users/webS/www/mynotes/web/test/test.sh';
 
-		let date_str = Util.formatDate();
-		date_str = date_str + "--pid:{#id} ---- " + bash;
-		console.log(date_str);
-		let stll = "-------------------------\n-------------------------";
-		let data_tm = {
-			'run': 'run_exec',
-			'run_exec': {
-				'bash': bash,
-				'opts': {
-					'cwd': '/Users/',
-					'outputChannel': {
-						show: 1,
-						clear: 0,
-						rest_focus: 1,
-						show_msg_start: "\n\n\n" + stll + "\n" + date_str,
-						show_msg_end: date_str + "\n" + stll + "\n\n\n"
-					}
-				}
-			}
-		};
-		Api.run(data_tm);
+		// let date_str = Util.formatDate();
+		// date_str = date_str + "--pid:{#id} ---- " + bash;
+		// console.log(date_str);
+		// let stll = "-------------------------\n-------------------------";
+		// let data_tm = {
+		// 	'run': 'run_exec',
+		// 	'run_exec': {
+		// 		'bash': bash,
+		// 		'opts': {
+		// 			'cwd': '/Users/',
+		// 			'outputChannel': {
+		// 				show: 1,
+		// 				clear: 0,
+		// 				rest_focus: 1,
+		// 				show_msg_start: "\n\n\n" + stll + "\n" + date_str,
+		// 				show_msg_end: date_str + "\n" + stll + "\n\n\n"
+		// 			}
+		// 		}
+		// 	}
+		// };
+		// Api.run(data_tm);
 
 
 
