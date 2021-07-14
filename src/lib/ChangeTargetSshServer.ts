@@ -83,6 +83,12 @@ export class ChangeTargetSshServer {
                 }
             } else {
 
+                // 和当前相同
+                if(info.key && info.key == keys){
+                    ChangeTargetSshServer.statusBar.text = '$(project) ' + info.value;
+                    return ;
+                }
+
                 let lists = await ChangeTargetSshServer.getListSsh();
                 for (let index = 0; index < lists.length; index++) {
                     const element = lists[index];

@@ -107,6 +107,8 @@ export function deactivate() {
 
 function getJsonData(document: vscode.TextDocument, type_name: string) {
 
+  init_runs_commands();
+
   if (document.uri.query) {
     return;
   }
@@ -133,4 +135,29 @@ async function runs() {
     let utils = await import(`./autoregistertexteditor/${parse.name}`);
     autoregistertexteditor[parse.name] = utils;
   }
+}
+
+
+
+
+let is_run__init_runs_commands = 0;
+
+async function init_runs_commands() {
+  if (is_run__init_runs_commands == 1) {
+    return;
+  }
+  is_run__init_runs_commands = 1;
+
+  vscode.commands
+    .executeCommand("workbench.action.terminal.toggleTerminal")
+    .then((sucess) => {
+
+      vscode.commands.executeCommand("workbench.action.terminal.focus"); // 聚焦终端。这类似于切换，但如果终端可见，则聚焦终端而不是隐藏它。
+
+      if (vscode.window.activeTextEditor) {
+        vscode.window.showTextDocument(
+          vscode.window.activeTextEditor.document.uri
+        );
+      }
+    });
 }

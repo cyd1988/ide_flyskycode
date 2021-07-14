@@ -431,6 +431,13 @@ export class Util {
     vscode.commands
       .executeCommand("workbench.action.terminal.toggleTerminal")
       .then((sucess) => {
+
+        vscode.commands.executeCommand("workbench.action.terminal.focus"); // 聚焦终端。这类似于切换，但如果终端可见，则聚焦终端而不是隐藏它。
+
+        if (fig.scrollToBottom == 1) {
+          vscode.commands.executeCommand("workbench.action.terminal.scrollToBottom"); // 滚动到底部
+        }
+
         if (fig.clear == 1) {
           vscode.commands.executeCommand("workbench.action.terminal.clear"); // 清除控制台
         }

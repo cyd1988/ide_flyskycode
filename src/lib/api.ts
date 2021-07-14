@@ -181,18 +181,37 @@ export function ApiRun(args: any) {
 	if (args.p.hasOwnProperty('key') && args.p.key == 'ctrl+shift+alt+p') {
 
 
-		console.log( 33333333333333322222222222 );
+		console.log(33333333333333322222222222);
 
 		let stll = "-------------------------\n-------------------------";
 		let data_tm = {
-			'run': 'open_file',
-			'open_file': {
+			'run': 'run_shell',
+			'run_shell': {
+
+				'val': 'ls -l' + "\n",
+				'pwd': '',
+				'clear': 0,
+				'rest_focus': 1,
+
 				'file': '/Users/webS/www/mynotes/web/test/test.md',
 			}
 		};
 		Api.run(data_tm);
 
-		return 
+		return
+
+
+
+		// let stll = "-------------------------\n-------------------------";
+		// let data_tm = {
+		// 	'run': 'open_file',
+		// 	'open_file': {
+		// 		'file': '/Users/webS/www/mynotes/web/test/test.md',
+		// 	}
+		// };
+		// Api.run(data_tm);
+
+		// return 
 
 
 		let ar = 'll @FiName @FiDir @FiBaName @FiExt';
