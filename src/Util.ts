@@ -9,6 +9,7 @@ import { AnyObj } from "./lib/const";
 import { Uri, workspace } from "vscode";
 import { MessageService } from "./lib/webSocket";
 import { outputChannel, configUrl } from './lib/const';
+import { Config } from './configurations/config';
 
 export class Util {
   static HOME_DIR: string | null;
@@ -136,6 +137,35 @@ export class Util {
       }
       // Jsoncd.json.setJson(data);
     }
+
+
+    if (Object.keys(data).length < 1) {
+
+      let args = Util.getWorkspaceFolders();
+
+      let names: string[] = ['.sublime_list.json', 'doc/.sublime_list.json'];
+
+      for (let index = 0; index < args.length; index++) {
+        let dir_path = args[index];
+
+        if (dir_path.substr(-1) != '/') {
+          dir_path += '/';
+        }
+
+        for (let i = 0; i < names.length; i++) {
+
+          if (this.isfile(dir_path + names[i])) {
+            let data_fig = Config.configJsonSublime_list(dir_path + names[i]);
+
+            if (data_fig.hasOwnProperty('remote_ssh_json')) {
+              data = data_fig['remote_ssh_json']
+            }
+          }
+        }
+
+      }
+    }
+
 
     return data;
   }
