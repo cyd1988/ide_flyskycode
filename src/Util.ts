@@ -139,7 +139,7 @@ export class Util {
     }
 
 
-    if (Object.keys(data).length < 1) {
+    if (Object.keys(data).length < 1  || !data.hasOwnProperty('ssh')) {
 
       let args = Util.getWorkspaceFolders();
 
@@ -158,7 +158,7 @@ export class Util {
             let data_fig = Config.configJsonSublime_list(dir_path + names[i]);
 
             if (data_fig.hasOwnProperty('remote_ssh_json')) {
-              data = data_fig['remote_ssh_json']
+              data = Util.merge(true, data, data_fig['remote_ssh_json']);
             }
           }
         }
