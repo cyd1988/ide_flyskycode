@@ -157,8 +157,8 @@ export class Util {
           if (this.isfile(dir_path + names[i])) {
             let data_fig = Config.configJsonSublime_list(dir_path + names[i]);
 
-            if (data_fig.hasOwnProperty('remote_ssh_json')) {
-              data = Util.merge(true, data, data_fig['remote_ssh_json']);
+            if (data_fig.hasOwnProperty('remote_ssh') && typeof data_fig['remote_ssh'] == 'object') {
+              data = Util.merge(true, data, data_fig['remote_ssh']);
             }
           }
         }
