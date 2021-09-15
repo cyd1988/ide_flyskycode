@@ -8,8 +8,13 @@ import e = require("express");
 import { sockRunToken } from './sockRunToken';
 import { ChangeTargetSshServer } from './../lib/ChangeTargetSshServer';
 
+import { service_host_ip } from './../lib/const';
 
 let webSocketStatus = 0;
+
+export const get_webSocketStatus = function () {
+  return webSocketStatus;
+}
 
 
 
@@ -62,8 +67,9 @@ function runSystemKeysListReloat() {
 
 export class MessageService {
   webSocket: WebSocket;
-  url = '127.0.0.1:9502';
-  types = '';
+  static url = '';
+  static port = '9502'; // 端口
+  static types = '';
   static obj: any;
   static arr: any[] = [];
   static runTokens: any = {};
@@ -128,14 +134,23 @@ export class MessageService {
 
   // async inits() {
   constructor() {
-    let url = `ws://${this.url}/${this.types}`;
-    this.webSocket = new WebSocket(url);
+    this.webSocket = new WebSocket(MessageService.get_service_host_url());
     this.webSocket.onopen = this.webSocketOnOpen;
     this.webSocket.onclose = this.webSocketOnClose;
     this.webSocket.onmessage = this.webSocketOnMessage;
     this.webSocket.onerror = this.webSocketOnError;
     // this.webSocket.send();
   }
+
+  static get_service_host_url() {
+    if (this.url.length < 3) {
+      this.url = service_host_ip();
+    }
+
+    let hosts = this.url + ":" + this.port;
+    return `ws://${hosts}/${this.types}`;
+  }
+
 
   // 建立连接成功后的状态
   webSocketOnOpen(event: WebSocket.OpenEvent) {
@@ -183,7 +198,7 @@ export class MessageService {
   webSocketOnClose() {
     MessageService.SystemKeysList = {}
     webSocketStatus = 0;
-    console.log('websocket连接已关闭');
+    console.log('websocket连接已关闭，' + MessageService.get_service_host_url());
     MessageService.reload();
   }
 
@@ -192,7 +207,7 @@ export class MessageService {
     MessageService.SystemKeysList = {}
     webSocketStatus = 0;
     ChangeTargetSshServer.lists = null;
-    console.log('websocket连接失败');
+    console.log('websocket连接失败，' + MessageService.get_service_host_url());
     MessageService.reload();
     // 打印失败的数据
     // console.log(res);

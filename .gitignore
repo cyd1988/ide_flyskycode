@@ -4,3 +4,4 @@ src/test/vscode_zh.d.ts
 node_modules*
 
 vscode-plugin-flyskycode-*
+markdown-preview-enhanced-1.0.0.vsix

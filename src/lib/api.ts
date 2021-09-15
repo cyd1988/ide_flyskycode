@@ -2,6 +2,9 @@ import { Util } from '../Util';
 import { apiModel } from './../lib/apiModel';
 import { Config } from './../configurations/config';
 import path = require("path");
+import * as vscode from 'vscode';
+import { service_type } from './../lib/const';
+import { get_webSocketStatus } from './../lib/webSocket';
 
 
 export class Api {
@@ -176,6 +179,22 @@ export function ApiRun(args: any) {
 		let tm = args;
 		args = { 'p': tm, 'u': '/init' };
 	}
+
+	// web socke 连接失败
+	if(get_webSocketStatus() == 0){
+
+		if (args.p.hasOwnProperty('key') && args.p.key == 'ctrl+s') {
+			if(service_type() == 'linux-ubuntu'){
+				vscode.commands.executeCommand("workbench.action.files.save");
+				return;
+			}
+		}
+
+
+	}
+
+	
+
 
 	// 测试
 	if (args.p.hasOwnProperty('key') && args.p.key == 'ctrl+shift+alt+p') {
