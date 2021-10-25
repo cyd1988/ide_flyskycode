@@ -2,7 +2,7 @@
     "name": "vscode-plugin-flyskycode",
     "displayName": "vscode-plugin-flyskycode",
     "description": "cyd1988",
-    "version": "0.5.11",
+    "version": "0.5.12",
     "publisher": "flyskycode",
     "engines": {
         "vscode": "^1.44.0"

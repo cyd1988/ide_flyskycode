@@ -139,7 +139,7 @@ export class Util {
     }
 
 
-    if (Object.keys(data).length < 1  || !data.hasOwnProperty('ssh')) {
+    if (Object.keys(data).length < 1 || !data.hasOwnProperty('ssh')) {
 
       let args = Util.getWorkspaceFolders();
 
@@ -259,8 +259,14 @@ export class Util {
   static isfile(file: string) {
     if (fs.existsSync(file)) {
       let stat = fs.lstatSync(file);
+
       if (stat.isFile()) {
         return true;
+      } else if (stat.isSymbolicLink()) {
+        try {
+          fs.readFileSync(file);
+          return true;
+        } catch (error) { }
       }
     }
     return false;
