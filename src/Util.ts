@@ -836,15 +836,15 @@ export class Util {
 
       for (let index = 0; index < 5000; index++) {
         if (element.type == "ltrim") {
-          if (strs.trim().substr(0, key.length) === key) {
-            strs = element.value + strs.trim().substr(key.length);
+          if (strs.trim().substring(0, key.length) === key) {
+            strs = element.value + strs.trim().substring(key.length);
           } else {
             break;
           }
         } else if (element.type == "rtrim") {
 
-          if (strs.trim().substr(-key.length) === key) {
-            strs = strs.trim().substr(0, strs.trim().length - key.length) + element.value;
+          if (strs.trim().substring(-key.length) === key) {
+            strs = strs.trim().substring(0, strs.trim().length - key.length) + element.value;
           } else {
             break;
           }

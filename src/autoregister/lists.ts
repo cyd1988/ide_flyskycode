@@ -108,9 +108,16 @@ export async function fun_list(lists: AnyObj, call_list?: (...args: any[]) => an
         } else {
           let editor = vscode.window.activeTextEditor;
           if (editor && editor.selections.length > 0) {
-            let pos: vscode.Position = editor.selections[0].start;
-            let uri = [{ "key": 'insert', "line": pos.line, 'char': pos.character, 'con': source_val }];
-            vscode.commands.executeCommand('extension.demo.edit', uri);
+
+            let data = [];
+            for (let index = 0; index < editor.selections.length; index++) {
+              const element = editor.selections[index];
+
+              let pos: vscode.Position = element.start;
+              data.push({ "key": 'insert', "line": pos.line, 'char': pos.character, 'con': source_val })
+            }
+            vscode.commands.executeCommand('extension.demo.edit', data);
+
           } else {
             outputChannel.show();
             outputChannel.clear();
