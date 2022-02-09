@@ -6,22 +6,17 @@ import { MessageService } from './lib/webSocket';
 import { Util } from './Util';
 import { Api, ApiRun } from './lib/api';
 import { outputChannel, AnyObj } from './lib/const';
-import path = require('path');
-import fs = require('fs');
-
 import { fileOpenProject } from './com/fileOpenProject';
 import { editauto } from './com/edit';
 import { Config } from './configurations/config';
 
 import { ChangeTargetSshServer } from './lib/ChangeTargetSshServer';
 
-
 let plugin = [
   fileOpenProject, hover, editauto
 ];
 
 let autoregistertexteditor: AnyObj = {};
-// runs();
 
 outputChannel.show();
 outputChannel.appendLine('flskycode-init..');
@@ -125,20 +120,6 @@ function getJsonData(document: vscode.TextDocument, type_name: string) {
   };
   Api.run(data);
 }
-
-
-async function runs() {
-  let directory = Util.DIR() + '/src/autoregistertexteditor/';
-  var files = fs.readdirSync(directory);
-  for (var i = 0; i < files.length; i++) {
-    let parse = path.parse(path.join(directory, files[i]));
-    let utils = await import(`./autoregistertexteditor/${parse.name}`);
-    autoregistertexteditor[parse.name] = utils;
-  }
-}
-
-
-
 
 let is_run__init_runs_commands = 0;
 

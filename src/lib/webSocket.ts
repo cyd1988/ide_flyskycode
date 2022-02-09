@@ -159,8 +159,8 @@ export class MessageService {
   }
 
   static async webSocketOnOpen_run() {
-    await runSystemKeysListReloat();
-    await ChangeTargetSshServer.init();
+    await runSystemKeysListReloat();     // 获取按键 /init/getKeysFigs
+    await ChangeTargetSshServer.init();  // 显示服务器列表（左下角）
   }
 
   // 获取到后台消息的事件，操作数据的代码在onmessage中书写
