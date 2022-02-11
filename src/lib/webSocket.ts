@@ -161,6 +161,10 @@ export class MessageService {
   static async webSocketOnOpen_run() {
     await runSystemKeysListReloat();     // 获取按键 /init/getKeysFigs
     await ChangeTargetSshServer.init();  // 显示服务器列表（左下角）
+
+    if (!ChangeTargetSshServer.lists) {
+      await ChangeTargetSshServer.getListSsh();
+    }
   }
 
   // 获取到后台消息的事件，操作数据的代码在onmessage中书写
@@ -198,6 +202,7 @@ export class MessageService {
   webSocketOnClose() {
     MessageService.SystemKeysList = {}
     webSocketStatus = 0;
+    ChangeTargetSshServer.lists = null;
     console.log('websocket连接已关闭，' + MessageService.get_service_host_url());
     MessageService.reload();
   }

@@ -32,7 +32,11 @@ export class ChangeTargetSshServer {
         });
 
         if (res) {
-            ChangeTargetSshServer.targetId = res.split('-').pop();
+            for (let index = 0; index < lists.length; index++) {
+                const element = lists[index];
+                if (res == element.value_s) res = element;
+            }
+            ChangeTargetSshServer.targetId = res.ip + '-' + res.id;
             ChangeTargetSshServer.setLanguageText();
         }
     }
@@ -84,9 +88,9 @@ export class ChangeTargetSshServer {
             } else {
 
                 // 和当前相同
-                if(info.key && info.key == keys){
+                if (info.key && info.key == keys) {
                     ChangeTargetSshServer.statusBar.text = '$(project) ' + info.value;
-                    return ;
+                    return;
                 }
 
                 let lists = await ChangeTargetSshServer.getListSsh();
@@ -106,16 +110,78 @@ export class ChangeTargetSshServer {
     }
 
 
-    static async getListCurrentOne() {
+    static async setListCurrent(keys: any) {
+        if (!ChangeTargetSshServer.lists) return '';
+
         let lists = await ChangeTargetSshServer.getListSsh();
-        let info = lists[0];
-        for (let index = 0; index < lists.length; index++) {
-            const element = lists[index];
-            if (element.id == ChangeTargetSshServer.targetId) {
-                info = element;
-                break;
+        let ssh = null;
+
+        // ------  ------ [ 查找记录 ]
+        if (typeof keys == "object") {
+
+            if (keys['ip']) {
+                for (let index = 0; index < lists.length; index++) {
+                    const info = lists[index];
+                    if (keys['id'] && keys['id'] == info.id) {
+                        ssh = info;
+                        break;
+                    } else if (keys['ip'] == info.ip) {
+                        ssh = info;
+                        break;
+                    }
+                }
+            }
+        } else {
+            for (let index = 0; index < lists.length; index++) {
+                const element = lists[index];
+                if (element.key == keys) {
+                    ssh = element;
+                    break;
+                }
             }
         }
+
+        if (ssh) {
+            ChangeTargetSshServer.statusBar.text = '$(project) ' + ssh.value;
+            ChangeTargetSshServer.targetId = ssh.ip + '-' + ssh.id;
+
+        } else {
+            let info = await ChangeTargetSshServer.getListCurrentOne();
+            if (typeof keys == "object") {
+                if (keys['name']) {
+                    ChangeTargetSshServer.statusBar.text = '$(project) ' + info.value + '   ' + keys['name'];
+                } else {
+                    ChangeTargetSshServer.statusBar.text = '$(project) ' + info.value + '   ' + keys['user'] + '-' + keys['ip'];
+                }
+            } else {
+                ChangeTargetSshServer.statusBar.text = '$(project) ' + info.value + '   ' + keys;
+            }
+        }
+
+    }
+
+
+    static async getListCurrentOne() {
+        let lists = await ChangeTargetSshServer.getListSsh();
+        let info = null;
+
+        if (ChangeTargetSshServer.targetId) {
+            let res = ChangeTargetSshServer.targetId.split('-');
+            for (let index = 0; index < lists.length; index++) {
+                const element = lists[index];
+                if (element.id != res[1]) continue;
+                info = element;
+            }
+            if (!info) {
+                for (let index = 0; index < lists.length; index++) {
+                    const element = lists[index];
+                    if (element.ip != res[0]) continue;
+                    info = element;
+                }
+            }
+        }
+
+        if (!info) info = lists[0];
         return info;
     }
 

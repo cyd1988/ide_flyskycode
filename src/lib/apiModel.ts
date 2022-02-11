@@ -263,18 +263,13 @@ export class apiModel {
     }
 
     if (config.url != "/account/getSshAll" && ChangeTargetSshServer.lists) {
-
       if (!config.data.jsondata['ssh'] || config.data.jsondata['ssh'].length < 2) {
         ChangeTargetSshServer.getListCurrent('null');
         let back: any = await ChangeTargetSshServer.getListCurrent();
         config.data.jsondata['ssh'] = back.key;
 
       } else {
-        if (config.data.jsondata['ssh']) {
-          ChangeTargetSshServer.getListCurrent(config.data.jsondata['ssh']);
-        } else {
-          ChangeTargetSshServer.getListCurrent('null');
-        }
+        ChangeTargetSshServer.setListCurrent(config.data.jsondata['ssh']);
       }
     }
 
