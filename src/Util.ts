@@ -816,7 +816,7 @@ export class Util {
     let file_ar = this.file_ar();
     let replace_ar = [
       // { 'v1': "{#DbName}", 'v2': file_ar },
-      { 'v1': "{#FiDir}", 'v2': file_ar.file_dir },
+      { 'v1': "{#FiDir}", 'v2': file_ar.file_dir+"/" },
       { 'v1': "{#FiExt}", 'v2': file_ar.file_ext },
       { 'v1': "{#FiBaName}", 'v2': file_ar.file_ba_name },
       { 'v1': "{#FiName}", 'v2': file_ar.file_name },
