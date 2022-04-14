@@ -29,8 +29,6 @@ async function provideCompletionItems(
   const context = createContext(document, position);
   const config = await getConfiguration(document.uri);
 
-  
-  console.log( 45454 );
   return shouldProvide(context, config)
     ? provide(context, config)
     : Promise.resolve([]);
@@ -74,10 +72,6 @@ async function provide(
   config: Config
 ): Promise<vscode.CompletionItem[]> {
   const workspace = vscode.workspace.getWorkspaceFolder(context.document.uri);
-
-  
-  console.log( 434343 );
-  console.log( workspace );
 
   const rootPath =
     config.absolutePathTo ||
