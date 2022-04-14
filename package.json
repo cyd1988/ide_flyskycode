@@ -147,6 +147,7 @@
             "type": "object",
             "title": "Code插件demo",
             "properties": {
+
                 "flyskycode.netdebug": {
                     "type": "boolean",
                     "default": false,
@@ -161,7 +162,57 @@
                     "type": "boolean",
                     "default": true,
                     "description": "启动时显示自定义欢迎页"
-                }
+                },
+
+
+
+                "path-intellisense.extensionOnImport": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "将文件扩展名添加到导入语句"
+                  },
+                  "path-intellisense.mappings": {
+                    "type": "object",
+                    "default": {},
+                    "description": "路径的映射。这些值应解释为绝对路径（并且可以使用“${workspaceFolder}”）"
+                  },
+                  "path-intellisense.showHiddenFiles": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "显示隐藏文件"
+                  },
+                  "path-intellisense.autoSlashAfterDirectory": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "在目录后自动添加斜杠"
+                  },
+                  "path-intellisense.absolutePathToWorkspace": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "设置当前工作区的绝对路径"
+                  },
+                  "path-intellisense.absolutePathTo": {
+                    "type": "string",
+                    "description": "如果已定义，则未映射的绝对路径导入将基于此位置。如果两者都已定义，则优先于“absolutePathToWorkspace"
+                  },
+                  "path-intellisense.showOnAbsoluteSlash": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "显示导入以正斜杠（“/”开头时的建议"
+                  },
+                  "path-intellisense.ignoreTsConfigBaseUrl": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "忽略映射的tsconfig文件"
+                  },
+                  "path-intellisense.autoTriggerNextSuggestion": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "在上一个建议之后自动触发下一个建议"
+                  }
+          
+
+
             }
         },
         "commands": [
@@ -304,6 +355,7 @@
         "@types/mysql": "^2.15.9",
         "@types/redis": "^2.8.17",
         "@types/ws": "^6.0.4",
+        "json5": "^2.2.1",
         "jsonc-parser": "^2.2.1",
         "mysql": "^2.18.1",
         "redis": "^2.8.0",

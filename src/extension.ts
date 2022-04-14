@@ -12,6 +12,9 @@ import { Config } from './configurations/config';
 
 import { ChangeTargetSshServer } from './lib/ChangeTargetSshServer';
 
+import { providers } from "./cop_path/providers";
+import { subscribeToTsConfigChanges } from "./cop_path/configuration/tsconfig.service";
+
 let plugin = [
   fileOpenProject, hover, editauto
 ];
@@ -82,6 +85,25 @@ export function activate(this: any, context: vscode.ExtensionContext) {
 
   // 自动提示演示，在dependencies后面输入.会自动带出依赖
   // this.dependencies.
+
+  subscribeToTsConfigChanges(context);
+
+  /**
+   * Register Providers
+   * Add new providers in src/providers/
+   * */
+   providers.forEach((provider) => {
+    const disposable = vscode.languages.registerCompletionItemProvider(
+      provider.selector,
+      provider.provider,
+      ...(provider.triggerCharacters || [])
+    );
+    
+    console.log( 34343 );
+    context.subscriptions.push(disposable);
+  });
+
+
 }
 
 
