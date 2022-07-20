@@ -5,6 +5,7 @@ import path = require("path");
 import * as vscode from 'vscode';
 import { service_type } from './../lib/const';
 import { get_webSocketStatus } from './../lib/webSocket';
+import { ali_oss_img } from './../aliyun_oss_paste_image';
 
 
 export class Api {
@@ -181,20 +182,25 @@ export function ApiRun(args: any) {
 	}
 
 	// web socke 连接失败
-	if(get_webSocketStatus() == 0){
+	if (get_webSocketStatus() == 0) {
 
 		if (args.p.hasOwnProperty('key') && args.p.key == 'ctrl+s') {
-			if(service_type() == 'linux-ubuntu'){
+			if (service_type() == 'linux-ubuntu') {
 				vscode.commands.executeCommand("workbench.action.files.save");
 				return;
 			}
 		}
-
-
 	}
 
-	
 
+
+
+	// 测试
+	// if (args.p.hasOwnProperty('key') && args.p.key == 'shift+p') {
+	// 	ali_oss_img()
+	// 	console.log(4343);
+	// 	return
+	// }
 
 	// 测试
 	if (args.p.hasOwnProperty('key') && args.p.key == 'ctrl+shift+alt+p') {

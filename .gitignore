@@ -5,3 +5,4 @@ node_modules*
 
 vscode-plugin-flyskycode-*
 markdown-preview-enhanced-1.0.0.vsix
+vscode-aliyun-oss-paste-image-master/*
