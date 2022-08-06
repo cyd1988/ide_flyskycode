@@ -583,17 +583,27 @@ export class Util {
           line_tm.length === 4 &&
           line_tm[2] == "::KK"
         ) {
-          let content = fs.readFileSync(tm + "", "utf-8");
-          let pos = content.indexOf(line_tm[3]);
 
-          if (pos !== -1) {
-            let list = content.substr(0, pos).split("\n");
-            content = "";
-            item.push(list.length - 1);
+          let start_post = 0;
+          for (let index = 0; index < 5; index++) {
 
-            item.push(list[list.length - 1].length);
-            item.push(item[2] + line_tm[3].length);
+            let content = fs.readFileSync(tm + "", "utf-8");
+            let pos = content.indexOf(line_tm[3], start_post);
+
+            if (pos !== -1) {
+              start_post = pos + line_tm[3].length
+              if (content.substr(pos - 6, 6) == ' ::KK ') continue;
+
+              let list = content.substr(0, pos).split("\n");
+              content = "";
+              item.push(list.length - 1);
+              item.push(list[list.length - 1].length);
+              item.push(item[2] + line_tm[3].length);
+            }
+            break;
           }
+
+          console.log(item);
         }
         file.push(item);
       }
@@ -816,7 +826,7 @@ export class Util {
     let file_ar = this.file_ar();
     let replace_ar = [
       // { 'v1': "{#DbName}", 'v2': file_ar },
-      { 'v1': "{#FiDir}", 'v2': file_ar.file_dir+"/" },
+      { 'v1': "{#FiDir}", 'v2': file_ar.file_dir + "/" },
       { 'v1': "{#FiExt}", 'v2': file_ar.file_ext },
       { 'v1': "{#FiBaName}", 'v2': file_ar.file_ba_name },
       { 'v1': "{#FiName}", 'v2': file_ar.file_name },

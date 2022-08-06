@@ -2,10 +2,10 @@
     "name": "vscode-plugin-flyskycode",
     "displayName": "vscode-plugin-flyskycode",
     "description": "cyd1988",
-    "version": "0.6.0",
+    "version": "0.6.1",
     "publisher": "flyskycode",
     "engines": {
-        "vscode": "^1.44.0"
+        "vscode": "^1.69.1"
     },
     "categories": [
         "Other"
@@ -336,7 +336,7 @@
         "@types/glob": "^7.2.0",
         "@types/mocha": "^5.2.7",
         "@types/node": "^12.20.48",
-        "@types/vscode": "^1.66.0",
+        "@types/vscode": "^1.44.0",
         "glob": "^7.2.0",
         "mocha": "^6.2.3",
         "tslint": "^5.20.0",

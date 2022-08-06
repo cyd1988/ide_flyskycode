@@ -137,38 +137,38 @@ function start(progress: vscode.Progress<{
     return;
 
 
-    createImageDirWithImagePath(imagePath).then((imagePath) => {
+    // createImageDirWithImagePath(imagePath).then((imagePath) => {
 
-        progress.report({ increment: 20, message: 'Uploading...' });
+    //     progress.report({ increment: 20, message: 'Uploading...' });
 
 
-        saveClipboardImageToFileAndGetPath(imagePath, (imagePath: string) => {
-            if (!imagePath) return;
-            if (imagePath === 'no image') {
-                progress.report({ increment: 100, message: "There is not a image in clipboard." });
-                return;
-            }
-            progress.report({ increment: 50, message: 'Uploading...' });
-            // aliyunUpload(config, imagePath, mdFilePath).then(({ name, url }) => {
-            //     progress.report({ increment: 80, message: 'Uploading...' });
-            //     if (config.domain) {
-            //         url = url.replace(`http://${config.bucket}.${config.region}.aliyuncs.com`, config.domain);
-            //     }
-            //     const img = `![${name}](${url})\n`;
-            //     editor.edit(textEditorEdit => {
-            //         textEditorEdit.insert(editor.selection.active, img);
-            //     });
-            //     progress.report({ increment: 100, message: 'Complete upload!' });
-            //     uploadStatus = 1;
-            // }).catch((err) => {
-            //     progress.report({ increment: 100, message: 'Upload error.' + err.message });
-            //     return;
-            // });
-        });
-    }).catch(() => {
-        progress.report({ increment: 100, message: 'Failed make folder.' });
-        return;
-    });
+    //     saveClipboardImageToFileAndGetPath(imagePath, (imagePath: string) => {
+    //         if (!imagePath) return;
+    //         if (imagePath === 'no image') {
+    //             progress.report({ increment: 100, message: "There is not a image in clipboard." });
+    //             return;
+    //         }
+    //         progress.report({ increment: 50, message: 'Uploading...' });
+    //         // aliyunUpload(config, imagePath, mdFilePath).then(({ name, url }) => {
+    //         //     progress.report({ increment: 80, message: 'Uploading...' });
+    //         //     if (config.domain) {
+    //         //         url = url.replace(`http://${config.bucket}.${config.region}.aliyuncs.com`, config.domain);
+    //         //     }
+    //         //     const img = `![${name}](${url})\n`;
+    //         //     editor.edit(textEditorEdit => {
+    //         //         textEditorEdit.insert(editor.selection.active, img);
+    //         //     });
+    //         //     progress.report({ increment: 100, message: 'Complete upload!' });
+    //         //     uploadStatus = 1;
+    //         // }).catch((err) => {
+    //         //     progress.report({ increment: 100, message: 'Upload error.' + err.message });
+    //         //     return;
+    //         // });
+    //     });
+    // }).catch(() => {
+    //     progress.report({ increment: 100, message: 'Failed make folder.' });
+    //     return;
+    // });
 }
 
 function getImagePath(filePath: string, selectText: string, localPath: any): string {
