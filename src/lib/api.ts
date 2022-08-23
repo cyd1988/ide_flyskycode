@@ -6,7 +6,7 @@ import * as vscode from 'vscode';
 import { service_type } from './../lib/const';
 import { get_webSocketStatus } from './../lib/webSocket';
 import { ali_oss_img } from './../aliyun_oss_paste_image';
-
+import Highlight from './../cop_highlight_words/highlight';
 
 export class Api {
 	static ROOT_DIR: string | null;
@@ -204,26 +204,27 @@ export function ApiRun(args: any) {
 
 	// 测试
 	if (args.p.hasOwnProperty('key') && args.p.key == 'ctrl+shift+alt+p') {
+		Highlight.init().clearAll()
+		Highlight.init().addSelected()
+		
+		return;
 
+		// let stll = "-------------------------\n-------------------------";
+		// let data_tm = {
+		// 	'run': 'run_shell',
+		// 	'run_shell': {
 
-		console.log(33333333333333322222222222);
+		// 		'val': 'ls -l' + "\n",
+		// 		'pwd': '',
+		// 		'clear': 0,
+		// 		'rest_focus': 1,
 
-		let stll = "-------------------------\n-------------------------";
-		let data_tm = {
-			'run': 'run_shell',
-			'run_shell': {
+		// 		'file': '/Users/webS/www/mynotes/web/test/test.md',
+		// 	}
+		// };
+		// Api.run(data_tm);
 
-				'val': 'ls -l' + "\n",
-				'pwd': '',
-				'clear': 0,
-				'rest_focus': 1,
-
-				'file': '/Users/webS/www/mynotes/web/test/test.md',
-			}
-		};
-		Api.run(data_tm);
-
-		return
+		// return
 
 
 

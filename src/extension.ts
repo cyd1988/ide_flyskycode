@@ -16,11 +16,17 @@ import { providers } from "./cop_path/providers";
 import { subscribeToTsConfigChanges } from "./cop_path/configuration/tsconfig.service";
 
 
+import Highlight from './cop_highlight_words/highlight';
+import HighlightConfig from './cop_highlight_words/config';
+
+
+
 let plugin = [
   fileOpenProject, hover, editauto
 ];
 
 let autoregistertexteditor: AnyObj = {};
+let activeEditor = vscode.window.activeTextEditor;
 
 outputChannel.show();
 outputChannel.appendLine('flskycode-init..');
@@ -66,6 +72,34 @@ export function activate(this: any, context: vscode.ExtensionContext) {
 
   context.subscriptions.push(vscode.commands.registerCommand('extension.demo.api', ApiRun));
 
+  Highlight_updateConfig();
+  if (activeEditor) Highlight_triggerUpdateDecorations();
+  vscode.workspace.onDidChangeConfiguration(() => {
+    Highlight_updateConfig()
+  })
+  vscode.window.onDidChangeVisibleTextEditors(function (editor) {
+    Highlight.init().updateDecorations();
+  }, null, context.subscriptions);
+  vscode.workspace.onDidChangeTextDocument(function (event) {
+    activeEditor = vscode.window.activeTextEditor;
+    if (activeEditor && event.document === activeEditor.document) {
+      Highlight_triggerUpdateDecorations();
+    }
+  }, null, context.subscriptions);
+
+  vscode.commands.registerCommand('highlightwords.addHighlight', function () {
+    Highlight.init().addSelected()
+  });
+  vscode.commands.registerCommand('highlightwords.removeAllHighlights', function () {
+    Highlight.init().clearAll()
+  });
+
+  vscode.commands.registerCommand('highlightwords.newAddHighlight', function () {
+    Highlight.init().clearAll()
+    Highlight.init().addSelected()
+  });
+
+
   vscode.window.onDidChangeActiveTextEditor((Event) => {
     if (Event) {
       getJsonData(Event.document, 'onDidChangeActiveTextEditor');
@@ -88,6 +122,32 @@ export function activate(this: any, context: vscode.ExtensionContext) {
   // this.dependencies.
 
   subscribeToTsConfigChanges(context);
+
+
+  function Highlight_updateConfig() {
+    let configValues = HighlightConfig.getConfigValues()
+
+    let obj = Highlight.init();
+    obj.setDecorators(configValues.decorators)
+    obj.setMode(configValues.defaultMode)
+
+    // commands.executeCommand('setContext', 'showSidebar', configValues.showSidebar)
+    console.log(3443);
+  }
+  var Highlight_timeout: NodeJS.Timer;
+  function Highlight_triggerUpdateDecorations() {
+    if (Highlight_timeout) {
+      clearTimeout(Highlight_timeout);
+    }
+    Highlight_timeout = setTimeout(() => {
+      Highlight.init().updateActive()
+    }, 500);
+  }
+
+
+
+
+
 
   /**
    * Register Providers
