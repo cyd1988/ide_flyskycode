@@ -33,7 +33,7 @@ class LinkProvider implements DocumentLinkProvider {
 }
 
 
-var select_word_global:any;
+var select_word_global: any;
 
 function getWordRegs(document: vscode.TextDocument, position: vscode.Position, run_name = '') {
     // let regs = [undefined, /[^'"]+/];
@@ -49,27 +49,27 @@ function getWordRegs(document: vscode.TextDocument, position: vscode.Position, r
 
     let select_word = Util.getSelecttextLineOne();
 
-    if(select_word){
+    if (select_word) {
 
         select_word = Util.str_replace(select_word);
-
         line_tm = Util.getFileLine(select_word);
+
         select_word = line_tm[0] + '';
         line = parseInt(line_tm[1] + '');
 
         file = Util.getWordFile(select_word, line_tm, run_name);
 
         if (file.length > 0) {
-            select_word_global = {'value':[line, file], time:(new Date()).getTime() };
+            select_word_global = { 'value': [line, file], time: (new Date()).getTime() };
             return [line, file];
         }
     }
 
-    if(select_word_global){
-        let tmp =  select_word_global;
+    if (select_word_global) {
+        let tmp = select_word_global;
         select_word_global = undefined;
 
-        if( (new Date()).getTime() - tmp.time < 4000 ){
+        if ((new Date()).getTime() - tmp.time < 4000) {
             return [tmp.value[0], tmp.value[1]];
         }
     }
@@ -80,9 +80,9 @@ function getWordRegs(document: vscode.TextDocument, position: vscode.Position, r
 
         if (word.length < 1) {
             continue;
-        }
+        };
+        ;
         word = Util.str_replace(word);
-
         line_tm = Util.getFileLine(word);
         word = line_tm[0] + '';
         line = parseInt(line_tm[1] + '');
@@ -198,7 +198,7 @@ let provideDefinitionAc: vscode.DefinitionProvider = {
             }
         };
 
-        let info:any = await sockRunToken.apiRun(data);
+        let info: any = await sockRunToken.apiRun(data);
 
         if (info && info['provide'] && info['provide'].length > 0) {
             let one = info['provide'][0];
@@ -216,7 +216,7 @@ let provideHoverAc: vscode.HoverProvider = {
     async provideHover(document: vscode.TextDocument, position: any, token: any) {
 
         let word: string = getWord(document, position);
-   
+
         let data = {
             run: 'api',
             api: {
@@ -229,7 +229,7 @@ let provideHoverAc: vscode.HoverProvider = {
                 }
             }
         };
-        let info:any = await sockRunToken.apiRun(data);
+        let info: any = await sockRunToken.apiRun(data);
 
         let html: string[] = [];
 

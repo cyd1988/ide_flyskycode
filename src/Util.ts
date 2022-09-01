@@ -619,7 +619,25 @@ export class Util {
       data[0] = tm[1];
       data[1] = parseInt(tm[2]);
     } else if ((tm = word.match(/(.*) +::KK +(.+)$/))) {
-      data[0] = tm[1];
+
+      let strval = tm[1] + '';
+
+
+      let tt = strval.match(/^#+ ?[^ ]+ (.*)$/i);
+      if (tt) strval = tt[1].trim();
+
+      if (strval.substring(0, 3) == '1. ') {
+        tt = strval.substring(3).match(/[^ ]+ (.*)/i);
+        if (tt) strval = tt[1].trim();
+      }
+
+      if (strval.substring(0, 2) == '$ ') {
+        tt = strval.substring(2).match(/[^ ]+ (.*)/i);
+        if (tt) strval = tt[1].trim();
+      }
+
+      data[0] = strval;
+
       data.push("::KK", tm[2]);
     } else {
       tm = word.match(/(.*):(\d+)$/);
@@ -846,6 +864,7 @@ export class Util {
 
       for (let index = 0; index < 5000; index++) {
         if (element.type == "ltrim") {
+          if (key == '#' && strs.indexOf(' ::KK ') != -1) break;
           if (strs.trim().substring(0, key.length) === key) {
             strs = element.value + strs.trim().substring(key.length);
           } else {
