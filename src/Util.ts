@@ -622,19 +622,36 @@ export class Util {
 
       let strval = tm[1] + '';
 
+      // co nsole.log('start: ', strval);
 
-      let tt = strval.match(/^#+ ?[^ ]+ (.*)$/i);
+
+      let tt = strval.match(/^#+ ?[^ ]+ +([^ ]*)$/i);
+
+      // co nsole.log('^#+ ?[^', tt);
       if (tt) strval = tt[1].trim();
 
+      // co nsole.log('1. ', strval.substring(0, 3), strval.substring(0, 3) == '1. ');
+
       if (strval.substring(0, 3) == '1. ') {
-        tt = strval.substring(3).match(/[^ ]+ (.*)/i);
+        tt = strval.substring(3).match(/[^ ]+ +(.*)/i);
+        if (tt) {
+          strval = tt[1].trim();
+        } else {
+          strval = strval.substring(3).trim();
+
+        }
+      }
+
+      // co nsole.log('$ ', strval.substring(0, 2), strval.substring(0, 2) == '$ ');
+
+      if (strval.substring(0, 2) == '$ ') {
+        tt = strval.substring(2).match(/[^ ]+ +(.*)/i);
         if (tt) strval = tt[1].trim();
       }
 
-      if (strval.substring(0, 2) == '$ ') {
-        tt = strval.substring(2).match(/[^ ]+ (.*)/i);
-        if (tt) strval = tt[1].trim();
-      }
+
+      // co nsole.log('end: ', strval);
+
 
       data[0] = strval;
 
