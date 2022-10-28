@@ -522,6 +522,17 @@ export class Util {
     }
     return boot_dir;
   }
+
+  static getWorkspaceName() {
+    let name = 'runIde';
+    let tm = Util.getWorkspaceFolders(1);
+    if (tm.length > 0) {
+      name = tm[0].substring(tm[0].length - 8);
+      name = name.replace(/\\/g, "-").replace(/\//g, "-");
+    }
+    return name;
+  }
+
   static getWorkspaceFolders(source = 0) {
     let list = vscode.workspace.workspaceFolders;
 

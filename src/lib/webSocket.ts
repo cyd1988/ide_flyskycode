@@ -101,6 +101,7 @@ export class MessageService {
 
       let masg_str = data;
       if (typeof masg_str === 'object') {
+        masg_str['cas~'] = Util.getWorkspaceName();
         masg_str = JSON.stringify(masg_str);
       }
 
@@ -148,6 +149,7 @@ export class MessageService {
     }
 
     let hosts = this.url + ":" + this.port;
+    this.types = Util.getWorkspaceName();
     return `ws://${hosts}/${this.types}`;
   }
 
