@@ -2,7 +2,7 @@
     "name": "vscode-plugin-flyskycode",
     "displayName": "vscode-plugin-flyskycode",
     "description": "cyd1988",
-    "version": "0.7.17",
+    "version": "0.7.20",
     "publisher": "flyskycode",
     "engines": {
         "vscode": "^1.69.1"
@@ -94,6 +94,16 @@
                     ".applescript"
                 ],
                 "configuration": "./syntaxes/applescript/config/applescript.configuration.json"
+            },
+            {
+                "id": "batlang",
+                "aliases": [
+                    "bat"
+                ],
+                "extensions": [
+                    ".bat"
+                ],
+                "configuration": "./syntaxes/configuration/batlang.language-configuration.json"
             }
         ],
         "grammars": [
@@ -131,6 +141,11 @@
                 "language": "applescript",
                 "scopeName": "source.applescript",
                 "path": "./syntaxes/applescript/syntaxes/applescript.tmLanguage"
+            },
+            {
+                "language": "batlang",
+                "scopeName": "source.batlang",
+                "path": "./syntaxes/batlang.tmLanguage.json"
             }
         ],
         "snippets": [

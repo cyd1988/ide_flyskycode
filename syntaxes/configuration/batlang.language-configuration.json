@@ -1,0 +1,33 @@
+{
+    "comments": {
+      
+		  // "lineComment": "@REM"
+		  "lineComment": ":"
+    },
+    "brackets": [
+      ["{", "}"],
+      ["[", "]"],
+      ["(", ")"]
+    ],
+    "autoClosingPairs": [
+      ["{", "}"],
+      ["[", "]"],
+      ["(", ")"],
+      ["\"", "\""],
+      ["'", "'"]
+    ],
+    "surroundingPairs": [
+      ["{", "}"],
+      ["[", "]"],
+      ["(", ")"],
+      ["\"", "\""],
+      ["'", "'"]
+    ],
+    "indentationRules": {
+      "increaseIndentPattern": "^\\s*(for\\s*\\(.*\\)\\s*{[^}]*|while\\s*\\(.*\\)\\s*{[^}]*|if\\s*\\(.*\\)\\s*{[^}]*|else\\s*{[^}]*|func\\s+\\w+\\s*{[^}]*|\\b(?:class|struct)\\s+\\w+\\s*{)",
+      "decreaseIndentPattern": "^\\s*\\}",
+      "indentNextLinePattern": "^\\s*(for\\s*\\(.*\\)\\s*{[^}]*|while\\s*\\(.*\\)\\s*{[^}]*|if\\s*\\(.*\\)\\s*{[^}]*|else\\s*{[^}]*|func\\s+\\w+\\s*{[^}]*|\\b(?:class|struct)\\s+\\w+\\s*{)"
+    },
+    "wordPattern": "[a-zA-Z_]+"
+  }
+  
