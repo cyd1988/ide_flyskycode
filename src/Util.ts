@@ -22,10 +22,10 @@ export class Util {
   }
 
   /**
-   * è·å–å½“å‰æ‰€åœ¨å·¥ç¨‹æ ¹ç›®å½•ï¼Œæœ‰3ç§ä½¿ç”¨æ–¹æ³•ï¼š<br>
-   * getProjectPath(uri) uri è¡¨ç¤ºå·¥ç¨‹å†…æŸä¸ªæ–‡ä»¶çš„è·¯å¾„<br>
-   * getProjectPath(document) document è¡¨ç¤ºå½“å‰è¢«æ‰“å¼€çš„æ–‡ä»¶documentå¯¹è±¡<br>
-   * getProjectPath() ä¼šè‡ªåŠ¨ä» activeTextEditor æ‹¿documentå¯¹è±¡ï¼Œå¦‚æœæ²¡æœ‰æ‹¿åˆ°åˆ™æŠ¥é”™
+   * »ñÈ¡µ±Ç°ËùÔÚ¹¤³Ì¸ùÄ¿Â¼£¬ÓĞ3ÖÖÊ¹ÓÃ·½·¨£º<br>
+   * getProjectPath(uri) uri ±íÊ¾¹¤³ÌÄÚÄ³¸öÎÄ¼şµÄÂ·¾¶<br>
+   * getProjectPath(document) document ±íÊ¾µ±Ç°±»´ò¿ªµÄÎÄ¼şdocument¶ÔÏó<br>
+   * getProjectPath() »á×Ô¶¯´Ó activeTextEditor ÄÃdocument¶ÔÏó£¬Èç¹ûÃ»ÓĞÄÃµ½Ôò±¨´í
    * @param {*} document
    */
   static getProjectPathP(document: any) {
@@ -35,7 +35,7 @@ export class Util {
         : null;
     }
     if (!document) {
-      // this.showError('å½“å‰æ¿€æ´»çš„ç¼–è¾‘å™¨ä¸æ˜¯æ–‡ä»¶æˆ–è€…æ²¡æœ‰æ–‡ä»¶è¢«æ‰“å¼€ï¼');
+      // this.showError('µ±Ç°¼¤»îµÄ±à¼­Æ÷²»ÊÇÎÄ¼ş»òÕßÃ»ÓĞÎÄ¼ş±»´ò¿ª£¡');
       return "";
     }
     const currentFile = (document.uri ? document.uri : document).fsPath;
@@ -46,8 +46,8 @@ export class Util {
     if (list) {
       workspaceFolders = list.map((item) => item.uri.path);
     }
-    // ç”±äºå­˜åœ¨Multi-rootå·¥ä½œåŒºï¼Œæš‚æ—¶æ²¡æœ‰ç‰¹åˆ«å¥½çš„åˆ¤æ–­æ–¹æ³•ï¼Œå…ˆè¿™æ ·ç²—æš´åˆ¤æ–­
-    // å¦‚æœå‘ç°åªæœ‰ä¸€ä¸ªæ ¹æ–‡ä»¶å¤¹ï¼Œè¯»å–å…¶å­æ–‡ä»¶å¤¹ä½œä¸º workspaceFolders
+    // ÓÉÓÚ´æÔÚMulti-root¹¤×÷Çø£¬ÔİÊ±Ã»ÓĞÌØ±ğºÃµÄÅĞ¶Ï·½·¨£¬ÏÈÕâÑù´Ö±©ÅĞ¶Ï
+    // Èç¹û·¢ÏÖÖ»ÓĞÒ»¸ö¸ùÎÄ¼ş¼Ğ£¬¶ÁÈ¡Æä×ÓÎÄ¼ş¼Ğ×÷Îª workspaceFolders
     if (
       workspaceFolders.length === 1 &&
       workspaceFolders[0] === vscode.workspace.rootPath
@@ -57,7 +57,7 @@ export class Util {
       workspaceFolders = files
         .filter((name) => !/^\./g.test(name))
         .map((name) => path.resolve(rootPath, name));
-      // vscode.workspace.rootPath ä¼šä¸å‡†ç¡®ï¼Œä¸”å·²è¿‡æ—¶
+      // vscode.workspace.rootPath »á²»×¼È·£¬ÇÒÒÑ¹ıÊ±
       // return vscode.workspace.rootPath + '/' + this._getProjectName(vscode, document);
     }
     workspaceFolders.forEach((folder) => {
@@ -66,7 +66,7 @@ export class Util {
       }
     });
     if (!projectPath) {
-      this.showError("è·å–å·¥ç¨‹æ ¹è·¯å¾„å¼‚å¸¸ï¼");
+      this.showError("»ñÈ¡¹¤³Ì¸ùÂ·¾¶Òì³££¡");
       return "";
     }
     return projectPath;
@@ -79,7 +79,7 @@ export class Util {
         : null;
     }
     if (!document) {
-      // this.showError('å½“å‰æ¿€æ´»çš„ç¼–è¾‘å™¨ä¸æ˜¯æ–‡ä»¶æˆ–è€…æ²¡æœ‰æ–‡ä»¶è¢«æ‰“å¼€ï¼');
+      // this.showError('µ±Ç°¼¤»îµÄ±à¼­Æ÷²»ÊÇÎÄ¼ş»òÕßÃ»ÓĞÎÄ¼ş±»´ò¿ª£¡');
       return "";
     }
     const currentFile = document.uri.fsPath;
@@ -103,7 +103,7 @@ export class Util {
     }
     const projectPath = document.uri.fsPath;
     if (!projectPath) {
-      this.showError("è·å–å·¥ç¨‹æ ¹è·¯å¾„å¼‚å¸¸ï¼");
+      this.showError("»ñÈ¡¹¤³Ì¸ùÂ·¾¶Òì³££¡");
       return "";
     }
     return projectPath;
@@ -171,14 +171,14 @@ export class Util {
   }
 
   /**
-   * è·å–å½“å‰ç¬¬ä¸€ä¸ªé€‰ä¸­å†…å®¹ï¼Œæˆ–å½“å‰ç¬¬ä¸€ä¸ªé€‰åŒºçš„æ•´è¡Œå†…å®¹
+   * »ñÈ¡µ±Ç°µÚÒ»¸öÑ¡ÖĞÄÚÈİ£¬»òµ±Ç°µÚÒ»¸öÑ¡ÇøµÄÕûĞĞÄÚÈİ
    * @param editor
    */
   static getSelecttextLineOne(
     editor: vscode.TextEditor | undefined = undefined
   ) {
     let files: string;
-    // è·å–å½“å‰ç¼–è¾‘å™¨å¯¹è±¡
+    // »ñÈ¡µ±Ç°±à¼­Æ÷¶ÔÏó
     if (!editor) {
       editor = vscode.window.activeTextEditor;
     }
@@ -199,12 +199,12 @@ export class Util {
   }
 
   /**
-   * è·å–å½“å‰ç¬¬ä¸€ä¸ªé€‰ä¸­å†…å®¹ï¼Œæˆ–å½“å‰ç¬¬ä¸€ä¸ªé€‰åŒºçš„æ•´è¡Œå†…å®¹
+   * »ñÈ¡µ±Ç°µÚÒ»¸öÑ¡ÖĞÄÚÈİ£¬»òµ±Ç°µÚÒ»¸öÑ¡ÇøµÄÕûĞĞÄÚÈİ
    * @param editor
    */
   static getSelecttextLine(editor: vscode.TextEditor | undefined = undefined) {
     let files: string;
-    // è·å–å½“å‰ç¼–è¾‘å™¨å¯¹è±¡
+    // »ñÈ¡µ±Ç°±à¼­Æ÷¶ÔÏó
     if (!editor) {
       editor = vscode.window.activeTextEditor;
     }
@@ -369,17 +369,17 @@ export class Util {
     var paddNum = function (num: any) {
       return num > 9 ? num : '0' + num;
     };
-    //æŒ‡å®šæ ¼å¼å­—ç¬¦
+    //Ö¸¶¨¸ñÊ½×Ö·û
     var cfg: any = {
-      yyyy: date.getFullYear(), //å¹´ : 4ä½
-      yy: date.getFullYear().toString().substring(2),//å¹´ : 2ä½
-      M: date.getMonth() + 1,  //æœˆ : å¦‚æœ1ä½çš„æ—¶å€™ä¸è¡¥0
-      MM: paddNum(date.getMonth() + 1), //æœˆ : å¦‚æœ1ä½çš„æ—¶å€™è¡¥0
-      d: date.getDate(),   //æ—¥ : å¦‚æœ1ä½çš„æ—¶å€™ä¸è¡¥0
-      dd: paddNum(date.getDate()),//æ—¥ : å¦‚æœ1ä½çš„æ—¶å€™è¡¥0
-      hh: date.getHours(),  //æ—¶
-      mm: date.getMinutes(), //åˆ†
-      ss: date.getSeconds(), //ç§’
+      yyyy: date.getFullYear(), //Äê : 4Î»
+      yy: date.getFullYear().toString().substring(2),//Äê : 2Î»
+      M: date.getMonth() + 1,  //ÔÂ : Èç¹û1Î»µÄÊ±ºò²»²¹0
+      MM: paddNum(date.getMonth() + 1), //ÔÂ : Èç¹û1Î»µÄÊ±ºò²¹0
+      d: date.getDate(),   //ÈÕ : Èç¹û1Î»µÄÊ±ºò²»²¹0
+      dd: paddNum(date.getDate()),//ÈÕ : Èç¹û1Î»µÄÊ±ºò²¹0
+      hh: date.getHours(),  //Ê±
+      mm: date.getMinutes(), //·Ö
+      ss: date.getSeconds(), //Ãë
     };
     if (!format) format = "yyyy-MM-dd hh:mm:ss";
     return format.replace(/([a-z])(\1)*/ig,
@@ -401,7 +401,7 @@ export class Util {
     const handle = exec(bash, data, func);
 
     if (data.outputChannel) {
-      //####  è®¡ç®—è¿è¡Œçš„æ—¶é—´
+      //####  ¼ÆËãÔËĞĞµÄÊ±¼ä
       var start_t = (new Date()).getTime();
 
       let op: any = { show: 1, clear: 0, rest_focus: 1, show_msg: '', pid: handle.pid + '' };
@@ -450,15 +450,15 @@ export class Util {
   }
 
   /**
-   *  æ–‡å­—åˆ°ç¼–è¾‘å™¨ terminal è¿è¡Œ
+   *  ÎÄ×Öµ½±à¼­Æ÷ terminal ÔËĞĞ
    *
    */
   static run_terminal(data: any) {
     let fig: any = {
-      pwd: "", // å½“å‰è·¯å¾„
-      clear: 1, // æ¸…é™¤ä¹‹å‰å†…å®¹
-      val: "", // è¦æ‰§è¡Œçš„å‘½ä»¤
-      rest_focus: 0, // ç„¦ç‚¹å›åˆ°ç¼–è¾‘å™¨
+      pwd: "", // µ±Ç°Â·¾¶
+      clear: 1, // Çå³ıÖ®Ç°ÄÚÈİ
+      val: "", // ÒªÖ´ĞĞµÄÃüÁî
+      rest_focus: 0, // ½¹µã»Øµ½±à¼­Æ÷
     };
     fig = Util.merge(true, fig, data);
 
@@ -468,14 +468,14 @@ export class Util {
       .executeCommand("workbench.action.terminal.toggleTerminal")
       .then((sucess) => {
 
-        vscode.commands.executeCommand("workbench.action.terminal.focus"); // èšç„¦ç»ˆç«¯ã€‚è¿™ç±»ä¼¼äºåˆ‡æ¢ï¼Œä½†å¦‚æœç»ˆç«¯å¯è§ï¼Œåˆ™èšç„¦ç»ˆç«¯è€Œä¸æ˜¯éšè—å®ƒã€‚
+        vscode.commands.executeCommand("workbench.action.terminal.focus"); // ¾Û½¹ÖÕ¶Ë¡£ÕâÀàËÆÓÚÇĞ»»£¬µ«Èç¹ûÖÕ¶Ë¿É¼û£¬Ôò¾Û½¹ÖÕ¶Ë¶ø²»ÊÇÒş²ØËü¡£
 
         if (fig.scrollToBottom == 1) {
-          vscode.commands.executeCommand("workbench.action.terminal.scrollToBottom"); // æ»šåŠ¨åˆ°åº•éƒ¨
+          vscode.commands.executeCommand("workbench.action.terminal.scrollToBottom"); // ¹ö¶¯µ½µ×²¿
         }
 
         if (fig.clear == 1) {
-          vscode.commands.executeCommand("workbench.action.terminal.clear"); // æ¸…é™¤æ§åˆ¶å°
+          vscode.commands.executeCommand("workbench.action.terminal.clear"); // Çå³ı¿ØÖÆÌ¨
         }
 
         vscode.commands
@@ -483,7 +483,7 @@ export class Util {
             text: text,
           })
           .then((sucess) => {
-            // å›åˆ°ç„¦ç‚¹
+            // »Øµ½½¹µã
             if (fig.rest_focus == 1 && vscode.window.activeTextEditor) {
               vscode.window.showTextDocument(
                 vscode.window.activeTextEditor.document.uri
@@ -502,7 +502,7 @@ export class Util {
 
   static async docSave(is_await = 1) {
     await vscode.commands.executeCommand("workbench.action.files.save");
-    return Promise.resolve("è¿è¡Œç»“æŸ");
+    return Promise.resolve("ÔËĞĞ½áÊø");
   }
 
   static getBootDir() {
@@ -721,8 +721,8 @@ export class Util {
   }
 
   /**
-   * è‡ªå®šä¹‰æ·±åº¦çš„æ•°ç»„åˆå¹¶
-   * @param args æ•°ç»„
+   * ×Ô¶¨ÒåÉî¶ÈµÄÊı×éºÏ²¢
+   * @param args Êı×é
    */
   static merge(...args: any[]): any {
     let deel = 2;
@@ -854,7 +854,7 @@ export class Util {
     };
 
     if (ar.file_path === '') {
-      Util.showError('è·å–ä¸åˆ°æ–‡ä»¶è·¯å¾„ï¼');
+      Util.showError('»ñÈ¡²»µ½ÎÄ¼şÂ·¾¶£¡');
     } else {
       ar.file_dir = path.dirname(ar.file_path);
       ar.file_ext = path.extname(ar.file_path);
@@ -969,37 +969,37 @@ export class Util {
    */
 
   /**
-   * å°†ä¸€ä¸ªå•è¯é¦–å­—æ¯å¤§å†™å¹¶è¿”å›
-   * @param {*} word æŸä¸ªå­—ç¬¦ä¸²
+   * ½«Ò»¸öµ¥´ÊÊ××ÖÄ¸´óĞ´²¢·µ»Ø
+   * @param {*} word Ä³¸ö×Ö·û´®
    */
   static upperFirstLetter(word: any) {
     return (word || "").replace(/^\w/, (m: string) => m.toUpperCase());
   }
 
   /**
-   * å°†ä¸€ä¸ªå•è¯é¦–å­—æ¯è½¬å°å†™å¹¶è¿”å›
-   * @param {*} word æŸä¸ªå­—ç¬¦ä¸²
+   * ½«Ò»¸öµ¥´ÊÊ××ÖÄ¸×ªĞ¡Ğ´²¢·µ»Ø
+   * @param {*} word Ä³¸ö×Ö·û´®
    */
   static lowerFirstLeter(word: any) {
     return (word || "").replace(/^\w/, (m: string) => m.toLowerCase());
   }
 
   /**
-   * å…¨å±€æ—¥å¿—å¼€å…³ï¼Œå‘å¸ƒæ—¶å¯ä»¥æ³¨é‡Šæ‰æ—¥å¿—è¾“å‡º
+   * È«¾ÖÈÕÖ¾¿ª¹Ø£¬·¢²¼Ê±¿ÉÒÔ×¢ÊÍµôÈÕÖ¾Êä³ö
    */
   static log(...args: any) {
     console.log(...args);
   }
 
   /**
-   * å…¨å±€æ—¥å¿—å¼€å…³ï¼Œå‘å¸ƒæ—¶å¯ä»¥æ³¨é‡Šæ‰æ—¥å¿—è¾“å‡º
+   * È«¾ÖÈÕÖ¾¿ª¹Ø£¬·¢²¼Ê±¿ÉÒÔ×¢ÊÍµôÈÕÖ¾Êä³ö
    */
   static error(...args: any) {
     console.error(...args);
   }
 
   /**
-   * å¼¹å‡ºé”™è¯¯ä¿¡æ¯
+   * µ¯³ö´íÎóĞÅÏ¢
    */
   static showError(...args: any) {
     let text = "";
@@ -1019,7 +1019,7 @@ export class Util {
   }
 
   /**
-   * å¼¹å‡ºæç¤ºä¿¡æ¯
+   * µ¯³öÌáÊ¾ĞÅÏ¢
    */
   static showInfo(...args: any) {
     let text = "";
@@ -1041,19 +1041,19 @@ export class Util {
   static findStrInFolder(folderPath: any, str: any) { }
 
   /**
-   * ä»æŸä¸ªæ–‡ä»¶é‡Œé¢æŸ¥æ‰¾æŸä¸ªå­—ç¬¦ä¸²ï¼Œè¿”å›ç¬¬ä¸€ä¸ªåŒ¹é…å¤„çš„è¡Œä¸åˆ—ï¼Œæœªæ‰¾åˆ°è¿”å›ç¬¬ä¸€è¡Œç¬¬ä¸€åˆ—
-   * @param filePath è¦æŸ¥æ‰¾çš„æ–‡ä»¶
-   * @param reg æ­£åˆ™å¯¹è±¡ï¼Œæœ€å¥½ä¸è¦å¸¦gï¼Œä¹Ÿå¯ä»¥æ˜¯å­—ç¬¦ä¸²
+   * ´ÓÄ³¸öÎÄ¼şÀïÃæ²éÕÒÄ³¸ö×Ö·û´®£¬·µ»ØµÚÒ»¸öÆ¥Åä´¦µÄĞĞÓëÁĞ£¬Î´ÕÒµ½·µ»ØµÚÒ»ĞĞµÚÒ»ÁĞ
+   * @param filePath Òª²éÕÒµÄÎÄ¼ş
+   * @param reg ÕıÔò¶ÔÏó£¬×îºÃ²»Òª´øg£¬Ò²¿ÉÒÔÊÇ×Ö·û´®
    */
   static findStrInFile(filePath: any, reg: string | RegExp) {
     const content = fs.readFileSync(filePath, "utf-8");
     reg = typeof reg === "string" ? new RegExp(reg, "m") : reg;
-    // æ²¡æ‰¾åˆ°ç›´æ¥è¿”å›
+    // Ã»ÕÒµ½Ö±½Ó·µ»Ø
     if (content.search(reg) < 0) {
       return { row: 0, col: 0 };
     }
     const rows = content.split(os.EOL);
-    // åˆ†è¡ŒæŸ¥æ‰¾åªä¸ºäº†æ‹¿åˆ°è¡Œ
+    // ·ÖĞĞ²éÕÒÖ»ÎªÁËÄÃµ½ĞĞ
     for (let i = 0; i < rows.length; i++) {
       let col = rows[i].search(reg);
       if (col >= 0) {
@@ -1064,7 +1064,7 @@ export class Util {
   }
 
   /**
-   * è·å–æŸä¸ªå­—ç¬¦ä¸²åœ¨æ–‡ä»¶é‡Œç¬¬ä¸€æ¬¡å‡ºç°ä½ç½®çš„èŒƒå›´ï¼Œ
+   * »ñÈ¡Ä³¸ö×Ö·û´®ÔÚÎÄ¼şÀïµÚÒ»´Î³öÏÖÎ»ÖÃµÄ·¶Î§£¬
    */
   static getStrRangeInFile(filePath: any, str: string) {
     var pos = this.findStrInFile(filePath, str);
@@ -1075,7 +1075,7 @@ export class Util {
   }
 
   /**
-   * ç®€å•çš„æ£€æµ‹ç‰ˆæœ¬å¤§å°
+   * ¼òµ¥µÄ¼ì²â°æ±¾´óĞ¡
    */
   static checkVersion(version1: string, version2: string) {
     let val1 = parseInt(version1.replace(/\./g, ""));
@@ -1084,9 +1084,9 @@ export class Util {
   }
 
   /**
-   * è·å–æŸä¸ªæ‰©å±•æ–‡ä»¶ç»å¯¹è·¯å¾„
-   * @param context ä¸Šä¸‹æ–‡
-   * @param relativePath æ‰©å±•ä¸­æŸä¸ªæ–‡ä»¶ç›¸å¯¹äºæ ¹ç›®å½•çš„è·¯å¾„ï¼Œå¦‚ images/test.jpg
+   * »ñÈ¡Ä³¸öÀ©Õ¹ÎÄ¼ş¾ø¶ÔÂ·¾¶
+   * @param context ÉÏÏÂÎÄ
+   * @param relativePath À©Õ¹ÖĞÄ³¸öÎÄ¼şÏà¶ÔÓÚ¸ùÄ¿Â¼µÄÂ·¾¶£¬Èç images/test.jpg
    */
   static getExtensionFileAbsolutePath(
     context: { extensionPath: any },
@@ -1096,10 +1096,10 @@ export class Util {
   }
 
   /**
-   * è·å–æŸä¸ªæ‰©å±•æ–‡ä»¶ç›¸å¯¹äºwebviewéœ€è¦çš„ä¸€ç§ç‰¹æ®Šè·¯å¾„æ ¼å¼
-   * å½¢å¦‚ï¼švscode-resource:/Users/toonces/projects/vscode-cat-coding/media/cat.gif
-   * @param context ä¸Šä¸‹æ–‡
-   * @param relativePath æ‰©å±•ä¸­æŸä¸ªæ–‡ä»¶ç›¸å¯¹äºæ ¹ç›®å½•çš„è·¯å¾„ï¼Œå¦‚ images/test.jpg
+   * »ñÈ¡Ä³¸öÀ©Õ¹ÎÄ¼şÏà¶ÔÓÚwebviewĞèÒªµÄÒ»ÖÖÌØÊâÂ·¾¶¸ñÊ½
+   * ĞÎÈç£ºvscode-resource:/Users/toonces/projects/vscode-cat-coding/media/cat.gif
+   * @param context ÉÏÏÂÎÄ
+   * @param relativePath À©Õ¹ÖĞÄ³¸öÎÄ¼şÏà¶ÔÓÚ¸ùÄ¿Â¼µÄÂ·¾¶£¬Èç images/test.jpg
    */
   static getExtensionFileVscodeResource(
     context: { extensionPath: any },
@@ -1112,28 +1112,28 @@ export class Util {
   }
 
   /**
-   * åœ¨Finderä¸­æ‰“å¼€æŸä¸ªæ–‡ä»¶æˆ–è€…è·¯å¾„
+   * ÔÚFinderÖĞ´ò¿ªÄ³¸öÎÄ¼ş»òÕßÂ·¾¶
    */
   static openFileInFinder(filePath: string) {
     if (!fs.existsSync(filePath)) {
-      this.showError("æ–‡ä»¶ä¸å­˜åœ¨ï¼š" + filePath);
+      this.showError("ÎÄ¼ş²»´æÔÚ£º" + filePath);
     }
-    // å¦‚æœæ˜¯ç›®å½•ï¼Œç›´æ¥æ‰“å¼€å°±å¥½
+    // Èç¹ûÊÇÄ¿Â¼£¬Ö±½Ó´ò¿ª¾ÍºÃ
     if (fs.statSync(filePath).isDirectory()) {
       exec(`open ${filePath}`);
     } else {
-      // å¦‚æœæ˜¯æ–‡ä»¶ï¼Œè¦åˆ†å¼€å¤„ç†
+      // Èç¹ûÊÇÎÄ¼ş£¬Òª·Ö¿ª´¦Àí
       const fileName = path.basename(filePath);
       filePath = path.dirname(filePath);
-      // è¿™é‡Œæœ‰å¾…å®Œå–„ï¼Œè¿˜ä¸çŸ¥é“å¦‚ä½•finderä¸­å¦‚ä½•é€‰ä¸­æ–‡ä»¶
+      // ÕâÀïÓĞ´ıÍêÉÆ£¬»¹²»ÖªµÀÈçºÎfinderÖĞÈçºÎÑ¡ÖĞÎÄ¼ş
       exec(`open ${filePath}`);
     }
   }
 
   /**
-   * åœ¨vscodeä¸­æ‰“å¼€æŸä¸ªæ–‡ä»¶
-   * @param {*} path æ–‡ä»¶ç»å¯¹è·¯å¾„
-   * @param {*} text å¯é€‰ï¼Œå¦‚æœä¸ä¸ºç©ºï¼Œåˆ™é€‰ä¸­ç¬¬ä¸€å¤„åŒ¹é…çš„å¯¹åº”æ–‡å­—
+   * ÔÚvscodeÖĞ´ò¿ªÄ³¸öÎÄ¼ş
+   * @param {*} path ÎÄ¼ş¾ø¶ÔÂ·¾¶
+   * @param {*} text ¿ÉÑ¡£¬Èç¹û²»Îª¿Õ£¬ÔòÑ¡ÖĞµÚÒ»´¦Æ¥ÅäµÄ¶ÔÓ¦ÎÄ×Ö
    */
   static openFileInVscode(path: string, text: any) {
     let options = undefined;
@@ -1145,39 +1145,39 @@ export class Util {
   }
 
   /**
-   * ç”¨JD-GUIæ‰“å¼€jaråŒ…
+   * ÓÃJD-GUI´ò¿ªjar°ü
    */
   static openJarByJdGui(jarPath: string) {
-    // å¦‚ä½•é€‰ä¸­æ–‡ä»¶æœ‰å¾…å®Œå–„
+    // ÈçºÎÑ¡ÖĞÎÄ¼şÓĞ´ıÍêÉÆ
     const jdGuiPath = vscode.workspace
       .getConfiguration()
       .get("eggHelper.jdGuiPath");
     if (!jdGuiPath) {
-      this.showError("JD-GUIè·¯å¾„ä¸èƒ½ä¸ºç©ºï¼");
+      this.showError("JD-GUIÂ·¾¶²»ÄÜÎª¿Õ£¡");
       return;
     }
     if (!fs.existsSync(jdGuiPath + "")) {
       this.showError(
-        "æ‚¨è¿˜æ²¡æœ‰å®‰è£…JD-GUIï¼Œè¯·å®‰è£…å®Œååˆ°vscodeè®¾ç½®é‡Œé¢æ‰¾åˆ°HSFåŠ©æ‰‹å¹¶è¿›è¡Œè·¯å¾„é…ç½®ã€‚"
+        "Äú»¹Ã»ÓĞ°²×°JD-GUI£¬Çë°²×°Íêºóµ½vscodeÉèÖÃÀïÃæÕÒµ½HSFÖúÊÖ²¢½øĞĞÂ·¾¶ÅäÖÃ¡£"
       );
       return;
     }
     if (!fs.existsSync(jarPath)) {
-      this.showError("jaråŒ…æœªæ‰¾åˆ°ï¼š" + jarPath);
+      this.showError("jar°üÎ´ÕÒµ½£º" + jarPath);
       return;
     }
     exec(`open ${jarPath} -a ${jdGuiPath}`);
   }
 
   /**
-   * ä½¿ç”¨é»˜è®¤æµè§ˆå™¨ä¸­æ‰“å¼€æŸä¸ªURL
+   * Ê¹ÓÃÄ¬ÈÏä¯ÀÀÆ÷ÖĞ´ò¿ªÄ³¸öURL
    */
   static openUrlInBrowser(url: any) {
     exec(`open '${url}'`);
   }
 
   /**
-   * é€’å½’éå†æ¸…ç©ºæŸä¸ªèµ„æºçš„requireç¼“å­˜
+   * µİ¹é±éÀúÇå¿ÕÄ³¸ö×ÊÔ´µÄrequire»º´æ
    * @param {*} absolutePath
    */
   static clearRequireCache(absolutePath: string) {
@@ -1186,7 +1186,7 @@ export class Util {
       return;
     }
     if (root.children) {
-      // å¦‚æœæœ‰å­ä¾èµ–é¡¹ï¼Œå…ˆæ¸…ç©ºä¾èµ–é¡¹çš„ç¼“å­˜
+      // Èç¹ûÓĞ×ÓÒÀÀµÏî£¬ÏÈÇå¿ÕÒÀÀµÏîµÄ»º´æ
       root.children.forEach((item) => {
         this.clearRequireCache(item.id);
       });
@@ -1195,7 +1195,7 @@ export class Util {
   }
 
   /**
-   * åŠ¨æ€requireï¼Œå’Œæ™®é€šrequireä¸åŒçš„æ˜¯ï¼ŒåŠ è½½ä¹‹å‰ä¼šå…ˆå°è¯•åˆ é™¤ç¼“å­˜
+   * ¶¯Ì¬require£¬ºÍÆÕÍ¨require²»Í¬µÄÊÇ£¬¼ÓÔØÖ®Ç°»áÏÈ³¢ÊÔÉ¾³ı»º´æ
    * @param {*} modulePath
    */
   static dynamicRequire(modulePath: string) {
@@ -1203,8 +1203,25 @@ export class Util {
     return require(modulePath);
   }
 
+
+
+
+  static is_window() {
+    let back = true;
+    if (os.platform() == 'linux') {
+      back = false;
+    }
+    return back;
+  }
+
+
+
+
+
+
+
   // /**
-  //  * è¯»å–propertiesæ–‡ä»¶
+  //  * ¶ÁÈ¡propertiesÎÄ¼ş
   //  * @param {*} filePath
   //  */
   // readProperties(filePath: any) {
@@ -1218,9 +1235,9 @@ export class Util {
   //     return result;
   // }
   // /**
-  //  * æ¯”è¾ƒ2ä¸ªå¯¹è±¡è½¬JSONå­—ç¬¦ä¸²åæ˜¯å¦å®Œå…¨ä¸€æ ·
-  //  * ç‰¹åˆ«æ³¨æ„ï¼Œç”±äºJSéå†å¯¹è±¡çš„æ— åºæ€§ï¼ˆéƒ¨åˆ†æµè§ˆå™¨æ˜¯æŒ‰ç…§æ·»åŠ é¡ºåºéå†çš„ï¼‰å¯¼è‡´åŒæ ·çš„å¯¹è±¡ï¼Œ
-  //  * è½¬æˆJSONä¸²ä¹‹ååè€Œä¸ä¸€æ ·ï¼Œæ‰€ä»¥è¿™é‡Œé‡‡ç”¨å…¶å®ƒæ–¹å¼å®ç°ã€‚
+  //  * ±È½Ï2¸ö¶ÔÏó×ªJSON×Ö·û´®ºóÊÇ·ñÍêÈ«Ò»Ñù
+  //  * ÌØ±ğ×¢Òâ£¬ÓÉÓÚJS±éÀú¶ÔÏóµÄÎŞĞòĞÔ£¨²¿·Öä¯ÀÀÆ÷ÊÇ°´ÕÕÌí¼ÓË³Ğò±éÀúµÄ£©µ¼ÖÂÍ¬ÑùµÄ¶ÔÏó£¬
+  //  * ×ª³ÉJSON´®Ö®ºó·´¶ø²»Ò»Ñù£¬ËùÒÔÕâÀï²ÉÓÃÆäËü·½Ê½ÊµÏÖ¡£
   //  * @param {*} obj1
   //  * @param {*} obj2
   //  */

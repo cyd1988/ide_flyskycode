@@ -3,6 +3,7 @@ import { window, StatusBarItem, StatusBarAlignment, TextDocument } from 'vscode'
 import * as vscode from 'vscode';
 
 import { sockRunToken } from './sockRunToken';
+import { Util } from './../Util';
 
 
 
@@ -10,26 +11,36 @@ export class ChangeTargetSshServer {
     static statusBar: StatusBarItem;
     static targetId: string;
     static lists: any;
-
+    static ints_stat = 0;
+    static git_num = 0;
+    static status_bar_text = '';
 
     public static async init() {
         if (!ChangeTargetSshServer.statusBar) {
-            ChangeTargetSshServer.statusBar = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left);
-            ChangeTargetSshServer.statusBar.command = 'extension.demo.changeTargetSshServer';
+            ChangeTargetSshServer.statusBar =
+                vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left);
+            ChangeTargetSshServer.statusBar.command =
+                'extension.demo.changeTargetSshServer';
             ChangeTargetSshServer.statusBar.tooltip = '选择要使用的SSH账号！';
             ChangeTargetSshServer.statusBar.color = '#00AA00';
         }
 
         await ChangeTargetSshServer.setLanguageText();
         ChangeTargetSshServer.statusBar.show();
+        ChangeTargetSshServer.ints_stat = 1;
+
+        ChangeTargetSshServer.up_get_num();
     }
 
 
     public static async changeTargetLanguage() {
+        ChangeTargetSshServer.up_get_num();
         let lists = await ChangeTargetSshServer.getListSsh();
-        let res: any = await vscode.window.showQuickPick(lists.map((item: any) => item.value_s), {
-            placeHolder: '选择要使用的账号！'
-        });
+        let res: any = await vscode.window.showQuickPick(
+            lists.map((item: any) => item.value_s),
+            {
+                placeHolder: '选择要使用的账号！'
+            });
 
         if (res) {
             for (let index = 0; index < lists.length; index++) {
@@ -44,7 +55,8 @@ export class ChangeTargetSshServer {
 
     static async setLanguageText() {
         let info = await ChangeTargetSshServer.getListCurrentOne();
-        ChangeTargetSshServer.statusBar.text = '$(project) ' + info.value;
+        let val = '$(project) ' + info.value;
+        ChangeTargetSshServer.set_statusBar(val);
     }
 
 
@@ -76,34 +88,35 @@ export class ChangeTargetSshServer {
     static async getListCurrent(keys?: string) {
         let info = await ChangeTargetSshServer.getListCurrentOne();
         if (keys) {
-
+            let val = '';
             if (keys == 'null') {
-                ChangeTargetSshServer.statusBar.text = '$(project) ' + info.value;
+                val = '$(project) ' + info.value;
             } else if (typeof keys == "object") {
                 if (keys['name']) {
-                    ChangeTargetSshServer.statusBar.text = '$(project) ' + info.value + '   ' + keys['name'];
+                    val = '$(project) ' + info.value + '   ' + keys['name'];
                 } else {
-                    ChangeTargetSshServer.statusBar.text = '$(project) ' + info.value + '   ' + keys['user'] + '-' + keys['ip'];
+                    val = '$(project) ' + info.value + '   ' + keys['user'] +
+                        '-' + keys['ip'];
                 }
             } else {
 
                 // 和当前相同
                 if (info.key && info.key == keys) {
-                    ChangeTargetSshServer.statusBar.text = '$(project) ' + info.value;
-                    return;
-                }
-
-                let lists = await ChangeTargetSshServer.getListSsh();
-                for (let index = 0; index < lists.length; index++) {
-                    const element = lists[index];
-                    if (element.key == keys) {
-                        keys = element.value_tm;
-                        break;
+                    val = '$(project) ' + info.value;
+                } else {
+                    let lists = await ChangeTargetSshServer.getListSsh();
+                    for (let index = 0; index < lists.length; index++) {
+                        const element = lists[index];
+                        if (element.key == keys) {
+                            keys = element.value_tm;
+                            break;
+                        }
                     }
                 }
-                ChangeTargetSshServer.statusBar.text = '$(project) ' + info.value + '   ' + keys;
-            }
 
+                val = '$(project) ' + info.value + '   ' + keys;
+            }
+            ChangeTargetSshServer.set_statusBar(val);
         } else {
             return info;
         }
@@ -140,24 +153,34 @@ export class ChangeTargetSshServer {
                 }
             }
         }
-
+        let val = '';
         if (ssh) {
-            ChangeTargetSshServer.statusBar.text = '$(project) ' + ssh.value;
+            val = '$(project) ' + ssh.value;
             ChangeTargetSshServer.targetId = ssh.ip + '-' + ssh.id;
-
         } else {
             let info = await ChangeTargetSshServer.getListCurrentOne();
             if (typeof keys == "object") {
                 if (keys['name']) {
-                    ChangeTargetSshServer.statusBar.text = '$(project) ' + info.value + '   ' + keys['name'];
+                    val = '$(project) ' + info.value + '   ' + keys['name'];
                 } else {
-                    ChangeTargetSshServer.statusBar.text = '$(project) ' + info.value + '   ' + keys['user'] + '-' + keys['ip'];
+                    val = '$(project) ' + info.value + '   ' + keys['user'] +
+                        '-' + keys['ip'];
                 }
             } else {
-                ChangeTargetSshServer.statusBar.text = '$(project) ' + info.value + '   ' + keys;
+                val = '$(project) ' + info.value + '   ' + keys;
             }
         }
+        ChangeTargetSshServer.set_statusBar(val);
 
+    }
+
+
+    static set_statusBar(val: string) {
+        ChangeTargetSshServer.status_bar_text = val;
+        if (ChangeTargetSshServer.git_num > 0) {
+            val = val + '   - ' + ChangeTargetSshServer.git_num;
+        }
+        ChangeTargetSshServer.statusBar.text = val;
     }
 
 
@@ -185,5 +208,50 @@ export class ChangeTargetSshServer {
         return info;
     }
 
+
+    static set_update_git_num(num: number) {
+        ChangeTargetSshServer.git_num = num;
+        let val = ChangeTargetSshServer.status_bar_text;
+        ChangeTargetSshServer.set_statusBar(val);
+    }
+
+    static up_get_num() {
+        let tm = Util.getWorkspaceFolders(1);
+        let run_cwd = tm[0];
+
+        // console.log('util-dir: ', run_cwd);
+        // D:\Development\PortableGit\cmd\git.exe
+
+        let bash = 'git status -s';
+        if (Util.is_window()) {
+            // bash = '"D:\\Development\\PortableGit\\cmd\\git.exe" status -s';
+            if (run_cwd[0] == '/') run_cwd = run_cwd.substring(1);
+        }
+
+        // console.log('util-bash: ', bash);
+        // console.log('util-run_cwd: ', run_cwd);
+
+        Util.exec(bash, { 'cwd': run_cwd }, function (error: any, stdout: Buffer, stderr: Buffer) {
+            let aa = stdout.toString() + "";
+
+            // console.log('util-con: ', aa);
+
+            let num = 0;
+            let l = aa.length;
+            if (l > 2) {
+                if (aa[l - 2] + aa[l - 1] == "\r\n") aa = aa.substring(0, l - 3);
+                if (aa[l - 1] == "\n") aa = aa.substring(0, l - 2);
+            }
+            l = aa.length;
+            if (l > 0) num++;
+
+            for (let ind = 0; ind < l; ind++) {
+                if (aa[ind] == "\n") num++;
+            }
+
+            ChangeTargetSshServer.set_update_git_num(num);
+        });
+
+    }
 
 }

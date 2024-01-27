@@ -162,7 +162,6 @@ export class MessageService {
 
   static async webSocketOnOpen_run() {
     await runSystemKeysListReloat();     // 获取按键 /init/getKeysFigs
-    await ChangeTargetSshServer.init();  // 显示服务器列表（左下角）
 
     if (!ChangeTargetSshServer.lists) {
       await ChangeTargetSshServer.getListSsh();

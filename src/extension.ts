@@ -28,11 +28,12 @@ let plugin = [
 let autoregistertexteditor: AnyObj = {};
 let activeEditor = vscode.window.activeTextEditor;
 
+let version = "0.7.17"
 outputChannel.show();
-outputChannel.appendLine('flskycode-init..');
+outputChannel.appendLine('flskycode-init..' + version);
 
 
-console.log('ide: start');
+console.log('ide: start' + version);
 
 export function activate(this: any, context: vscode.ExtensionContext) {
 
@@ -48,6 +49,7 @@ export function activate(this: any, context: vscode.ExtensionContext) {
     }));
   }
 
+  ChangeTargetSshServer.init();  // 显示服务器列表（左下角）
   MessageService.start();
 
 
@@ -77,9 +79,11 @@ export function activate(this: any, context: vscode.ExtensionContext) {
   vscode.workspace.onDidChangeConfiguration(() => {
     Highlight_updateConfig()
   })
+
   vscode.window.onDidChangeVisibleTextEditors(function (editor) {
     Highlight.init().updateDecorations();
   }, null, context.subscriptions);
+
   vscode.workspace.onDidChangeTextDocument(function (event) {
     activeEditor = vscode.window.activeTextEditor;
     if (activeEditor && event.document === activeEditor.document) {
@@ -107,8 +111,12 @@ export function activate(this: any, context: vscode.ExtensionContext) {
   }, this);
 
   vscode.workspace.onDidSaveTextDocument((document) => {
+    ChangeTargetSshServer.up_get_num();
     getJsonData(document, 'onDidSaveTextDocument');
   }, this);
+
+  vscode.workspace.onDidDeleteFiles(() => { ChangeTargetSshServer.up_get_num(); }, this);
+  vscode.workspace.onDidCreateFiles(() => { ChangeTargetSshServer.up_get_num(); }, this);
 
   // vscode.workspace.onDidOpenTextDocument((document) => {
   //   getJsonData(document, 'onDidOpenTextDocument');

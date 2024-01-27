@@ -14,7 +14,8 @@ export const service_host_ip = function () {
 
   if (var_service_host_ip.length < 1) {
     let types = service_type();
-    var_service_host_ip = '192.168.71.1';
+    // var_service_host_ip = '192.168.71.1';
+    var_service_host_ip = '127.0.0.1';
 
     if (types == 'linux-centos') {
       var_service_host_ip = '127.0.0.1';
