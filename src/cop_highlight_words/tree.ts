@@ -1,6 +1,6 @@
 'use strict';
 import { Highlightable, SearchLocation } from './highlight'
-import { TreeDataProvider, TreeItem, Event, EventEmitter, Command } from 'vscode'
+import { TreeDataProvider, TreeItem,MarkdownString, Event, EventEmitter, Command } from 'vscode'
 
 class HighlightTreeProvider implements TreeDataProvider<HighlightNode> {
     public currentExpression: string = ''
@@ -22,7 +22,7 @@ class HighlightTreeProvider implements TreeDataProvider<HighlightNode> {
     }
 
     public refresh(): any {
-        this._onDidChangeTreeData.fire();
+        this._onDidChangeTreeData.fire(this._onDidChangeTreeData.event);
     }
 
 }
@@ -49,13 +49,13 @@ export class HighlightNode extends TreeItem {
                 this.highlight.wholeWord ? 'wholeWord' : 'default' + index
     }
 
-    get tooltip(): string {
-        return `${this.label}-${this.getOpts()}`;
-    }
+    // get tooltip(): string  {
+    //     return `${this.label}-${this.getOpts()}`;
+    // }
 
-    get description(): string {
-        return this.getOpts()
-    }
+    // get description(): string {
+    //     return this.getOpts()
+    // }
 
     contextValue = 'highlights';
 

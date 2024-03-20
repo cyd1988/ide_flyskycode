@@ -73,7 +73,7 @@
         },
         {
           "match": "\\:[\\s\\S]*",
-          "name": "comment"
+          "name": "support.type.property-name.json.comments"
         },
         {
           "match": "@rem.*",

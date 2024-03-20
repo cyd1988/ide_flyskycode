@@ -28,7 +28,7 @@ let plugin = [
 let autoregistertexteditor: AnyObj = {};
 let activeEditor = vscode.window.activeTextEditor;
 
-let version = "0.7.17"
+let version = "0.7.25"
 outputChannel.show();
 outputChannel.appendLine('flskycode-init..' + version);
 

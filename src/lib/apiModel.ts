@@ -15,56 +15,54 @@ export class apiModel {
 
   static r_open_file(data: any, run?: string) {
 
+
     if (fs.existsSync(data.file)) {
 
       let stat = fs.lstatSync(data.file);
       let uri = vscode.Uri.file(data.file);
 
-      if (stat.isFile()) {
+    
+      if (!stat.isDirectory()) {
 
         if (data.hasOwnProperty('line')) {
+          const options = {
+            // 选中第3行第9列到第3行第17列
+            selection: new vscode.Range(
+              new vscode.Position(data.line, 0),
+              new vscode.Position(data.line, 0)
+            ),
+            // 是否预览，默认true，预览的意思是下次再打开文件是否会替换当前文件
+            preview: false,
+            // 显示在第二个编辑器
+            // viewColumn: vscode.ViewColumn.Two
+          };
+          vscode.window.showTextDocument(uri, options);
 
-          if (data.hasOwnProperty('KK')) {
+        } else if (data.hasOwnProperty('KK')) {
 
-            vscode.window.showTextDocument(uri).then(function (TextEditor) {
+          vscode.window.showTextDocument(uri).then(function (TextEditor) {
 
-              let content = TextEditor.document.getText();
-              let pos = content.indexOf(data['KK']);
-              if (pos === -1) {
-                return;
-              }
+            let content = TextEditor.document.getText();
+            let pos = content.indexOf(data['KK']);
 
-              let list = content.substr(0, pos).split("\n");
-              content = '';
-              let line = list.length - 1;
+            if (pos === -1) return;
 
-              let line_t1 = list[list.length - 1].length;
-              let line_t2 = line_t1 + data['KK'].length;
+            let list = content.substring(0, pos).split("\n");
+            content = '';
+            let line = list.length - 1;
 
-              const options = {
-                selection: new vscode.Range(
-                  new vscode.Position(line, line_t1),
-                  new vscode.Position(line, line_t2)
-                ),
-                preview: false,
-              };
-              vscode.window.showTextDocument(TextEditor.document, options);
-            });
+            let line_t1 = list[list.length - 1].length;
+            let line_t2 = line_t1 + data['KK'].length;
 
-          } else {
             const options = {
-              // 选中第3行第9列到第3行第17列
               selection: new vscode.Range(
-                new vscode.Position(data.line, 0),
-                new vscode.Position(data.line, 0)
+                new vscode.Position(line, line_t1),
+                new vscode.Position(line, line_t2)
               ),
-              // 是否预览，默认true，预览的意思是下次再打开文件是否会替换当前文件
               preview: false,
-              // 显示在第二个编辑器
-              // viewColumn: vscode.ViewColumn.Two
             };
-            vscode.window.showTextDocument(uri, options);
-          }
+            vscode.window.showTextDocument(TextEditor.document, options);
+          });
 
         } else {
           const options = {

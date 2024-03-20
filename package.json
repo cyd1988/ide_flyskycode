@@ -2,7 +2,7 @@
     "name": "vscode-plugin-flyskycode",
     "displayName": "vscode-plugin-flyskycode",
     "description": "cyd1988",
-    "version": "0.7.20",
+    "version": "0.7.25",
     "publisher": "flyskycode",
     "engines": {
         "vscode": "^1.69.1"
@@ -401,9 +401,9 @@
         "@types/node": "^12.20.48",
         "@types/vscode": "^1.44.0",
         "glob": "^7.2.0",
-        "mocha": "^6.2.3",
+        "mocha": "^10.3.0",
         "tslint": "^5.20.0",
-        "typescript": "^3.9.10",
+        "typescript": "^4.4.4",
         "vscode-test": "^1.6.1"
     },
     "dependencies": {
@@ -411,16 +411,14 @@
         "@types/mysql": "^2.15.21",
         "@types/redis": "^2.8.32",
         "@types/ws": "^6.0.4",
+        "@vscode/vsce": "^2.24.0",
         "json5": "^2.2.1",
         "jsonc-parser": "^2.3.1",
         "minimatch": "^5.0.1",
         "mysql": "^2.18.1",
-        "redis": "^2.8.0",
+        "redis": "^4.6.13",
         "save": "^2.4.0",
+        "vsce": "^1.97.0",
         "ws": "^7.5.7"
-    },
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/sxei/vscode-plugin-demo"
     }
 }
